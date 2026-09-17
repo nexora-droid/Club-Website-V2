@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body{
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+}
+
+#mainWrapper{
+    padding: 0 20px;
+}
+
+#nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 15px 5px;
+    backdrop-filter: blur(1px);
+    transition: all 0.5s ease;
+    z-index: 1000;
+}
+
+#nav.scrolled{
+    top: 15px;
+    width: calc(100% - 40px);
+    margin: 0 auto;
+    border-radius: 50px;
+    padding: 12px 24px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+#nav-title{
+    color: black;
+    text-decoration: none;
+    outline: none;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#nav-links{
+    display: flex;
+    gap: 20px;
+}
+
+#nav-links a{
+    position: relative;
+    text-decoration: none;
+    color: black;
+    outline: none;
+    font-weight: bold;
+    padding-bottom: 4px;
+}
+
+#nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #000000, #a4a3a3);   
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s ease;
+}
+
+#nav-links a:hover, #nav-links a.active{
+    color: black;
+}
+
+#nav-links a:hover::after, #nav-links a.active::after{
+    transform: scaleX(1);
+}
+
+#hero{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 80vh;
+    padding: 40px 20px;
+}
+
+#herotitle{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#herotitle h1{
+    font-size: 3.5rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -3px;
+}
+
+#herotitle p{
+    font-size: 1.3rem;
+    color: #000000;
+    margin: 0;
+}
+
+#herotitle a{
+    text-decoration: none;
+    background-color: black;
+    color: #ffffff;
+    margin-top: 50px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    padding: 10px 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#herotitle a:hover{
+    transform: translateY(-4px) translateX(-2px);
+    box-shadow: 10px 10px 10px rgba(0,0,0,0.25);
+}
+
+#about{
+    padding: 80px 0;
+    margin: 0 auto;
+}
+
+#about-header{
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+#factCards{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 50px;
+}
+
+.statcard{
+    background-color: #646363;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 40px 20px;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    transition: transform 0.2s ease, box-shadow 0.4s ease;
+}
+
+.statcard:hover{
+    transform: translateY(-4px);
+    box-shadow: 6px 8px 15px rgba(0,0,0,0.6);
+}
+
+.statnum{
+    font-size: 3rem;
+    color: white;
+    margin: 0;
+    font-weight: 500;
+}
+
+.statdesc{
+    font-size: 1.4rem;
+    color: white;
+    margin: 0;
+}
+
+#members{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+#teamTitle{
+    padding-bottom: 15px;
+}
+
+.membercard{
+    display: flex;
+    flex-direction: column;
+    background: rgb(112, 112, 112);
+    color: white;
+    border-radius: 16px;
+    transition: transform 0.3s ease;
+    box-shadow: 5px 5px 8px #000000;
+}
+
+.membercard:hover{
+    transform: translateY(-4px);
+}
+
+.membername{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.role{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.memberdesc{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#event-list{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.event-card{
+    display: flex;
+    flex-direction: column;
+}
+
+.contact-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 80px;
+}
+
+.contact-links{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-field{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-bottom: 20px;
+}
+
+#footer{
+    display: flex;
+    justify-content: space-between;
+    padding: 35px 0px;
+}
+
+#footer p{
+    margin: 0;
+}
