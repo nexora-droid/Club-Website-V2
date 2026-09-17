@@ -54,6 +54,11 @@ a {
     margin-right: auto;
     justify-content: space-between;
     gap: 60px;
+    position: fixed;
+    inset: 10px 0 ;
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    transform-origin: center;
 }
 #nav-links {
     display: flex;
@@ -68,6 +73,7 @@ a {
     font-family: 'Space Grotesk';
     font-weight: 800;
     text-underline-offset: 5px;
+    transition: 0.4s ease;
 }
 #hero-main{
     display: flex;
