@@ -9,6 +9,7 @@ html, body{
     overscroll-behavior: none;
     min-height: 100vh;
     margin: 0;
+    font-family: 'Bricolage Grotesk', sans-serif;
     background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0, rgb(119, 119, 119));
 }
 
