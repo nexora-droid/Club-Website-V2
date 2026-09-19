@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     loginWindow.style.display = 'none';
                     localStorage.setItem('loggedIn', true);
                 } else {
-                    console.log(result)
+                    alert('Error ' + result.result)
                 }
             } else {
                 alert('Passwords do not match, try again!')
