@@ -34,35 +34,39 @@ document.addEventListener('DOMContentLoaded', () => {
             typeSwitch.textContent = 'Exsisting user? Login!'
         }
     })
-    const submit = document.getElementById('login-submit');
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const newEmail = document.getElementById('newEmail');
-    const newPassword = document.getElementById('newPassword');
-    const confirmPassword = document.getElementById('newConfirmPassword');
-    const signupSubmit = document.getElementById('signup-submit');
-
-    signupSubmit.addEventListener('click', async (e)=> {
-        e.preventDefault();
-        if (newPassword.value === confirmPassword.value) {
-            const response = await fetch('/admin/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: newEmail.value,
-                    password: newPassword.value
+    if (localStorage.getItem('loggedIn') === false || localStorage.getItem('loggedIn') === null) {
+        const submit = document.getElementById('login-submit');
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const newEmail = document.getElementById('newEmail');
+        const newPassword = document.getElementById('newPassword');
+        const confirmPassword = document.getElementById('newConfirmPassword');
+        const signupSubmit = document.getElementById('signup-submit');
+        signupSubmit.addEventListener('click', async (e)=> {
+            e.preventDefault();
+            if (newPassword.value === confirmPassword.value) {
+                const response = await fetch('/admin/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: newEmail.value,
+                        password: newPassword.value
+                    })
                 })
-            })
-            const result = await response.json();
-            if (result.auth === 'Success') {
-                loginWindow.style.display = 'none';
+                const result = await response.json();
+                if (result.auth === 'Success') {
+                    loginWindow.style.display = 'none';
+                    localStorage.setItem('loggedIn', true);
+                } else {
+                    console.log(result)
+                }
             } else {
-                console.log(result)
+                alert('Passwords do not match, try again!')
             }
-        } else {
-            alert('Passwords do not match, try again!')
-        }
-    })
+        })
+    } else {
+        loginWindow.style.display = 'none';
+    }
 })
