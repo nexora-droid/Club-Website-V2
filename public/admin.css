@@ -23,7 +23,7 @@ a {
     width: 100%;
     transform: scaleX(0);
     height: 3px;
-    bottom: 0;
+    bottom: 4px;
     left: 0;
     background-color: #00e;
     transform-origin: bottom right;
@@ -35,11 +35,11 @@ a {
 }
 #hero {
     background-color: rgba(255, 169, 54, 0.9);
-    height: 300px;
-    padding-top: 10px;
+    height: 350px;
+    padding-top: 100px;
 }
-#nav {
-    display: flex;
+/*#nav {
+    display: stick;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -57,8 +57,41 @@ a {
     position: fixed;
     inset: 10px 0 ;
     -webkit-backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     transform-origin: center;
+}*/
+#nav {
+    position: fixed;
+    display: flex;
+    inset: 0;
+    top: 10px;
+    left: 50%;
+    z-index: 98;
+    font-size: 25px;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    height: 40px;
+    width: 850px;
+    padding: 10px 30px 5px 30px;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-between;
+    gap: 60px;
+    position: fixed;
+    inset: 10px 0 ;
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.8s ease;
+    transform-origin: center;
+    font-size: 25px;
+    vertical-align: middle;
+}
+#nav.scrolled {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    width: 650px;
+    height: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 #nav-links {
     display: flex;
@@ -75,6 +108,7 @@ a {
     text-underline-offset: 5px;
     transition: 0.4s ease;
 }
+
 #hero-main{
     display: flex;
     justify-content:flex-start;
@@ -159,7 +193,7 @@ a {
     font-family: 'Space Grotesk';
     visibility: hidden;
 }
-#login-form {
+#login-form, #signup-form {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -177,7 +211,7 @@ a {
     padding: 10px 20px;
     font-size: 20px;
     width: auto;
-    height: 10vh;
+    height: 5vh;
 }
 #login-wrapper {
     display: flex;

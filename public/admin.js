@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav = document.getElementById('nav');
     const navTitle = document.getElementById('nav-title');
     function checkScroll () {
-        if(window.scrollY>40){
+        if(window.scrollY>400){
             nav.classList.add("scrolled");
             navTitle.hidden = true;
         } else{
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.auth === 'Success') {
                 loginWindow.style.display = 'none';
             } else {
-                alert('Error', result.error.message)
+                console.log(result)
             }
         } else {
             alert('Passwords do not match, try again!')

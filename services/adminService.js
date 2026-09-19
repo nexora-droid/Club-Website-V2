@@ -18,5 +18,5 @@ async function signUp(email, password) {
 }
 
 module.exports = {
-    signUp
+  signUp
 }

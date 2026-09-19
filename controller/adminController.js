@@ -8,10 +8,10 @@ async function login(req, res) {
 async function signup(req, res) {
     const {email, password} = req.body;
     const result = await adminService.signUp(email, password);
-    if (result.data.user.aud === "Authenticated") {
-        res.json({
-            auth : 'Success'
-        })
+    if (result.data.user && result.data.user.aud === "authenticated") {
+        res.json({auth: 'Success', result: result});
+    } else {
+        res.json({auth: 'Error', result: result});
     }
 };
 
