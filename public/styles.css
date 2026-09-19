@@ -9,6 +9,7 @@ html, body{
     overscroll-behavior: none;
     min-height: 100vh;
     margin: 0;
+    background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0, rgb(119, 119, 119));
 }
 
 #mainWrapper{
@@ -84,7 +85,7 @@ html, body{
     align-items: center;
     justify-content: center;
     text-align: center;
-    min-height: 80vh;
+    min-height: 100vh;
     padding: 40px 20px;
 }
 
@@ -221,16 +222,126 @@ html, body{
     flex-direction: column;
 }
 
+#contact{
+    margin-top: 100px;
+    padding: 40px;
+    border-radius: 30px;
+    border: 1px solid rgb(87, 87, 87);
+    backdrop-filter: blur(100px);
+    background-color: #a2a2a2;
+    box-shadow: 0 13px 8px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+}
+
+#contact:hover{
+    transform: translateY(-5px);
+}
+
+.contact-info{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.contact-label{
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.contact-detail a{
+    text-decoration: none;
+    color: #212121;
+    transition: transform 0.4s ease;
+}
+
+.contact-detail a:hover{
+    transform: translateY(2px);
+}
+
+.contact-detail{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-detail p{
+    margin: 0;
+}
+
+.contactleft{
+    padding-bottom: 35px;
+}
+
+.social-links{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.social-links a{
+    text-decoration: none;
+    color: #000000;
+}
+
 .contact-grid{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 80px;
 }
 
+#contactForm{
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px;
+    padding: 30px 20px;
+    border: 2px solid rgb(125, 125, 125);
+    transition: box-shadow 0.5s ease, border 0.5s ease;
+    background-color: rgba(255,255,255,0.2);
+    backdrop-filter: blur(40px);
+    box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+}
+
+#contactForm:hover{
+    box-shadow: 0 0 20px 5px #2ba4d0be;
+    border: 2px solid #20b3e8;
+}
+
+.form-field input{
+    border-radius: 12px;
+    padding: 10px;
+    border: 1.3px solid rgb(125, 125, 125);
+    box-shadow: inset 4px 4px 10px 0 rgba(0,0,0,0.5), inset -4px -4px 10px 0 rgba(255,255,255,0.5);
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-field textarea{
+    border-radius: 10px;
+    padding: 14px;
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.5), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    transition: all 0.3s ease;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.form-field textarea:focus, .form-field input:focus{
+    outline: none;
+    border: 1.3px solid #20b3e8;
+    background-color: rgb(255, 249, 249);
+    color: rgb(22, 22, 22);
+    transform: scaleX(1.01);
+    box-shadow: 0 0 20px 1px #2ba4d0be;
+}
+
+#formtitle{
+    font-size: 1.5rem;
+}
+
 .contact-links{
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
 .form-field{
@@ -240,12 +351,102 @@ html, body{
     padding-bottom: 20px;
 }
 
-#footer{
-    display: flex;
-    justify-content: space-between;
-    padding: 35px 0px;
+#contactForm button{
+    padding: 15px 0;
+    border-radius: 16px;
+    border: 1px solid black;
+    box-shadow: 5px 7px 16px rgba(15,3,0,0.5), inset 2px 5px 6px rgba(155, 155, 155, 0.9), inset -3px -5px 9px rgba(15,3,0,0.5);
+    text-align: center;
+    justify-content: center;
+    background-color: #868686;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
-#footer p{
+#contactForm button:active{
+    box-shadow: inset 8px 8px 10px rgba(29, 29, 29, 0.45), 20px 20px 30px rgba(0,0,0,0.2);
+    transform: translateY(4px);
+}
+
+#footer{
+    margin-top: 70px;
+    padding:  25px 0 15px;
+    border-top: 1px solid black;
+}
+
+.footer-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-main{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 0 30px;
+}
+
+.footerhead{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#footerTitle{
+    text-decoration: none;
+    color: #000000;
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+#loginLink{
+    text-decoration: none;
+    color: black;
+}
+
+.quick-links{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#linkTitle{
     margin: 0;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+#quickLinks{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 6px;
+}
+
+#quickLinks a{
+    text-decoration: none;
+    color: black;
+}
+
+.footerbottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid black;
+    padding: 6px 30px 0;
+}
+
+.footersocials{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.footersocials a{
+    text-decoration: none;
+    color: black;
 }
