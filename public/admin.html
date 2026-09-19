@@ -173,10 +173,20 @@
         </div>
     </div>
     <div id="login">
-        <form id="login-form">
-            <input type="text" placeholder="username" id="username" name="username">
-            <input type="password" placeholder="password" id="password" name="password">
-        </form>
+        <div id="login-wrapper">
+            <form id="login-form">
+                <input type="text" placeholder="email" id="email" name="email">
+                <input type="password" placeholder="password" id="password" name="password">
+                <input type="submit" value="Submit" id="login-submit">
+            </form>
+            <form id="signup-form">
+                <input type="text" placeholder="email" id="newEmail" name="newEmail">
+                <input type="password" placeholder="password" id="newPassword" name="newPassword">
+                <input type="password" placeholder="confirm password" id="newConfirmPassword" name="newConfirmPassword">
+                <input type="submit" value="Submit" id="signup-submit">
+            </form>
+            <p id="type-switch" class="underline-anim-white">New user? Sign Up!</p>
+        </div>
     </div>
     <template>
         <div class="project-card">

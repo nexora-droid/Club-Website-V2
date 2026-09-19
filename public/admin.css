@@ -164,8 +164,54 @@ a {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 45vh;
-    margin-bottom: 45vh;
+    width: fit-content;
+    height: fit-content;
+    gap: 20px;
+}
+#email, #password, #confirm-password, #newEmail, #newPassword, #newConfirmPassword {
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Space Grotesk';
+}
+#login-submit, #signup-submit {
+    padding: 10px 20px;
+    font-size: 20px;
     width: auto;
     height: 10vh;
+}
+#login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 100vh;
+    gap: 10px;
+    margin: auto;
+}
+#type-switch {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+/* UNDERLINE ANIM PART COPIED OFF https://www.30secondsofcode.org/css/s/hover-underline-animation/ */
+.underline-anim-white {
+    display: inline-block;
+    position: relative;
+}
+.underline-anim-white::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+.underline-anim-white:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
 }
