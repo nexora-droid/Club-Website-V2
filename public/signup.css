@@ -55,10 +55,10 @@ body{
     font-weight: bold;
 }
 
-#loginform{
+#signupform{
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px;
     align-items: center;
     width: 100%;
 }
