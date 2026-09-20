@@ -7,6 +7,7 @@ const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 // Create a single supabase client for interacting with your database
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY);
+
 async function signUp(email, password) {
   const { data: alData , error: alError} = await supabaseAdmin.from('admin_allowlist').select('email').eq('email', email).maybeSingle();
   if (alError) {
@@ -35,6 +36,30 @@ async function signUp(email, password) {
   }
 }
 
+async function login(email, password) {
+  const {data, error} = await supabase.auth.signInWithPassword({
+      email: email, 
+      password: password,
+      options: {
+        emailRedirectTo: 'http://localhost:4000/admin'
+      }
+    }
+  );
+  if (!data || error) {
+    return {
+      loggedIn: false,
+      data,
+      error
+    }
+  }
+  return {
+    loggedIn: true,
+    data,
+    error
+  }
+}
+
 module.exports = {
-  signUp
+  signUp,
+  login
 }
