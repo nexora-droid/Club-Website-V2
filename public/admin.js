@@ -102,11 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(request.status);
                     const response = await request.json();
                     console.log('Server response', response);
-                    if (response.login) {
+                    if (response.login === 'S') {
                         loginWindow.remove();
                     } else {
                         console.log(response.status);
                         console.log(response);
+                        alert('Login failed, wrong password/email');
                     }
                 })
             }
