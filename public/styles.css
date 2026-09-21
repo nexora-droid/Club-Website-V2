@@ -398,6 +398,10 @@ html, body{
     gap: 20px;
 }
 
+.footerhead p{
+    margin: 0;
+}
+
 #footerTitle{
     text-decoration: none;
     color: #000000;

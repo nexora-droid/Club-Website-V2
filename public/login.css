@@ -22,6 +22,28 @@ body{
     background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0);
 }
 
+.backbtn{
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    color: black;
+    display: grid;
+    transition: transform 0.3s ease;
+}
+
+.backbtn:hover{
+    transform: scale(1.15);
+}
+
+.backbtn:focus{
+    transform: scale(0.98);
+}
+
+.backbtn svg{
+    width: 30px;
+    height: 30px;
+}
+
 .left{
     border-radius: 0 50px 50px 0;
     width: 100%;
