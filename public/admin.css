@@ -8,12 +8,14 @@
 body {
     background-color: #F6EFE1 ;
     margin: 0;
+    padding-bottom: 300px;
 }
 a {
     text-decoration: none;
 }
 /* UNDERLINE ANIM PART COPIED OFF https://www.30secondsofcode.org/css/s/hover-underline-animation/ */
 .underline-anim {
+    margin-top: 13;
     display: inline-block;
     position: relative;
 }
@@ -121,7 +123,7 @@ a {
     font-size: 70px;
     color: var(--horizons-blue);
 }
-#projects {
+.cards {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -130,13 +132,13 @@ a {
     margin-right: 5vw;
     overflow-x: scroll;
 }
-#p-section-title {
+.section-title {
     font-family: 'Space Grotesk';
     font-weight: bolder;
     font-size: 30px;
     margin-left: 5vw;
 }
-.project-card {
+.card {
     background-color: white;
     width: 300px;
     height: auto;
@@ -191,6 +193,7 @@ a {
     height: 100vh;
     background-color: rebeccapurple;
     font-family: 'Space Grotesk';
+    visibility: hidden;
 }
 #login-form, #signup-form {
     display: flex;
@@ -247,4 +250,122 @@ a {
 .underline-anim-white:hover::after {
     transform: scaleX(1);
     transform-origin: bottom left;
+}
+.s-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.add {
+    margin-right: 5vw;
+    height: 50px;
+    width: 200px;
+    font-size: 20px;
+    font-weight: bolder;
+    color: white;
+    font-family: 'Space Grotesk';
+    background-color: #8585ea;
+    border: solid 2px #5151faff;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+.add:hover {
+    transform: scale(1.1);
+}
+.m-card {
+    background-color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: auto;
+    border-radius: 30px;
+}
+.m-name {
+    font-family: 'Space Grotesk';
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 0;
+}
+.m-email {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: bolder;
+    margin: 0;
+}
+.active {
+    border: 3px solid var(--horizons-orange);
+}
+#members {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+}
+#m-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 500px;
+    width: 40%;
+    justify-content: center;
+    overflow-y: scroll;
+}
+#m-info {
+    background-color: white;
+    width: 53%;
+    height: 500px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+#mi-name {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+#mi-email {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#mip-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 250px;
+    gap: 20px;
+}
+#mip-header {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 20px;
+    margin-bottom: 0;
+}
+.mip-card {
+    background-color: rgb(207, 206, 206);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px;
+}
+.mip-name {
+    margin-top: 20px;
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.mip-desc {
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    color: rgb(86, 86, 86);
+    
 }

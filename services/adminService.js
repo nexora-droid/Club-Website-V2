@@ -59,7 +59,16 @@ async function login(email, password) {
   }
 }
 
+async function getAllProjs() {
+  let {data: projects, error} =  await supabaseAdmin.from('projects').select('*');
+  if (error) {
+    return error
+  }
+  return projects
+}
+
 module.exports = {
   signUp,
-  login
+  login,
+  getAllProjs
 }
