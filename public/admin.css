@@ -37,6 +37,11 @@ a {
 }
 #hero {
     background-color: rgba(255, 169, 54, 0.9);
+    height: 300px;
+    padding-top: 10px;
+}
+#nav {
+    display: flex;
     height: 350px;
     padding-top: 100px;
 }
@@ -59,6 +64,8 @@ a {
     position: fixed;
     inset: 10px 0 ;
     -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    transform-origin: center;
     transition: all 0.4s ease;
     transform-origin: center;
 }*/
@@ -110,7 +117,6 @@ a {
     text-underline-offset: 5px;
     transition: 0.4s ease;
 }
-
 #hero-main{
     display: flex;
     justify-content:flex-start;
@@ -123,7 +129,7 @@ a {
     font-size: 70px;
     color: var(--horizons-blue);
 }
-.cards {
+#projects, .cards {
     display: flex;
     flex-direction: row;
     gap: 20px;
