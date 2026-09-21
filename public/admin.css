@@ -199,7 +199,6 @@ a {
     height: 100vh;
     background-color: rebeccapurple;
     font-family: 'Space Grotesk';
-    visibility: hidden;
 }
 #login-form, #signup-form {
     display: flex;
