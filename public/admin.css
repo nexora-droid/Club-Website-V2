@@ -8,12 +8,14 @@
 body {
     background-color: #F6EFE1 ;
     margin: 0;
+    padding-bottom: 300px;
 }
 a {
     text-decoration: none;
 }
 /* UNDERLINE ANIM PART COPIED OFF https://www.30secondsofcode.org/css/s/hover-underline-animation/ */
 .underline-anim {
+    margin-top: 13;
     display: inline-block;
     position: relative;
 }
@@ -23,7 +25,7 @@ a {
     width: 100%;
     transform: scaleX(0);
     height: 3px;
-    bottom: 0;
+    bottom: 4px;
     left: 0;
     background-color: #00e;
     transform-origin: bottom right;
@@ -40,6 +42,11 @@ a {
 }
 #nav {
     display: flex;
+    height: 350px;
+    padding-top: 100px;
+}
+/*#nav {
+    display: stick;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -59,6 +66,41 @@ a {
     -webkit-backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     transform-origin: center;
+    transition: all 0.4s ease;
+    transform-origin: center;
+}*/
+#nav {
+    position: fixed;
+    display: flex;
+    inset: 0;
+    top: 10px;
+    left: 50%;
+    z-index: 98;
+    font-size: 25px;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    height: 40px;
+    width: 850px;
+    padding: 10px 30px 5px 30px;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-between;
+    gap: 60px;
+    position: fixed;
+    inset: 10px 0 ;
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.8s ease;
+    transform-origin: center;
+    font-size: 25px;
+    vertical-align: middle;
+}
+#nav.scrolled {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    width: 650px;
+    height: 40px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 #nav-links {
     display: flex;
@@ -87,7 +129,7 @@ a {
     font-size: 70px;
     color: var(--horizons-blue);
 }
-#projects {
+#projects, .cards {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -96,13 +138,13 @@ a {
     margin-right: 5vw;
     overflow-x: scroll;
 }
-#p-section-title {
+.section-title {
     font-family: 'Space Grotesk';
     font-weight: bolder;
     font-size: 30px;
     margin-left: 5vw;
 }
-.project-card {
+.card {
     background-color: white;
     width: 300px;
     height: auto;
@@ -159,13 +201,177 @@ a {
     font-family: 'Space Grotesk';
     visibility: hidden;
 }
-#login-form {
+#login-form, #signup-form {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 45vh;
-    margin-bottom: 45vh;
+    width: fit-content;
+    height: fit-content;
+    gap: 20px;
+}
+#email, #password, #confirm-password, #newEmail, #newPassword, #newConfirmPassword {
+    padding: 10px;
+    font-size: 20px;
+    font-family: 'Space Grotesk';
+}
+#login-submit, #signup-submit {
+    padding: 10px 20px;
+    font-size: 20px;
     width: auto;
-    height: 10vh;
+    height: 5vh;
+}
+#login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    height: 100vh;
+    gap: 10px;
+    margin: auto;
+}
+#type-switch {
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+/* UNDERLINE ANIM PART COPIED OFF https://www.30secondsofcode.org/css/s/hover-underline-animation/ */
+.underline-anim-white {
+    display: inline-block;
+    position: relative;
+}
+.underline-anim-white::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 3px;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+.underline-anim-white:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+.s-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.add {
+    margin-right: 5vw;
+    height: 50px;
+    width: 200px;
+    font-size: 20px;
+    font-weight: bolder;
+    color: white;
+    font-family: 'Space Grotesk';
+    background-color: #8585ea;
+    border: solid 2px #5151faff;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+.add:hover {
+    transform: scale(1.1);
+}
+.m-card {
+    background-color: white;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: auto;
+    border-radius: 30px;
+}
+.m-name {
+    font-family: 'Space Grotesk';
+    font-size: 20px;
+    font-weight: bolder;
+    margin: 0;
+}
+.m-email {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: bolder;
+    margin: 0;
+}
+.active {
+    border: 3px solid var(--horizons-orange);
+}
+#members {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+}
+#m-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 500px;
+    width: 40%;
+    justify-content: center;
+    overflow-y: scroll;
+}
+#m-info {
+    background-color: white;
+    width: 53%;
+    height: 500px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+#mi-name {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 30px;
+    margin-bottom: 0;
+}
+#mi-email {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+#mip-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 250px;
+    gap: 20px;
+}
+#mip-header {
+    font-family: 'Space Grotesk';
+    font-weight: bolder;
+    font-size: 20px;
+    margin-bottom: 0;
+}
+.mip-card {
+    background-color: rgb(207, 206, 206);
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-radius: 20px;
+}
+.mip-name {
+    margin-top: 20px;
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+.mip-desc {
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    color: rgb(86, 86, 86);
+    
 }
