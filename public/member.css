@@ -93,8 +93,13 @@ html, body{
     gap: 20px;
 }
 
-.cardtitle, .cardesc, .carddate{
+.cardtitle, .carddesc, .carddate{
     margin: 0;
+}
+
+.carddate{
+    border-top: 1px solid black;
+    padding-top: 20px;
 }
 
 .announcement-heading p, .announcement-heading h2{
@@ -121,7 +126,7 @@ html, body{
 .events-grid{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 70px;
+    gap: 40px;
 }
 
 .eventdata{
@@ -181,6 +186,18 @@ html, body{
 .projectdesc{
     margin: 0;
     padding-top: 20px;
+}
+
+.project-card, .announcement-card, .event-card{
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+.project-card:hover, .announcement-card:hover, .event-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 4px rgb(82, 82, 82);
 }
 
 #footer{
