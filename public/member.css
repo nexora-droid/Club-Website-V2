@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+html, body{
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Bricolage Grotesk', sans-serif;
+}
+
+#nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 15px 25px;
+    backdrop-filter: blur(1px);
+    transition: all 0.8s ease;
+    z-index: 1000;
+}
+
+#nav.scrolled{
+    top: 10px;
+    border-radius: 50px;
+    width: calc(100% - 40px);
+    padding: 15px 25px;
+    box-shadow: 0 5px 10px black;
+    margin: 0 auto;
+}
+
+#nav.scrolled #nav-title{
+    font-size: 1.1rem;
+}
+
+#nav-links{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#nav-links a{
+    text-decoration: none;
+    color: #000000;
+}
+
+#nav-title{
+    text-decoration: none;
+    color: #000000;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+#hero{
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    padding: 80px 5vw;
+}
+
+.hero-content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#announcements{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 80px 5vw;
+}
+
+.announcement-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.announcement-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+}
+
+.announcement-card{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cardtitle, .cardesc, .carddate{
+    margin: 0;
+}
+
+.announcement-heading p, .announcement-heading h2{
+    margin: 0;
+}
+
+#events{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 80px 5vw;
+}
+
+.events-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.events-heading h2, .events-heading p{
+    margin: 0;
+}
+
+.events-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 70px;
+}
+
+.eventdata{
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+}
+
+#projects{
+    padding: 80px 5vw;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.projects-grid{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+}
+
+.projects-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.projects-heading h2{
+    margin: 0;
+}
+
+.project-card{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.project-tags{
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.project-title{
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.project-tags p{
+    margin: 0;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 5px 10px;
+}
+
+.projectdesc{
+    margin: 0;
+    padding-top: 20px;
+}
+
+#footer{
+    margin-top: 70px;
+    padding:  25px 0 15px;
+    border-top: 1px solid black;
+}
+
+.footer-wrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footer-main{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 0 30px;
+}
+
+.footerhead{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.footerhead p{
+    margin: 0;
+}
+
+#footerTitle{
+    text-decoration: none;
+    color: #000000;
+    font-family: inherit;
+    font-size: 1.6rem;
+    font-weight: 700;
+}
+
+#homeLink{
+    text-decoration: none;
+    color: black;
+}
+
+.quick-links{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#linkTitle{
+    margin: 0;
+    font-size: 1.2rem;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+#quickLinks{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 6px;
+}
+
+#quickLinks a{
+    text-decoration: none;
+    color: black;
+}
+
+.footerbottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid black;
+    padding: 6px 30px 0;
+}

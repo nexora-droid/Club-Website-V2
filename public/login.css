@@ -173,6 +173,11 @@ body{
     width: 200px;
 }
 
+#loginBtn a{
+    text-decoration: none;
+    color: white;
+}
+
 #noacc{
     font-family: inherit;
     font-weight: 500;
