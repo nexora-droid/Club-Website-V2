@@ -274,11 +274,30 @@
             <form id="signup-form">
                 <input type="text" placeholder="email" id="newEmail" name="newEmail">
                 <input type="password" placeholder="password" id="newPassword" name="newPassword">
+                <p id="warn">6 characters minimum, 1 uppercase, 1 lowercase, and 1 special character</p>
                 <input type="password" placeholder="confirm password" id="newConfirmPassword" name="newConfirmPassword">
+                <p id="warn">Please do not forget this password. <br> If you lose it you will not be able to sign in again.</p>
                 <input type="submit" value="Submit" id="signup-submit">
             </form>
             <p id="type-switch" class="underline-anim-white">New user? Sign Up!</p>
         </div>
+    </div>
+    <div id="pa-menu">
+        <p id="pam-title">Add New Project</p>
+        <form id="pa-form">
+            <div class="paf-group">
+                <label for="p-name">Project Name: </label>
+                <input type="text" name="p-name" id="p-name">
+            </div>
+            <div class="paf-group">
+                <label for="p-tags">Project Tags: </label>
+                <input type="text" name="p-tags" id="p-tags" placeholder="Input multiple values, separate by commas">
+            </div>
+            <div class="paf-group">
+                <label for="p-image">Project Image: </label>
+                <input type="url" name="p-image" id="p-image" placeholder="Enter URL of project image"
+            </div>
+        </form>
     </div>
     <template>
         <div class="card">

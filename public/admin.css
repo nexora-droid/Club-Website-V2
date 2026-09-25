@@ -5,6 +5,12 @@
     --horizons-pink: #F86E95;
     --horizons-blue: #46467C;
 }
+/*
+z-indexes:
+nav menu: 98
+login menu: 99
+add project menu: 97
+*/
 body {
     background-color: #F6EFE1 ;
     margin: 0;
@@ -38,7 +44,7 @@ a {
 #hero {
     background-color: rgba(255, 169, 54, 0.9);
     height: 300px;
-    padding-top: 10px;
+    padding-top: 100px;
 }
 #nav {
     display: flex;
@@ -208,10 +214,13 @@ a {
     width: fit-content;
     height: fit-content;
     gap: 20px;
+    padding-top: 40px;
 }
 #email, #password, #confirm-password, #newEmail, #newPassword, #newConfirmPassword {
     padding: 10px;
     font-size: 20px;
+    border-radius: 10px;
+    border: none;
     font-family: 'Space Grotesk';
 }
 #login-submit, #signup-submit {
@@ -219,6 +228,11 @@ a {
     font-size: 20px;
     width: auto;
     height: 5vh;
+    border-radius: 10px;
+    background-color: #946FFF;
+    color: white;
+    border: 2px solid white;
+    padding-bottom: 5px;
 }
 #login-wrapper {
     display: flex;
@@ -229,6 +243,13 @@ a {
     height: 100vh;
     gap: 10px;
     margin: auto;
+}
+#warn {
+    font-family: 'Space Grotesk';
+    color: #FFCC00;
+    width: 350px;
+    font-weight: bold;
+    font-size: larger;
 }
 #type-switch {
     color: white;
@@ -389,4 +410,48 @@ a {
     font-style: italic;
     color: rgb(207, 206, 206);
     font-family: 'Space Grotesk';
+}
+#pa-menu { 
+    width: 35vw;
+    height: 50vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 97;
+    background: white;
+    border-radius: 20px;
+    border: 2px solid #5151faff;
+    padding: 20px;
+}
+#pam-title {
+    margin: 0;
+    font-family: 'Space Grotesk';  
+    font-weight: bolder;
+    font-size: 30px;
+}
+#pa-form {
+    font-family: 'Space Grotesk';  
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    margin-top: 20px;
+    font-size: 18px;
+}
+.paf-group {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    height: 20px;
+    align-items: center;
+}
+#pa-form input {
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+}
+#pa-form label {
+    width: 35%;
+    height: 100%;
 }
