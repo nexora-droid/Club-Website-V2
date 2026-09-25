@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+html, body{
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+    font-family: inherit;
+}
+
+h1, h2, h3, p{
+    margin: 0;
+    font-family: inherit;
+}
+
+/* settings page */
+#settings{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 60px;
+    margin: 0 auto;
+    padding: 40px 5vw;
+}
+
+#settings-sidebar{
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.settings-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-nav{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#settings-content{
+    min-width: none;
+}
+
+.settings-section{
+    display: none;
+}
+
+.settings-section.active{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.section-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-card{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+    border: 1px solid black;
+}
+
+.settings-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-group p{
+    font-size: 1.2rem;
+}
+
+.settings-group input{
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    outline: none;
+    border: 1px solid #9a9a9a;
+}
+
+.settings-group input:focus{
+    border-color: black;
+}
+
+.profilepic{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+#profilePic{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+
+.savebtn{
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}

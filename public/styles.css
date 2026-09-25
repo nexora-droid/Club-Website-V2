@@ -2,6 +2,7 @@
 
 * {
     box-sizing: border-box;
+    font-family: 'Bricolage Grotesque', sans-serif;
 }
 
 html, body{
@@ -9,7 +10,7 @@ html, body{
     overscroll-behavior: none;
     min-height: 100vh;
     margin: 0;
-    font-family: 'Bricolage Grotesk', sans-serif;
+    font-family: inherit;
     background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0, rgb(119, 119, 119));
 }
 

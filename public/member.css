@@ -9,9 +9,10 @@ html, body{
     overscroll-behavior: none;
     min-height: 100vh;
     margin: 0;
-    font-family: 'Bricolage Grotesk', sans-serif;
+    font-family: 'Bricolage Grotesque', sans-serif;
 }
 
+/* nav */
 #nav{
     display: flex;
     justify-content: space-between;
@@ -55,6 +56,7 @@ html, body{
     font-size: 1.05rem;
 }
 
+/* landing page */
 #hero{
     min-height: 60vh;
     display: flex;
@@ -68,6 +70,7 @@ html, body{
     gap: 10px;
 }
 
+/* announcement section */
 #announcements{
     display: flex;
     flex-direction: column;
@@ -106,6 +109,7 @@ html, body{
     margin: 0;
 }
 
+/* events section */
 #events{
     display: flex;
     flex-direction: column;
@@ -135,6 +139,7 @@ html, body{
     gap: 50px;
 }
 
+/* projects section */
 #projects{
     padding: 80px 5vw;
     display: flex;
@@ -200,6 +205,7 @@ html, body{
     box-shadow: 10px 10px 4px rgb(82, 82, 82);
 }
 
+/* footer */
 #footer{
     margin-top: 70px;
     padding:  25px 0 15px;
