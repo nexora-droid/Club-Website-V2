@@ -138,9 +138,21 @@ async function addProject(req, res) {
     }
 }
 
+async function getProjects(req, res) {
+    const request = await adminService.getAllProjs();
+    if (request.error) {
+        return res.status(404).json({
+            error: request.error,
+            status: 404
+        });
+    }
+    return res.json(request.projects);
+}
+
 module.exports = {
     login,
     signup,
     checkAuth,
-    addProject
+    addProject,
+    getProjects
 };

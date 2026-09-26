@@ -11,5 +11,6 @@ router.get('/', (req, res) => {
 router.post('/login', adminController.login);
 router.post('/signup', adminController.signup);
 router.get('/me', adminController.checkAuth);
-router.post('/projects/add', adminController.addProject)
-module.exports = router
+router.get('/projects', adminController.getProjects);
+router.post('/projects/add', adminController.addProject);
+module.exports = router;

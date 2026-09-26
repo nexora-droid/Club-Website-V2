@@ -62,9 +62,9 @@ async function login(email, password) {
 async function getAllProjs() {
   let {data: projects, error} =  await supabaseAdmin.from('projects').select('*');
   if (error) {
-    return error
+    return error;
   }
-  return projects
+  return {projects};
 }
 //changed settings for indent size
 async function newProject(name, tags, img, desc) {

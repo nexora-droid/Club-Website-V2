@@ -67,4 +67,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	    }
         return splitTags;
     }
+    async function getAllProjects() {
+        const request = await fetch('/admin/projects');
+        const response = await request.json();
+        
+    }
 })
