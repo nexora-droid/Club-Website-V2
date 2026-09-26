@@ -412,8 +412,8 @@ a {
     font-family: 'Space Grotesk';
 }
 #pa-menu { 
-    width: 35vw;
-    height: 50vh;
+    width: 40vw;
+    height: 60vh;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -423,6 +423,8 @@ a {
     border-radius: 20px;
     border: 2px solid #5151faff;
     padding: 20px;
+    overflow-y: scroll;
+    visibility: hidden;
 }
 #pam-title {
     margin: 0;
@@ -446,12 +448,85 @@ a {
     height: 20px;
     align-items: center;
 }
-#pa-form input {
+#pa-form input, textarea {
     width: 100%;
     height: 100%;
     font-size: 18px;
 }
 #pa-form label {
-    width: 35%;
+    width: 40%;
     height: 100%;
+}
+/*
+#img-preview {
+    background-color: lightgray;
+    width: 100%;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}*/
+#p-img-prev {
+    max-width: 60%;
+    height: auto;
+    display: block;
+    align-self: center;
+}
+#paf-special {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+#paf-buttons {
+    height: 50px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: end;
+    gap: 20px;
+}
+#paf-submit, #paf-cancel {
+    height: 100%;
+    width: 100px;
+    border: 2px none;
+    border-radius: 15px;
+    font-size: medium;
+    font-weight: bold;
+    font-family: 'Space Grotesk';
+}
+#paf-submit {
+    background-color: #946FFF;
+    color: white;
+}
+#paf-cancel {
+    background-color: lightgray;
+}
+.slideIn {
+    animation: slideIn 0.5s ease forwards;
+}
+.slideOut {
+    animation: slideOut 0.5s ease forwards;
+}
+@keyframes slideIn {
+    from {
+        transform: translate(-50%, calc(-50% + 50px));
+        opacity: 0;
+        visibility: visible;
+    }
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        visibility: visible;
+    }
+}
+@keyframes slideOut {
+    from {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+        visibility: visible;
+    }
+    to {
+        transform: translate(-50%, calc(-50% + 50px));
+        opacity: 0;
+        visibility: hidden;
+    }
 }

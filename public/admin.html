@@ -295,7 +295,16 @@
             </div>
             <div class="paf-group">
                 <label for="p-image">Project Image: </label>
-                <input type="url" name="p-image" id="p-image" placeholder="Enter URL of project image"
+                <input type="url" name="p-image" id="p-image" placeholder="Enter URL of project image">
+            </div>
+            <img src="https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg" id="p-img-prev">
+            <div id="paf-special">
+                <label for="p-desc">Project Description: </label>
+                <textarea name="p-desc" id="p-desc" placeholder="Enter details about project. Markdown supported" rows="7"></textarea>
+            </div>
+            <div id="paf-buttons">
+                <button id="paf-submit">Submit</button>
+                <button id="paf-cancel">Cancel</button>
             </div>
         </form>
     </div>
@@ -311,5 +320,6 @@
         </div>
     </template>
     <script src="admin.js"></script>
+    <script src="admin_utils.js"></script>
 </body>
 </html>

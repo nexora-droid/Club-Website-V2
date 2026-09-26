@@ -123,8 +123,24 @@ async function checkAuth(req, res) {
     })     
 }   
 
+async function addProject(req, res) {
+    let {name, tags, img, desc} = req.body;
+    const request = await adminService.newProject(name, tags, img, desc);
+    if (request.success) {
+        return {
+            added: true,
+            data: request.data
+        }
+    }
+    return {
+        added: false,
+        error: request.error
+    }
+}
+
 module.exports = {
     login,
     signup,
-    checkAuth
+    checkAuth,
+    addProject
 };

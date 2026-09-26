@@ -66,9 +66,19 @@ async function getAllProjs() {
   }
   return projects
 }
+//changed settings for indent size
+async function newProject(name, tags, img, desc) {
+    const {data, error} = await supabaseAdmin.from('projects').insert({id: 1, name: name, tags: tags, image: img, description: desc}).select();
+    if (!error) {
+        return {success: true, data: data}
+    } else {
+        return {success: false, error: error}
+    }
+}
 
 module.exports = {
   signUp,
   login,
-  getAllProjs
+  getAllProjs,
+  newProject
 }

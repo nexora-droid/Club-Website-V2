@@ -1,3 +1,4 @@
+// login/signup manager + checkauth
 document.addEventListener('DOMContentLoaded', () => {
     const nav = document.getElementById('nav');
     const navTitle = document.getElementById('nav-title');
