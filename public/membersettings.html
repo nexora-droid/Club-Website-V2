@@ -13,6 +13,7 @@
     <div class="main">
         <nav id="nav">
             <a href="member.html">Dashboard</a>
+            <p>NOVA Club</p>
             <a href="index.html">Main Page</a>
         </nav>
 
@@ -41,7 +42,12 @@
                     <div class="settings-card">
                         <div class="profilepic">
                             <img src="https://i.pinimg.com/originals/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg?nii=t" id="profilePic"/>
-                            <button>Change Picture</button>
+                            <div class="profilepic-actions">
+                                <button id="changepicbtn">Change Profile Pic</button>
+                                <button id="removepicbtn">Remove Profile Pic</button>
+                                <input type="file" id="picInput" accept="image/jpeg, image/png, image/webp" hidden>
+                                <p>Upload your new profile picture in the following formats: jpg, png, or webp</p>
+                            </div>
                         </div>
 
                         <div class="settings-group">
@@ -146,5 +152,31 @@
             </div>
         </div>
     </div>
+
+    <div id="cropmain">
+        <div class="cropbox">
+            <div class="crop-header">
+                <div>
+                    <h2>Crop Profile Picture</h2>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab repellendus illo vel quas eos. Dolorem quam pariatur alias, atque voluptas fugit unde earum consectetur odit aperiam nesciunt quisquam laudantium voluptate!</p>
+                </div>
+
+                <button id="closeCropBtn">×</button>
+            </div>
+
+            <div class="croppingarea">
+                <div class="crop-area">
+                    <canvas id="cropCanvas"></canvas>
+                </div>
+
+                <div class="crop-actions">
+                    <button id="cancelCropBtn">Cancel</button>
+                    <button id="applyCropBtn">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="memberscript.js"></script>
 </body>
 </html>
