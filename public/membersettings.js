@@ -34,12 +34,13 @@ const applyCropBtn = document.getElementById("applyCropBtn");
 
 let selectedImage = null;
 let imageURL = null;
+let zoom = 1;
 
 picInput.addEventListener("change", () => {
     const file = picInput.files[0];
     if(!file) return;
 
-    const allowedtypes = ["image/jpeg", "image/png",, "image/webp"];
+    const allowedtypes = ["image/jpeg", "image/png", "image/webp"];
     if(!allowedtypes.includes(file.type)){
         alert("Please upload the accepted formats listed");
         picInput.value = "";
@@ -57,6 +58,10 @@ picInput.addEventListener("change", () => {
     selectedImage = new Image();
 
     selectedImage.onload = () => {
+        zoom = 1;
+        zoomSlider.value = 1;
+        zoomValue.textContent = "1.00x";
+
         drawImageOnCanvas(selectedImage);
         cropMain.classList.add("active");
     };
@@ -64,12 +69,17 @@ picInput.addEventListener("change", () => {
     selectedImage.src = imageURL;
 });
 
-function drawImageOnCanvas(image){
-    if(!image)return;
+function drawImageOnCanvas(){
+    if(!selectedImage)return;
 
-    const cropSize = Math.min(image.naturalWidth, image.naturalHeight);
-    const sourceX = (image.naturalWidth - cropSize)/2;
-    const sourceY = (image.naturalHeight - cropSize)/2;
+    const imageWidth = selectedImage.naturalWidth;
+    const imageHeight = selectedImage.naturalHeight;
+    const cropSize = Math.min(imageWidth, imageHeight);
+
+    const zoomedCropSize = cropSize / zoom;
+
+    const sourceX = (imageWidth - zoomedCropSize)/2;
+    const sourceY = (imageHeight - zoomedCropSize)/2;
 
     cropCanvas.width = 512;
     cropCanvas.height = 512;
@@ -78,7 +88,7 @@ function drawImageOnCanvas(image){
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
 
-    ctx.drawImage(image, sourceX, sourceY, cropSize, cropSize, 0, 0, 512, 512);
+    ctx.drawImage(selectedImage, sourceX, sourceY, zoomedCropSize, zoomedCropSize, 0, 0, 512, 512);
 }
 
 // crop buttons
@@ -116,3 +126,13 @@ removepfpBtn.addEventListener("click", () => {
     pfp.src = defaultpfp;
     picInput.value = "";
 })
+
+//zoom value display
+const zoomSlider = document.getElementById("zoomSlider");
+const zoomValue = document.getElementById("zoomValue");
+
+zoomSlider.addEventListener("input", (event) => {
+    zoom = parseFloat(event.target.value);
+    zoomValue.textContent = `${zoom.toFixed(2)}x`
+    drawImageOnCanvas();
+});
