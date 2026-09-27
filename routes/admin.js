@@ -13,4 +13,6 @@ router.post('/signup', adminController.signup);
 router.get('/me', adminController.checkAuth);
 router.get('/projects', adminController.getProjects);
 router.post('/projects/add', adminController.addProject);
+router.get('/events', adminController.getEvents);
+router.post('/events/add', adminController.addEvents);
 module.exports = router;

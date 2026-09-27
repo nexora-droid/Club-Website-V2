@@ -127,26 +127,50 @@ async function addProject(req, res) {
     let {name, tags, img, desc} = req.body;
     const request = await adminService.newProject(name, tags, img, desc);
     if (request.success) {
-        return {
+        return res.json({
             added: true,
             data: request.data
-        }
+        })
     }
-    return {
+    return res.json({
         added: false,
         error: request.error
-    }
+    })
 }
 
 async function getProjects(req, res) {
     const request = await adminService.getAllProjs();
     if (request.error) {
-        return res.status(404).json({
+        return res.status(500).json({
             error: request.error,
-            status: 404
         });
     }
     return res.json(request.projects);
+}
+
+async function getEvents(req, res) {
+    const request = await adminService.getAllEvents();
+    if (request.error) {
+        return res.status(500).json({
+            error: request.error
+        })
+    }
+    return res.json(request.events);
+}
+
+async function addEvents(req, res) {
+    let {name, status, img, desc} = req.body;
+    const request = await adminService.newEvent(name, status, desc, img);
+    if (request.success) {
+        return res.json({
+            added: true,
+            data: request.data
+        })
+    }
+    return res.json({
+        added: false,
+        error: request.error
+    })
 }
 
 module.exports = {
@@ -154,5 +178,7 @@ module.exports = {
     signup,
     checkAuth,
     addProject,
-    getProjects
+    getProjects,
+    getEvents,
+    addEvents
 };

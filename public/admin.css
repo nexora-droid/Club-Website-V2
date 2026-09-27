@@ -135,7 +135,7 @@ a {
     font-size: 70px;
     color: var(--horizons-blue);
 }
-#projects, .cards {
+#projects, .cards, .e-cards {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -150,7 +150,7 @@ a {
     font-size: 30px;
     margin-left: 5vw;
 }
-.card {
+.card, .e-card {
     background-color: white;
     width: 300px;
     height: auto;
@@ -162,7 +162,7 @@ a {
     flex-direction: column;
     gap: 20px;
 }
-.project-title {
+.project-title, .event-title {
     font-family: 'Space Grotesk';
     font-weight: bold;
     font-size: 25px;
@@ -191,11 +191,27 @@ a {
     padding: 5px 15px;
     border-radius: 20px;
 }
-.project-info {
+.project-info, .event-info {
     margin:0px;
     font-family: 'Space Grotesk';
     font-weight: 700;
     color: rgb(86, 86, 86);
+    width: 300px;
+    word-wrap: break-word;
+}
+.event-status {
+    font-family: 'Space Grotesk';
+    font-weight: 700;
+    color: rgb(86, 86, 86);
+    font-size: 18px;
+}
+.status-active {
+    font-style: italic;
+    color: green;
+}
+.status-ended {
+    font-style: italic;
+    color: red;
 }
 #login {
     position: fixed;
@@ -411,7 +427,7 @@ a {
     color: rgb(207, 206, 206);
     font-family: 'Space Grotesk';
 }
-#pa-menu { 
+#pa-menu, #ea-menu { 
     width: 40vw;
     height: 60vh;
     position: fixed;
@@ -426,22 +442,22 @@ a {
     overflow-y: scroll;
     visibility: hidden;
 }
-#pam-title {
+#pam-title, #eam-title {
     margin: 0;
     font-family: 'Space Grotesk';  
     font-weight: bolder;
     font-size: 30px;
 }
-#pa-form {
+#pa-form, #ea-form {
     font-family: 'Space Grotesk';  
     font-weight: bold;
     display: flex;
     flex-direction: column;
     gap: 40px;
-    margin-top: 20px;
+    margin-top: 40px;
     font-size: 18px;
 }
-.paf-group {
+.paf-group, .eaf-group {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -453,9 +469,34 @@ a {
     height: 100%;
     font-size: 18px;
 }
+#ea-form input, textarea {
+    width: 100%;
+    height: 100%;
+    font-size: 18px;
+}
 #pa-form label {
     width: 40%;
+    height: auto;
+}
+#special {
+    display: flex;
+    flex-direction: row;
+    gap: 300px;
+    height: 20px;
+    align-items: center;
+}
+#special-label {
+    width: 45%;
+}
+.labels {
+    width: 30%;
     height: 100%;
+}
+#ea-form input[type="checkbox"] {
+    width: fit-content;
+    height: fit-content;
+    margin-left: 40px;
+    transform: scale(1.5);
 }
 /*
 #img-preview {
@@ -472,19 +513,31 @@ a {
     display: block;
     align-self: center;
 }
-#paf-special {
+.e-img-prev {
+    max-width: 60%;
+    height: auto;
+    display: block;
+    align-self: center;
+}
+#paf-special, #eaf-special {
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
-#paf-buttons {
+#e-status {
+    font-size: 18px;
+}
+#e-status option {
+    -webkit-padding-start: 10px 20px;
+    padding: 10px 20px;
+}
+#paf-buttons, #eaf-buttons {
     height: 50px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: end;
     gap: 20px;
 }
-#paf-submit, #paf-cancel {
+#paf-submit, #paf-cancel, #eaf-submit, #eaf-cancel {
     height: 100%;
     width: 100px;
     border: 2px none;
@@ -493,11 +546,11 @@ a {
     font-weight: bold;
     font-family: 'Space Grotesk';
 }
-#paf-submit {
+#paf-submit, #eaf-submit {
     background-color: #946FFF;
     color: white;
 }
-#paf-cancel {
+#paf-cancel, #eaf-cancel {
     background-color: lightgray;
 }
 .slideIn {

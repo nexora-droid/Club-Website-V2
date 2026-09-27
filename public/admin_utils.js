@@ -3,6 +3,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
     const projectCancel = document.getElementById('paf-cancel');
     const projectAdd = document.getElementById('p-add');
     const newProjectMenu = document.getElementById('pa-menu');
+    const eventSubmit = document.getElementById('eaf-submit');
+    const eventCancel = document.getElementById('eaf-cancel');
+    const eventAdd = document.getElementById('e-add');
+    const newEventMenu = document.getElementById('ea-menu');
     let authenticated = false;
     projectSubmit.addEventListener('click', (e) => {
         e.preventDefault();
@@ -18,15 +22,39 @@ document.addEventListener('DOMContentLoaded', ()=> {
         const desc = projectDesc.value;
         addProject(name, tags, desc, img);
     })
+    eventSubmit.addEventListener('click', (e)=> {
+        e.preventDefault();
+        newEventMenu.classList.remove('slideIn');
+        newEventMenu.classList.add('slideOut');
+        const eventName = document.getElementById('e-name');
+        const eventStatus = document.getElementById('e-status');
+        const eventDesc = document.getElementById('e-desc');
+        const eventImg = document.getElementById("e-image");
+        const eName = eventName.value;
+        const eStatus = eventStatus.checked;
+        const eImg = eventImg.value;
+        const eDesc = eventDesc.value;
+        addEvent(eName, eStatus, eImg, eDesc);
+    })
     projectCancel.addEventListener('click', (e) => {
         e.preventDefault();
         newProjectMenu.classList.remove('slideIn');
         newProjectMenu.classList.add('slideOut');
     })
+    eventCancel.addEventListener('click', (e) => {
+        e.preventDefault();
+        newEventMenu.classList.remove('slideIn');
+        newEventMenu.classList.add('slideOut');
+    })
     projectAdd.addEventListener('click', (e)=> {
         e.preventDefault();
         newProjectMenu.classList.add('slideIn');
         newProjectMenu.classList.remove('slideOut');
+    })
+    eventAdd.addEventListener('click', (e) => {
+        e.preventDefault();
+        newEventMenu.classList.add('slideIn');
+        newEventMenu.classList.remove('slideOut');
     })
     async function checkAuth() {
         const response = await fetch('/admin/me', {
@@ -41,11 +69,12 @@ document.addEventListener('DOMContentLoaded', ()=> {
         } else {
             authenticated = false;
         }
+        return authenticated;
     }
     async function addProject(name, tags, desc, img) {
-        if (checkAuth()) {
+        if (await checkAuth()) {
             tags = sliceTags(tags);
-            const reqeust = await fetch('/admin/projects/add', {
+            const response = await fetch('/admin/projects/add', {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
@@ -57,6 +86,33 @@ document.addEventListener('DOMContentLoaded', ()=> {
                     desc,
                 })
             })
+            if (!response.ok) {
+                console.error("Failed to add project:", response.status);
+                return;
+            }
+            await populateProjs();
+        }
+    }
+    async function addEvent(name, status, img, desc) {
+        if (await checkAuth()) {
+            const response = await fetch("/admin/events/add", {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    status,
+                    img, 
+                    desc
+                })
+            })
+            if (!response.ok) {
+                console.error('Failed to add event: ', response.status)
+                return;
+            }
+            console.log('Event add response', response);
+            await populateEvents();
         }
     }
     function sliceTags(tags = String) {
@@ -67,9 +123,68 @@ document.addEventListener('DOMContentLoaded', ()=> {
 	    }
         return splitTags;
     }
-    async function getAllProjects() {
-        const request = await fetch('/admin/projects');
+    const projTemplate = document.getElementById('project-template');
+    async function populateProjs() {
+        const request = await fetch('/admin/projects', {
+            cache: 'no-store'
+        });
         const response = await request.json();
-        
+        const projectsDiv = document.querySelector('.cards');
+        projectsDiv.innerHTML = ' ';
+        if (response.length === 0) {
+            const clone = projTemplate.content.cloneNode(true);
+            clone.querySelector(".project-title").textContent = "No Projects yet";
+            clone.querySelector(".project-img").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
+            clone.querySelector(".project-info").textContent = "DB is empty, add project to show here!";
+            projectsDiv.appendChild(clone);
+        } else {
+            for (let i = 0; i < response.length; i++) {
+                const project = response[i];
+                const clone = projTemplate.content.cloneNode(true);
+                clone.querySelector(".project-title").textContent = project.name;
+                clone.querySelector(".project-img").src = project.image;
+                clone.querySelector(".project-info").innerHTML = project.description;
+                if (project.tags.includes("HTML" || project.tags.includes("html"))) {
+                    clone.querySelector(".project-type").innerHTML += "";
+                }
+                projectsDiv.appendChild(clone);
+            }
+        }
     }
+    const eventTemplate = document.getElementById('event-template');
+    async function populateEvents() {
+        const request = await fetch('/admin/events', {
+            cache: 'no-store'
+        });
+        const response = await request.json();
+        const eventsDiv = document.querySelector('.e-cards');
+        eventsDiv.innerHTML = ' ';
+        if (response.length === 0) {
+            const clone = eventTemplate.content.cloneNode(true);
+            clone.querySelector(".event-title").textContent = "No events yet";
+            clone.querySelector(".event-img").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
+            clone.querySelector(".event-info").textContent = "DB is empty, add a new project via Supabase website, or from menu here."
+            clone.querySelector("span").classList.add('status-ended');
+            clone.querySelector("span").textContent = "N/A";
+            eventsDiv.appendChild(clone);
+        } else {
+            for (let i = 0; i < response.length; i++ ) {
+                const event = response[i];
+                const clone = eventTemplate.content.cloneNode(true);
+                clone.querySelector(".event-title").textContent = event.name;
+                clone.querySelector(".event-img").src = event.image || "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg" ;
+                clone.querySelector(".event-info").innerHTML = event.description;
+                if (event.active) {
+                    clone.querySelector("span").classList.add('status-active');
+                    clone.querySelector("span").textContent = "Active";
+                } else {
+                    clone.querySelector("span").classList.add('status-ended');
+                    clone.querySelector("span").textContent = "Ended";
+                }
+                eventsDiv.appendChild(clone);
+            }
+        }
+    }
+    populateProjs();
+    populateEvents();
 })
