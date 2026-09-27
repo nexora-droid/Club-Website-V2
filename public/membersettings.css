@@ -257,7 +257,7 @@ h1, h2, h3, p{
 }
 
 #cropCanvas{
-    display: block;
+    display: none;
     width: 100%;
     aspect-ratio: 1/1;
     height: 100%;
@@ -327,6 +327,23 @@ h1, h2, h3, p{
     border-radius: 0;
     cursor: pointer;
     border: 1px solid white;
+}
+
+.uploadpfp{
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: black;
+}
+
+.uploadpfp svg{
+    width: 30px;
+    height: 30px;
 }
 
 /* account section */

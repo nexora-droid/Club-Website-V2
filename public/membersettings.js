@@ -31,7 +31,11 @@ const ctx = cropCanvas.getContext("2d");
 const closeCropBtn = document.getElementById("closeCropBtn");
 const cancelCropBtn = document.getElementById("cancelCropBtn");
 const applyCropBtn = document.getElementById("applyCropBtn");
+
+const uploadPlaceholder = document.getElementById("uploadPlaceholder");
 const resetZoomBtn = document.getElementById("resetZoomBtn");
+const zoomSlider = document.getElementById("zoomSlider");
+const zoomValue = document.getElementById("zoomValue");
 
 let selectedImage = null;
 let imageURL = null;
@@ -43,6 +47,10 @@ let imageY = 0;
 let isDragging = false;
 let startX = 0;
 let startY = 0;
+
+uploadPlaceholder.addEventListener("click", () => {
+    picInput.click();
+})
 
 picInput.addEventListener("change", () => {
     const file = picInput.files[0];
@@ -73,8 +81,10 @@ picInput.addEventListener("change", () => {
         imageX = 0;
         imageY = 0;
 
-        drawImageOnCanvas(selectedImage);
-        cropMain.classList.add("active");
+        uploadPlaceholder.style.display = "none";
+        cropCanvas.style.display = "block";
+
+        drawImageOnCanvas();
     };
 
     selectedImage.src = imageURL;
@@ -144,7 +154,16 @@ window.addEventListener("mouseup", () => {
 
 // crop buttons
 pfpBtn.addEventListener("click", () => {
-    picInput.click();
+    cropMain.classList.add("active");
+    uploadPlaceholder.style.display = "flex";
+    cropCanvas.style.display = "none";
+
+    selectedImage = null;
+    imageX = 0;
+    imageY = 0;
+    zoom = 1;
+    zoomSlider.value = 1;
+    zoomValue.textContent = "1.00x"
 });
 
 applyCropBtn.addEventListener("click", () => {
@@ -189,9 +208,6 @@ resetZoomBtn.addEventListener("click", () => {
 })
 
 //zoom value display
-const zoomSlider = document.getElementById("zoomSlider");
-const zoomValue = document.getElementById("zoomValue");
-
 zoomSlider.addEventListener("input", (event) => {
     zoom = parseFloat(event.target.value);
     zoomValue.textContent = `${zoom.toFixed(2)}x`
