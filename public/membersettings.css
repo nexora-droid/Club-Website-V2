@@ -1,0 +1,447 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+html, body{
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+    font-family: inherit;
+}
+
+h1, h2, h3, p{
+    margin: 0;
+    font-family: inherit;
+}
+
+/* nav */
+#nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 15px 3vw;
+    z-index: 1000;
+    border-bottom: 1px solid black;
+}
+
+#nav a{
+    text-decoration: none;
+    color: #000;
+    font-weight: 600;
+    transition: transform 0.3s ease;
+}
+
+#nav a:hover{
+    transform: scale(1.05);
+}
+
+#nav a:focus{
+    transform: scale(0.98);
+}
+
+#nav p{
+    font-weight: 500;
+    font-size: 1.3rem;
+}
+
+/* settings page */
+#settings{
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 60px;
+    margin: 0 auto;
+    padding: 40px 5vw;
+}
+
+#settings-sidebar{
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.settings-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-nav{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#settings-content{
+    min-width: none;
+}
+
+.settings-section{
+    display: none;
+}
+
+.settings-section.active{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.section-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section-heading h3{
+    font-size: 3rem;
+}
+
+.settings-card{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+    border: 1px solid black;
+}
+
+.settings-group{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-group p{
+    font-size: 1.2rem;
+}
+
+.settings-group input{
+    padding: 10px 15px;
+    font-size: 0.8rem;
+    outline: none;
+    border: 1px solid #9a9a9a;
+}
+
+.settings-group input:focus{
+    border-color: black;
+}
+
+.settings-link{
+    padding: 10px 20px;
+    background-color: white;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.settings-link:hover{
+    background: #f0f0f0;
+}
+
+.settings-link.active{
+    background: #212121;
+    color: #fff;
+    border-right: 1px solid rgb(154, 154, 154);
+    border-bottom: 1px solid rgb(154, 154, 154);
+    border-left: 1px solid rgb(187, 187, 187);
+    border-top: 1px solid rgb(187, 187, 187);
+}
+
+/* profile section */
+.profilepic{
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    padding: 0 10px 30px 10px;
+    border-bottom: 1px solid black;
+}
+
+.profilepic-actions{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#changepicbtn{
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#removepicbtn{
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#profilePic{
+    height: 200px;
+    width: 200px;
+    border-radius: 100px;
+}
+
+.profilepic-actions p{
+    font-size: 0.8rem;
+}
+
+.savebtn{
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* pfp crop window */
+#cropmain{
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+}
+
+#cropmain.active{
+    display: flex;
+}
+
+.cropbox{
+    width: min(500px, 100%);
+    padding: 20px;
+    background: white;
+    border: 1px solid black;
+}
+
+.crop-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.crop-header h2{
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.crop-header p{
+    color: black;
+    font-size: 0.8rem;
+    margin-top: 10px;
+    line-height: 1.3;
+}
+
+#closeCropBtn{
+    border: none;
+    background: white;
+    font-size: 1.7rem;
+    padding: 0;
+    margin-top: -5px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+}
+
+#closeCropBtn:hover{
+    opacity: 0.7;
+}
+
+.croppingarea{
+    display: grid;
+    grid-template-columns: 1fr 180px;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.crop-area{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    aspect-ratio: 1/1;
+}
+
+#cropCanvas{
+    display: none;
+    width: 100%;
+    aspect-ratio: 1/1;
+    height: 100%;
+    cursor: grab;
+    user-select: none;
+}
+
+.crop-actions{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.crop-actions button{
+    background: none;
+    border: 1px solid black;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 80%;
+}
+
+.zoomcontrol{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.zoomcontrol p{
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+#zoomValue{
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+#zoomSlider{
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    height: 2px;
+    background: #000;
+}
+
+.zoomcontrol input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #000;
+    border-radius: 0;
+    cursor: pointer;
+    border: 1px solid white;
+}
+
+.zoomcontrol input[type="range"]::-moz-range-thumb{
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #000;
+    border-radius: 0;
+    cursor: pointer;
+    border: 1px solid white;
+}
+
+.uploadpfp{
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: black;
+}
+
+.uploadpfp svg{
+    width: 30px;
+    height: 30px;
+}
+
+/* account section */
+.settings-row{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.settings-row button{
+    padding: 15px 10px;
+    background-color: white;
+    font-size: 0.95rem;
+    font-weight: 600;
+    outline: none;
+    border: 1px solid black;
+    transition: all 0.3s ease;
+}
+
+.settings-row button:hover{
+    color: rgb(90, 90, 90);
+}
+
+.settings-row button:focus{
+    box-shadow: 1px 1px 1px rgb(91, 91, 91);
+}
+
+/* notifications section */
+.toggle-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px;
+}
+
+.toggle-row div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.toggle-row h3{
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.toggle-row p{
+    font-size: 0.95rem;
+}
+
+.toggle-row input[type="checkbox"]{
+    display: none;
+}
+
+.toggle{
+    position: relative;
+    width: 50px;
+    height: 25px;
+    border: 1px solid black;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.toggle::before{
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 1.5px;
+    width: 20px;
+    height: 20px;
+    background: black;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.toggle-row input[type="checkbox"]:checked + .toggle{
+    background: black;
+}
+
+.toggle-row input[type="checkbox"]:checked + .toggle::before{
+    background: white;
+    transform: translateX(23px);
+}
