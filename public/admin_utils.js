@@ -7,6 +7,9 @@ document.addEventListener('DOMContentLoaded', ()=> {
     const eventCancel = document.getElementById('eaf-cancel');
     const eventAdd = document.getElementById('e-add');
     const newEventMenu = document.getElementById('ea-menu');
+
+    const projectDelete = document.querySelectorAll('.project-delete');
+    const projectEdit = document.querySelectorAll('.project-edit');
     let authenticated = false;
     projectSubmit.addEventListener('click', (e) => {
         e.preventDefault();
@@ -60,10 +63,10 @@ document.addEventListener('DOMContentLoaded', ()=> {
         const response = await fetch('/admin/me', {
             credentials: "include"
         })
-        console.log("Status:", response.status);
-        console.log("Content-Type:", response.headers.get('content-type'));
+        //console.log("Status:", response.status);
+        //console.log("Content-Type:", response.headers.get('content-type'));
         const result = await response.json();
-        console.log("SERVER RESPONSE:", result);
+        //console.log("SERVER RESPONSE:", result);
         if (result.authenticated) {
             authenticated = true;
         } else {
@@ -84,6 +87,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
                     tags,
                     img,
                     desc,
+                    adding: true
                 })
             })
             if (!response.ok) {
@@ -183,6 +187,88 @@ document.addEventListener('DOMContentLoaded', ()=> {
                 }
                 eventsDiv.appendChild(clone);
             }
+        }
+    }
+    const projectsDiv = document.querySelector('.cards');
+    projectsDiv.addEventListener('click', async (e) => {
+        const deleteButton = e.target.closest(".project-delete");
+        if (!deleteButton) return;
+        if (!await checkAuth()){
+            alert("Oops! Not allowed to perfom action!");
+            return;
+        }
+        const buttonsDiv = deleteButton.parentElement;
+        const card = buttonsDiv.parentElement;
+        const projToDel = card.querySelector(".project-title").textContent;
+        console.log(`projtodelstored ${projToDel}`);
+        let confirmDelete = prompt(`You are deleting ${projToDel}. \nType sudo delete ${projToDel} to confirm`);
+        if (confirmDelete.trim() === `sudo delete ${projToDel}`) {
+            console.log(confirmDelete.trim());
+            if (await deleteProj(projToDel)) {
+                populateProjs();
+            };
+            console.log('del called');
+        } else {
+            alert('Please repeat the action, you mistyped something');
+        }
+    })
+    const eventsDiv = document.querySelector('.e-cards');
+    eventsDiv.addEventListener('click', async (e)=> {
+        const eDeleteButton = e.target.closest(".event-delete");
+        if (!eDeleteButton) return;
+        if (!await checkAuth()){
+            alert("Oops! Not allowed to perfom action!");
+            return;
+        }
+        const eButtonsDiv = eDeleteButton.parentElement;
+        const eCard = eButtonsDiv.parentElement;
+        const eventToDel = eCard.querySelector(".event-title").textContent;
+        console.log(`eventodelstored ${eventToDel}`);
+        let confirmDelete = prompt(`You are deleting ${eventToDel}. \nType sudo delete ${eventToDel} to confirm`);
+        if (confirmDelete.trim() === `sudo delete ${eventToDel}`) {
+            console.log(confirmDelete.trim());
+            if (await eventDel(eventToDel)) {
+                populateEvents();
+            };
+            console.log('del called');
+        } else {
+            alert('Please repeat the action, you mistyped something');
+        }
+    })
+    async function deleteProj(name) {
+        const request = await fetch('/admin/projects/delete', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name
+            }),
+            credentials: 'include'
+        })
+        const response = await request.json();
+        if (response.deleted) {
+            return {deleted: true}
+        } else {
+            console.log(response);
+        }
+    }
+    async function eventDel(name) {
+        const request = await fetch('/admin/events/delete', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name
+            }),
+            credentials: 'include'
+        })
+        const response = await request.json();
+        if (response.deleted) {
+            return {deleted: true}
+        } else {
+            console.log(response);
         }
     }
     populateProjs();

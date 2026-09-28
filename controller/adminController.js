@@ -61,6 +61,60 @@ async function signup(req, res) {
     })
 };
 
+async function requireAuth(req, res, next) {
+    if (!req.cookies) {
+        return res.json({
+            authenticated: false,
+            error: 401,
+            message: "Not logged in"
+        })
+    }
+    const refreshToken = req.cookies.refresh_token;
+    const accessToken = req.cookies.access_token;
+    if (!accessToken && !refreshToken) { 
+        return res.json({
+            authenticated: false,
+            error: 401,
+            message: "Not logged in"
+        })
+    }
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: false
+            }
+        });
+    let data;
+    if (accessToken) {
+        const result = await supabaseClient.auth.getUser(accessToken);
+        data = result.data;
+        if (!result.error && data.user) {
+            req.user = data.user;
+            return next();
+        }
+    }         
+    const refresh = await supabaseClient.auth.refreshSession({
+        refresh_token: refreshToken
+    })
+    if (refresh.error || !refresh.data.session) {
+        return res.status(401).json({
+            authenticated: false
+        })
+    }
+    res.cookie('access_token', refresh.data.session.access_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        maxAge: 3600000
+    })
+    res.cookie('refresh_token', refresh.data.session.refresh_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict'
+    }) 
+    req.user = refresh.data.user
+    next();
+}
+
 async function checkAuth(req, res) {
     console.log('checkauth reached')
     if (!req.cookies) {
@@ -124,7 +178,7 @@ async function checkAuth(req, res) {
 }   
 
 async function addProject(req, res) {
-    let {name, tags, img, desc} = req.body;
+    let {name, tags, img, desc, adding} = req.body;
     const request = await adminService.newProject(name, tags, img, desc);
     if (request.success) {
         return res.json({
@@ -136,6 +190,40 @@ async function addProject(req, res) {
         added: false,
         error: request.error
     })
+}
+
+async function delProject(req, res) {
+    let name = req.body.name;
+    console.log('Request to delete: ', name);
+    const request = await adminService.delProject(name);
+    console.log('Response', request)
+    if (request.deleted === true) {
+        return res.json({
+            deleted: true
+        })
+    } else {
+        return res.json({
+            deleted: false,
+            error: request.error
+        })
+    }
+}
+
+async function delEvent(req, res) {
+    let name = req.body.name;
+    console.log('Request to delete: ', name);
+    const request = await adminService.delEvent(name);
+    console.log('Response', request)
+    if (request.deleted === true) {
+        return res.json({
+            deleted: true
+        })
+    } else {
+        return res.json({
+            deleted: false,
+            error: request.error
+        })
+    }
 }
 
 async function getProjects(req, res) {
@@ -180,5 +268,8 @@ module.exports = {
     addProject,
     getProjects,
     getEvents,
-    addEvents
+    addEvents,
+    requireAuth,
+    delProject,
+    delEvent
 };

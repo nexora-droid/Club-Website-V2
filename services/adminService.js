@@ -93,11 +93,31 @@ async function newEvent(name, status, desc, img) {
     }
 }
 
+async function delProject(name) {
+    const {error} = await supabaseAdmin.from('projects').delete().eq('name', name);
+    if (error) {
+        return {deleted: false, error: error}
+    } else {
+        return {deleted: true};
+    }
+}
+
+async function delEvent(name) {
+    const {error} = await supabaseAdmin.from('events').delete().eq('name', name);
+    if (error) {
+        return {deleted: false, error: error}
+    } else {
+        return {deleted: true};
+    }
+}
+
 module.exports = {
   signUp,
   login,
   getAllProjs,
   newProject,
   getAllEvents,
-  newEvent
+  newEvent,
+  delProject,
+  delEvent
 }
