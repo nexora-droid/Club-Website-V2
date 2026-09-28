@@ -97,6 +97,10 @@ h1, h2, h3, p{
     gap: 10px;
 }
 
+.section-heading h3{
+    font-size: 3rem;
+}
+
 .settings-card{
     display: flex;
     flex-direction: column;
@@ -131,6 +135,19 @@ h1, h2, h3, p{
     background-color: white;
     font-size: 1rem;
     font-weight: 700;
+}
+
+.settings-link:hover{
+    background: #f0f0f0;
+}
+
+.settings-link.active{
+    background: #212121;
+    color: #fff;
+    border-right: 1px solid rgb(154, 154, 154);
+    border-bottom: 1px solid rgb(154, 154, 154);
+    border-left: 1px solid rgb(187, 187, 187);
+    border-top: 1px solid rgb(187, 187, 187);
 }
 
 /* profile section */
@@ -369,4 +386,62 @@ h1, h2, h3, p{
 
 .settings-row button:focus{
     box-shadow: 1px 1px 1px rgb(91, 91, 91);
+}
+
+/* notifications section */
+.toggle-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px;
+}
+
+.toggle-row div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.toggle-row h3{
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.toggle-row p{
+    font-size: 0.95rem;
+}
+
+.toggle-row input[type="checkbox"]{
+    display: none;
+}
+
+.toggle{
+    position: relative;
+    width: 50px;
+    height: 25px;
+    border: 1px solid black;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.toggle::before{
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 1.5px;
+    width: 20px;
+    height: 20px;
+    background: black;
+    transition: all 0.3s ease;
+    border-radius: 20px;
+}
+
+.toggle-row input[type="checkbox"]:checked + .toggle{
+    background: black;
+}
+
+.toggle-row input[type="checkbox"]:checked + .toggle::before{
+    background: white;
+    transform: translateX(23px);
 }
