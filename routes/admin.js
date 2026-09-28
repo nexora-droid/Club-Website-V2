@@ -11,4 +11,10 @@ router.get('/', (req, res) => {
 router.post('/login', adminController.login);
 router.post('/signup', adminController.signup);
 router.get('/me', adminController.checkAuth);
-module.exports = router
+router.get('/projects', adminController.getProjects);
+router.post('/projects/add', adminController.addProject);
+router.get('/events', adminController.getEvents);
+router.post('/events/add', adminController.addEvents);
+router.post('/projects/delete', adminController.requireAuth, adminController.delProject);
+router.post('/events/delete', adminController.requireAuth, adminController.delEvent);
+module.exports = router;
