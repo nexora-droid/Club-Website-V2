@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const adminRoutes = require('./routes/admin');
+const loginRoutes = require('./routes/login');
 const cookieParser = require('cookie-parser');
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser());
@@ -15,5 +16,6 @@ app.get('/', (req, res)=>{
 });
 
 app.use('/admin', adminRoutes);
+app.use('/login', loginRoutes);
 
 app.listen(4000, ()=> console.log('Server running on 4000'));
