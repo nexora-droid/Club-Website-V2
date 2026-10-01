@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Settings</title>
+    <link rel="stylesheet" href="membersettings.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="main">
+        <nav id="nav">
+            <a href="member.html">Dashboard</a>
+            <p>NOVA Club</p>
+            <a href="index.html">Main Page</a>
+        </nav>
+
+        <div id="settings">
+            <div id="settings-sidebar">
+                <div class="settings-heading">
+                    <h1>Member Settings</h1>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus similique voluptatem ipsum beatae minima repellat voluptatum ullam reprehenderit rerum dolor! Commodi doloremque necessitatibus soluta autem aut sint iusto nisi aperiam.</p>
+                </div>
+
+                <div class="settings-nav">
+                    <button class="settings-link" data-section="profile">Profile</button>
+                    <button class="settings-link" data-section="account">Account</button>
+                    <button class="settings-link" data-section="notifications">Notifications</button>
+                    <button class="settings-link" data-section="appearance">Appearance</button>
+                </div>
+            </div>
+
+            <div id="settings-content">
+                <div class="settings-section active" id="profile">
+                    <div class="section-heading">
+                        <h2>Your Profile</h2>
+                        <p>Manage your NOVA Club Profile</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="profilepic">
+                            <img src="https://i.pinimg.com/originals/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg?nii=t" id="profilePic"/>
+                            <div class="profilepic-actions">
+                                <button id="changepicbtn">Change Profile Pic</button>
+                                <button id="removepicbtn">Remove Profile Pic</button>
+                                <input type="file" id="picInput" accept="image/jpeg, image/png, image/webp" hidden>
+                                <p>Upload your new profile picture in the following formats: jpg, png, or webp</p>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <p>Email</p>
+                            <input type="email" id="email" name="email" placeholder="Email">
+                        </div>
+
+                        <div class="settings-group">
+                            <p>Class</p>
+                            <input type="text" id="class" name="class">
+                        </div>
+
+                        <div class="settings-group">
+                            <p>Role</p>
+                            <input type="text" id="role" name="role">
+                        </div>
+
+                        <button class="savebtn">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+
+                <div class="settings-section" id="account">
+                    <div class="section-heading">
+                        <h2>Your Account</h2>
+                        <p>Manage your NOVA Club Account</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-row">
+                            <div>
+                                <h3>Change Password</h3>
+                                <p>Update your NOVA Club Account Password</p>
+                            </div>
+
+                            <button>Change Password</button>
+                        </div>
+
+                        <div class="settings-row">
+                            <div>
+                                <h3>Log Out</h3>
+                                <p>Sign out of your NOVA Club Account</p>
+                            </div>
+                            <button>Log Out</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section" id="notifications">
+                    <div class="section-heading">
+                        <h3>Notifications</h3>
+                        <p>Choose which updates you want to recieve</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="toggle-row">
+                            <div>
+                                <h3>Event Reminders</h3>
+                                <p>Recieve reminders about upcoming NOVA Club Events</p>
+                            </div>
+                            <input type="checkbox" id="eventNotifs"/>
+                            <label for="eventNotifs" class="toggle"></label>
+                        </div>
+
+                        <div class="toggle-row">
+                            <div>
+                                <h3>Announcements</h3>
+                                <p>Get notified when new announcements are posted by NOVA Club</p>
+                            </div>
+                            <input type="checkbox" id="announcementsNotifs"/>
+                            <label for="announcementsNotifs" class="toggle"></label>
+                        </div>
+
+                        <div class="toggle-row">
+                            <div>
+                                <h3>Project Updates</h3>
+                                <p>Recieve updates about your upcoming and current projects</p>
+                            </div>
+                            <input type="checkbox" id="projectNotifs"/>
+                            <label for="projectNotifs" class="toggle"></label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section" id="appearance">
+                    <div class="section-heading">
+                        <h2>Appearance</h2>
+                        <p>Personalise your dashboard based on your preferences</p>
+                    </div>
+
+                    <div class="settings-card">
+                        <div class="settings-row">
+                            <div>
+                                <h3>Theme</h3>
+                            </div>
+
+                            <div id="themeOptions">
+                                <button class="themebtn" data-theme="light">Light</button>
+                                <button class="themebtn" data-theme="dark">Dark</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cropmain">
+        <div class="cropbox">
+            <div class="crop-header">
+                <div>
+                    <h2>Crop Profile Picture</h2>
+                    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ab repellendus illo vel quas eos. Dolorem quam pariatur alias, atque voluptas fugit unde earum consectetur odit aperiam nesciunt quisquam laudantium voluptate!</p>
+                </div>
+
+                <button id="closeCropBtn">×</button>
+            </div>
+
+            <div class="croppingarea">
+                <div class="crop-area">
+                    <div class="uploadpfp" id="uploadPlaceholder">
+                        <svg xmlns="http://w3.org" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" x2="12" y1="3" y2="15" />
+                        </svg>
+
+                        <p>Upload Image</p>
+                    </div>
+
+                    <canvas id="cropCanvas"></canvas>
+                </div>
+
+                <div class="crop-actions">
+                    <div class="zoomcontrol">
+                        <p>Zoom: <span id="zoomValue">1.00x</span></p>
+                        <input type="range" id="zoomSlider" min="1" max="3" step="0.01" value="1">
+                    </div>
+
+                    <button id="cancelCropBtn">Cancel</button>
+                    <button id="resetZoomBtn">Reset</button>
+                    <button id="applyCropBtn">Apply</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="membersettings.js"></script>
+</body>
+</html>
