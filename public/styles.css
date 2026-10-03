@@ -11,13 +11,14 @@ html, body{
     min-height: 100vh;
     margin: 0;
     font-family: inherit;
-    background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0, rgb(119, 119, 119));
+    background: white;
 }
 
 #mainWrapper{
-    padding: 0 20px;
+    padding: 0 5vw;
 }
 
+/* nav */
 #nav{
     display: flex;
     justify-content: space-between;
@@ -25,14 +26,14 @@ html, body{
     position: sticky;
     top: 0;
     padding: 15px 5px;
-    backdrop-filter: blur(1px);
+    backdrop-filter: blur(100px);
     transition: all 0.5s ease;
     z-index: 1000;
 }
 
 #nav.scrolled{
-    top: 10px;
-    width: calc(100% - 40px);
+    top: 20px;
+    width: calc(100% - 20px);
     margin: 0 auto;
     border-radius: 50px;
     padding: 15px 25px;
@@ -84,6 +85,7 @@ html, body{
     transform: scaleX(1);
 }
 
+/* hero */
 #hero{
     display: flex;
     align-items: center;
@@ -129,14 +131,28 @@ html, body{
     box-shadow: 10px 10px 10px rgba(0,0,0,0.25);
 }
 
+/* about */
 #about{
     padding: 80px 0;
     margin: 0 auto;
 }
 
 #about-header{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     text-align: center;
     margin-bottom: 60px;
+}
+
+#about-title{
+    margin: 0;
+    font-size: 2rem;
+}
+
+#about-header p{
+    margin: 0;
+    text-align: justify;
 }
 
 #factCards{
@@ -146,10 +162,8 @@ html, body{
 }
 
 .statcard{
-    background-color: #646363;
     border: 1px solid black;
-    border-radius: 20px;
-    padding: 40px 20px;
+    padding: 40px 10px;
     text-align: center;
     justify-content: center;
     display: flex;
@@ -165,17 +179,18 @@ html, body{
 
 .statnum{
     font-size: 3rem;
-    color: white;
+    color: black;
     margin: 0;
     font-weight: 500;
 }
 
 .statdesc{
     font-size: 1.4rem;
-    color: white;
+    color: black;
     margin: 0;
 }
 
+/* our team */
 #members{
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -183,69 +198,214 @@ html, body{
 }
 
 #teamTitle{
-    padding-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 40px;
+}
+
+#teamTitle h2{
+    margin: 0;
+    font-size: 2rem;
+}
+
+#teamTitle p{
+    margin: 0;
 }
 
 .membercard{
     display: flex;
     flex-direction: column;
-    background: rgb(112, 112, 112);
-    color: white;
-    border-radius: 16px;
-    transition: transform 0.3s ease;
-    box-shadow: 5px 5px 8px #000000;
+    background: none;
+    color: black;
+    transition: all 0.3s ease;
+    gap: 40px;
+    height: 330px;
+    perspective: 1000px;
+    box-shadow: none;
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+}
+
+.membercard-inner{
+    padding: 20px;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+}
+
+.memberfront, .memberback{
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border: 1px solid black;
+    transition: all 0.6s ease;
+}
+
+.memberfront:hover, .memberback:hover{
+    box-shadow: 0 10px 10px rgb(101, 101, 101);
+}
+
+.memberfront{
+    padding: 20px;
+}
+
+.memberback{
+    transform: rotateY(180deg);
+    padding: 20px;
+    justify-content: flex-end;
+}
+
+.membercard img{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.membercard .membername{
+    position: relative;
+    margin: 0;
+    z-index: 1;
+    padding: 0;
+}
+
+.membercard.flipped .membercard-inner{
+    transform: rotateY(180deg);
 }
 
 .membercard:hover{
     transform: translateY(-4px);
+    box-shadow: none;
+}
+
+.memberheader{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .membername{
-    padding-left: 15px;
-    padding-right: 15px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 .role{
-    padding-left: 15px;
-    padding-right: 15px;
+    margin: 0;
 }
 
 .memberdesc{
-    padding-left: 15px;
-    padding-right: 15px;
+    margin: 0;
+}
+
+/* events section */
+#events{
+    padding: 80px 0;
+    margin: 0 auto;
+}
+
+#eventTitle{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 40px;
+}
+
+#events-title{
+    margin: 0;
+    font-size: 2rem;
+}
+
+#eventTitle p{
+    margin: 0;
 }
 
 #event-list{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 30px;
 }
 
 .event-card{
     display: flex;
     flex-direction: column;
+    gap: 30px;
+    border: 1px solid black;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.event-card:hover{
+    transform: translateY(-5px);
+    box-shadow: 0 15px 10px rgb(136, 136, 136);
+}
+
+.event-card div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.event-card h3{
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.event-card p{
+    margin: 0;
 }
 
 /* contact */
-#contact{ 
+.contact-section{
     margin-top: 100px;
+}
+
+.contactdesc{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+#contact-title{
+    margin: 0;
+    font-size: 2rem;
+}
+
+.contactdesc p{
+    margin: 0;
+}
+
+#contact{
     padding: 40px;
-    border-radius: 30px;
     border: 1px solid rgb(87, 87, 87);
+    box-shadow: 0 5px 10px rgb(136, 136, 136);
     backdrop-filter: blur(100px);
-    background-color: #a2a2a2;
-    box-shadow: 0 13px 8px rgba(0, 0, 0, 0.4);
-    transition: transform 0.3s ease;
+    background-color: white;
+    transition: all 0.3s ease;
 }
 
 #contact:hover{
     transform: translateY(-5px);
+    box-shadow: 0 15px 10px rgb(136, 136, 136);
 }
 
 .contact-info{
     display: flex;
     flex-direction: column;
     gap: 40px;
+    justify-content: space-between;
 }
 
 .contact-label{
@@ -273,33 +433,44 @@ html, body{
     margin: 0;
 }
 
-.contactleft{
-    padding-bottom: 35px;
+#locationmap{
+    width: 100%;
+    height: 200px;
+    border: 1px solid black;
+    border-radius: 10px;
+    margin-top: 20px;
 }
 
 .social-links{
     display: flex;
     flex-direction: row;
     gap: 20px;
+    justify-content: space-between;
+    padding-right: 10px;
 }
 
 .social-links a{
     text-decoration: none;
     color: #000000;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover{
+    transform: translateY(-2px) scale(1.05);
 }
 
 .contact-grid{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 80px;
+    gap: 40px;
 }
 
 #contactForm{
     display: flex;
     flex-direction: column;
-    border-radius: 30px;
     padding: 30px 20px;
-    border: 2px solid rgb(125, 125, 125);
+    border: 1px solid rgb(125, 125, 125);
     transition: box-shadow 0.5s ease, border 0.5s ease;
     background-color: rgba(255,255,255,0.2);
     backdrop-filter: blur(40px);
@@ -307,36 +478,30 @@ html, body{
 }
 
 #contactForm:hover{
-    box-shadow: 0 0 20px 5px #2ba4d0be;
-    border: 2px solid #20b3e8;
+    box-shadow: 5px 10px 10px #4e4e4e;
+    border: 1px solid black;
 }
 
 .form-field input{
-    border-radius: 12px;
     padding: 10px;
     border: 1.3px solid rgb(125, 125, 125);
-    box-shadow: inset 4px 4px 10px 0 rgba(0,0,0,0.5), inset -4px -4px 10px 0 rgba(255,255,255,0.5);
     transition: all 0.3s ease;
     font-family: inherit;
     font-size: 1rem;
 }
 
 .form-field textarea{
-    border-radius: 10px;
     padding: 14px;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.5), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
     transition: all 0.3s ease;
     font-family: inherit;
     font-size: 1rem;
 }
 
 .form-field textarea:focus, .form-field input:focus{
+    border: 1px solid black;
     outline: none;
-    border: 1.3px solid #20b3e8;
-    background-color: rgb(255, 249, 249);
     color: rgb(22, 22, 22);
     transform: scaleX(1.01);
-    box-shadow: 0 0 20px 1px #2ba4d0be;
 }
 
 #formtitle{
@@ -358,26 +523,39 @@ html, body{
 
 #contactForm button{
     padding: 15px 0;
-    border-radius: 16px;
-    border: 1px solid black;
-    box-shadow: 5px 7px 16px rgba(15,3,0,0.5), inset 2px 5px 6px rgba(155, 155, 155, 0.9), inset -3px -5px 9px rgba(15,3,0,0.5);
     text-align: center;
     justify-content: center;
-    background-color: #868686;
+    background-color: #000000;
     color: white;
-    font-weight: 600;
+    font-weight: 800;
     font-size: 1rem;
     font-family: inherit;
     transition: box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 #contactForm button:active{
-    box-shadow: inset 8px 8px 10px rgba(29, 29, 29, 0.45), 20px 20px 30px rgba(0,0,0,0.2);
     transform: translateY(4px);
 }
 
 /* sponsor */
 #sponsors{
+    margin: 0;
+}
+
+.sponsor-header{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 40px;
+}
+
+#sponsors-title{
+    margin: 0;
+    font-size: 2rem;
+}
+
+.sponsor-header p{
     margin: 0;
 }
 
@@ -387,20 +565,27 @@ html, body{
     justify-content: space-between;
     gap: 50px;
     padding: 40px;
-    border-radius: 20px;
     border: 1px solid black;
     backdrop-filter: blur(100px);
-    background-color: #a2a2a2;
+    background-color: #ffffff;
+    box-shadow: 0 5px 10px rgb(146, 146, 146);
     transition: all 0.3s ease;
 }
 
 .sponsor-card:hover{
     transform: translateY(-5px);
+    box-shadow: 0 15px 10px rgb(146, 146, 146);
+}
+
+.sponsor-desc{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .sponsor-card h3{
-    margin: 0;
     font-size: 2rem;
+    margin: 0;
 }
 
 .sponsor-card p{
@@ -416,23 +601,33 @@ html, body{
 
 #sponsor-popup{
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(900px, 90vw);
-    max-height: 80vh;
-    display: none;
+    inset: 0;
+    width: minmax(900px, 80vw);
+    height: 100%;
+    max-height: none;
+    transform: none;
+    display: flex;
     align-items: center;
-    gap: 50px;
-    padding: 40px;
-    border-radius: 20px;
-    backdrop-filter: blur(100px);
-    background: #a2a2a2;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.2);
     z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+#sponsor-popup.active{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
 
 .popup-content{
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .popup-content h3{
@@ -445,11 +640,44 @@ html, body{
 }
 
 .sponsor-card-popup{
-    display: flex;
+    position: relative;
+    width: min(900px, 80vw);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 40px;
+    border: 1px solid black;
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    gap: 40px;
     align-items: center;
-    justify-content: space-between;
-    gap: 50px;
+    background: white;
     transition: all 0.3s ease;
+}
+
+.popup-left{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.popup-left a{
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    font-size: 1.2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#sponsor-popup.active .sponsor-card-popup{
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+
+body:has(#sponsor-popup.active) {
+    overflow: hidden;
 }
 
 .sponsor-card-popup img{
@@ -458,14 +686,20 @@ html, body{
 }
 
 #closepopup{
-    outline: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: black;
-    padding: 10px;
-    height: 50px;
-    width: 50px;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 300;
 }
 
 #closepopup p{
