@@ -21,6 +21,38 @@ async function findMeetings() {
     }
 }
 
+async function findEvents() {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('events').select('*').eq("active", true).lte('start_date', today).order('start_date', {ascending: false}).limit(2);
+    if (data && !error) {
+        return {
+            events: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function findProjects(name) {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('projects').select('*').ilike('member', name).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
+    if (data && !error) {
+        return {
+            projects: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
 module.exports = {
-    findMeetings
+    findMeetings,
+    findEvents,
+    findProjects
 }

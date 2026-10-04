@@ -81,8 +81,39 @@ async function getMeetings(req, res) {
     })
 }
 
+async function getEvents(req, res) {
+    const response = await memberService.findEvents();
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.events
+    })
+}
+
+async function getProjects(req, res) {
+    const name = req.query.member;
+    const response = await memberService.findProjects(name);
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.projects
+    })
+}
 
 module.exports = {
     checkAuth,
-    getMeetings
+    getMeetings,
+    getEvents,
+    getMeetings,
+    getProjects
 }
