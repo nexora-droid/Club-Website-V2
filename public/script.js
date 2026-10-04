@@ -24,6 +24,7 @@
             fontFamily: 'Bricolage Grotesque, sans-serif',
             fontWeight: 600,
             fontSize: 100,
+            letterSpacing: -3,
             color: '#000000',
             accentColor: '#000000',
             reach: 180,
@@ -104,7 +105,7 @@
         };
 
         const ensureLayout = () => {
-            const key = `${settings.text}|${width}|${height}|${dpr}|${settings.fontSize}`;
+            const key = `${settings.text}|${width}|${height}|${dpr}|${settings.fontSize}|${settings.letterSpacing}`;
             if (key === layoutKey && view) return;
             layoutKey = key;
 
@@ -116,7 +117,8 @@
             setFont(scratchCtx, size);
             metrics = scratchCtx.measureText(settings.text);
 
-            const textWidth = metrics.width;
+            const tracking = settings.letterSpacing || 0;
+            const textWidth = metrics.width + tracking * (Array.from(settings.text).length-1);
             const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
             const x = (width - textWidth) / 2;
             const baseline = (height - textHeight) / 2 + metrics.actualBoundingBoxAscent;
@@ -131,7 +133,9 @@
                 if (!char.trim()) continue;
 
                 const own = scratchCtx.measureText(char);
-                const gx = x + scratchCtx.measureText(prefix).width - own.width;
+                const prefixWidth = scratchCtx.measureText(prefix).width;
+                const trackingOffset = tracking * (prefix.length - 1);
+                const gx = x + prefixWidth + trackingOffset - own.width;
                 const glyph = {
                     char,
                     x: gx,
@@ -188,7 +192,7 @@
             return best;
         };
 
-        const drawFrame = (index, alpha) => {
+        const drawFrame = (index, alpha, animatedFrame = null) => {
             if (index < 0 || alpha < 0.01) return;
             const glyph = glyphs[index];
 
@@ -196,10 +200,18 @@
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
             const padding = 4;
-            const x1 = glyph.box.x1 + glyph.offset.x - padding;
-            const y1 = glyph.box.y1 + glyph.offset.y - padding;
-            const x2 = glyph.box.x2 + glyph.offset.x + padding;
-            const y2 = glyph.box.y2 + glyph.offset.y + padding;
+
+            const targetBox = animatedFrame || {
+                x1: glyph.box.x1 + glyph.offset.x - padding,
+                y1: glyph.box.y1 + glyph.offset.y - padding,
+                x2: glyph.box.x2 + glyph.offset.x + padding,
+                y2: glyph.box.y2 + glyph.offset.y + padding
+            }
+
+            const x1 = targetBox.x1;
+            const x2 = targetBox.x2;
+            const y1 = targetBox.y1;
+            const y2 = targetBox.y2;
 
             const moved = Math.hypot(glyph.offset.x, glyph.offset.y);
             if (moved > 1){
@@ -291,19 +303,31 @@
                 glyph.offset.y += glyph.velocity.y * dt;
             });
 
-            const focus = dragging >= 0 ? dragging : active ? glyphAt(lens.x, lens.y) : -1;
-            if (focus >= 0){
-                frameIndex = focus;
-                frameAlpha = approach(frameAlpha, 1, dt, 0.1);
-            } else{
-                frameAlpha = approach(frameAlpha, 0, dt, 0.1);
-            }
+            const focus = dragging >= 0 ? dragging : pointer.inside ? glyphAt(pointer.x, pointer.y) : -1;
+            frameIndex = focus;
+            frameAlpha = approach(frameAlpha, focus >= 0 ? 1 : 0, dt, 0.15);
 
             glyphs.forEach((glyph, i) => {
                 const target = i === focus && dragging < 0 ? 1 : 0;
-                glyph.outline = approach(glyph.outline, target, dt, 0.09);
+                glyph.outline = approach(glyph.outline, target, dt, 0.1);
             });
 
+            if (focus >= 0){
+                const targetGlyph = glyphs[focus];
+
+                const targetFrame = {
+                    x1: targetGlyph.box.x1 + targetGlyph.offset.x - 4,
+                    y1: targetGlyph.box.y1 + targetGlyph.offset.y - 4,
+                    x2: targetGlyph.box.x2 + targetGlyph.offset.x + 4,
+                    y2: targetGlyph.box.y2 + targetGlyph.offset.y + 4
+                }
+
+                frame.x1 = approach(frame.x1, targetFrame.x1, dt, 0.1);
+                frame.x2 = approach(frame.x2, targetFrame.x2, dt, 0.1);
+                frame.y1 = approach(frame.y1, targetFrame.y1, dt, 0.1);
+                frame.y2 = approach(frame.y2, targetFrame.y2, dt, 0.1);
+            }
+            
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -326,7 +350,7 @@
                 ctx.globalAlpha = 1;
             });
 
-            drawFrame(frameIndex, frameAlpha);
+            drawFrame(frameIndex, frameAlpha, frame);
             raf = requestAnimationFrame(tick);
         };
 
