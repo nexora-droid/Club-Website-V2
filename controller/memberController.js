@@ -1,0 +1,72 @@
+const { createClient } = require('@supabase/supabase-js');
+const adminService = require('../services/adminService');
+require('dotenv').config();
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
+
+async function checkAuth(req, res) {
+    console.log('checkauth reached')
+    if (!req.cookies) {
+        return res.json({
+            authenticated: false,
+            error: 401,
+            message: "Not logged in"
+        }) 
+    }
+    const refreshToken = req.cookies.refresh_token;
+    const accessToken = req.cookies.access_token;
+    if (!accessToken && !refreshToken) { 
+        return res.json({
+            authenticated: false,
+            error: 401,
+            message: "Not logged in"
+        })
+    }
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: false
+            }
+        });
+    let data;
+    if (accessToken) {
+        const result = await supabaseClient.auth.getUser(accessToken);
+        data = result.data;
+        if (!result.error && data.user) {
+            return res.json({
+                authenticated: true,
+                user: data.user
+            })
+        }
+    }         
+    const refresh = await supabaseClient.auth.refreshSession({
+        refresh_token: refreshToken
+    })
+    if (refresh.error || !refresh.data.session) {
+        return res.status(401).json({
+            authenticated: false
+        })
+    }
+    res.cookie('access_token', refresh.data.session.access_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict',
+        maxAge: 3600000
+    })
+    res.cookie('refresh_token', refresh.data.session.refresh_token, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict'
+    }) 
+    data = {
+        user: refresh.data.user
+    }
+    return res.json({
+        authenticated: true,
+        user: data.user
+    })     
+}   
+
+module.exports = {
+    checkAuth
+}
