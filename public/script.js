@@ -24,7 +24,7 @@
             fontFamily: 'Bricolage Grotesque, sans-serif',
             fontWeight: 600,
             fontSize: 100,
-            verticalOffset: -80,
+            verticalOffset: -90,
             letterSpacing: -3,
             color: '#000000',
             accentColor: '#000000',
@@ -90,7 +90,7 @@
 
             if(outline){
                 c.strokeStyle = settings.color;
-                c.lineWidth = 1.5;
+                c.lineWidth = 2.5;
                 c.setLineDash([4,2]);
                 c.strokeText(glyph.char, glyph.x, view.baseline);
                 c.setLineDash([]);
@@ -526,4 +526,19 @@ document.addEventListener('DOMContentLoaded', () => {
         labels: true,
         specks: 15
     });
+
+    // main page section links centering
+    document.querySelectorAll('#nav a[href^="#"]').forEach(link => {
+        link.addEventListener('click', event => {
+            const target = document.querySelector(link.getAttribute('href'));
+            if(!target) return;
+
+            event.preventDefault();
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            })
+        })
+    })
 });
