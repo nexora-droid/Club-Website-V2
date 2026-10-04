@@ -62,12 +62,52 @@ html, body{
     font-size: 1.05rem;
 }
 
+/* scrolling announcement bar */
+
+#announce-bar {
+    width: 100vw;
+    height: fit-content;
+    padding: 5px;
+    animation-play-state: running;
+    overflow: hidden;
+}
+
+#a-bar-track {
+    display: inline-block;
+    will-change: transform;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation-play-state: running;
+    animation: scroll 40s linear infinite;
+}
+
+.announce-bar-item {
+    display: inline-block;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-left: 20px;
+    margin-right: 0px;
+    font-size: 20px;
+}
+
+#a-bar-track:hover {
+    animation-play-state: paused;
+}
+@keyframes scroll {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
 /* landing page */
 #hero{
     min-height: 40vh;
     display: flex;
     align-items: center;
-    padding: 40px 5vw;
+    padding: 20px 5vw;
 }
 
 .hero-content{

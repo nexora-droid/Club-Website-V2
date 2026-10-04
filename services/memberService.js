@@ -51,8 +51,23 @@ async function findProjects(name) {
     }
 }
 
+async function getAnnouncements() {
+    const {data, error} = await supabase.from('announcements').select('*').order('created_at', {ascending: false}).limit(5);
+    if (data && !error) {
+        return {
+            announcements: data,
+            success: true
+        }
+    } 
+    return {
+        error: error,
+        success: false
+    }
+}
+
 module.exports = {
     findMeetings,
     findEvents,
-    findProjects
+    findProjects,
+    getAnnouncements
 }

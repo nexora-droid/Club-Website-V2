@@ -110,10 +110,25 @@ async function getProjects(req, res) {
     })
 }
 
+async function getAnnouncements(req, res) {
+    const response = await memberService.getAnnouncements();
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.announcements
+    })
+}
+
 module.exports = {
     checkAuth,
     getMeetings,
     getEvents,
     getMeetings,
-    getProjects
+    getProjects,
+    getAnnouncements
 }

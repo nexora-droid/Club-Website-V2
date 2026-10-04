@@ -24,9 +24,10 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     } else {
         window.location.href = "/404";
     }
-    populateAnnouncements();
+    populateMeetings();
     populateEvents();
     populateProjects();
+    populateAnnouncements();
 })
 const mCard1 = document.getElementById('meetingCard1');
 const mCard2 = document.getElementById('meetingCard2');
@@ -35,7 +36,8 @@ const eCard1 = document.getElementById('eventCard1');
 const eCard2 = document.getElementById('eventCard2');
 const pCard1 = document.getElementById('projectCard1');
 const pCard2 = document.getElementById('projectCard2');
-async function populateAnnouncements() {
+const announceTrack = document.getElementById('a-bar-track');
+async function populateMeetings() {
     const request = await fetch('/members/meetings');
     const reply = await request.json();
     if (reply.success) {
@@ -276,23 +278,50 @@ async function populateProjects() {
                 pCard2.querySelector(".project-title").innerHTML = p2Name;
                 pCard1.querySelector(".projectdesc").innerHTML = p1Desc;
                 pCard2.querySelector(".projectdesc").innerHTML = p2Desc;
+                pCard1.querySelector(".project-language").textContent = p1Tags[0];
+                pCard1.querySelector(".project-dev").textContent = p1Tags[1];
+                pCard2.querySelector(".project-language").textContent = p2Tags[0];
+                pCard2.querySelector(".project-dev").textContent = p2Tags[1];
                 break;
             case 1:
                 pCard1.querySelector(".project-title").innerHTML = p1Name;
                 pCard2.querySelector(".project-title").innerHTML = "No project yet!";
                 pCard1.querySelector(".projectdesc").innerHTML = p1Desc;
                 pCard2.querySelector(".projectdesc").innerHTML = "Submit a project for it to show up here, or contact an admin to add an existing project";
+                pCard1.querySelector(".project-language").textContent = p1Tags[0];
+                pCard1.querySelector(".project-dev").textContent = p1Tags[1];
+                pCard2.querySelector(".project-language").textContent = "N/A";
+                pCard2.querySelector(".project-dev").textContent = "N/A";
                 break;
             case 0:
                 pCard1.querySelector(".project-title").innerHTML = "No project yet!";
                 pCard2.querySelector(".project-title").innerHTML = "No project yet!";
                 pCard1.querySelector(".projectdesc").innerHTML = "Submit a project for it to show up here, or contact an admin to add an existing project";
                 pCard2.querySelector(".projectdesc").innerHTML = "Submit a project for it to show up here, or contact an admin to add an existing project";
+                pCard1.querySelector(".project-language").textContent = "N/A";
+                pCard1.querySelector(".project-dev").textContent = "N/A";
+                pCard2.querySelector(".project-language").textContent = "N/A";
+                pCard2.querySelector(".project-dev").textContent = "N/A";
                 break;
             default:
                 break;
         }
     } else {
         alert("Error loading projects: " + reply.error);
+    }
+}
+async function populateAnnouncements() {
+    const request = await fetch('/members/announcements');
+    const response = await request.json();
+    if (response.success) {
+        announceTrack.innerHTML = '';
+        for (let i = 0; i < response.data.length; i++) {
+            const pElement = document.createElement('p');
+            pElement.textContent = " ● " + response.data[i].announcement;
+            pElement.classList.add("announce-bar-item");
+            announceTrack.appendChild(pElement);
+        }
+    } else {
+        alert('Error loading announcements: ' + response.error)
     }
 }
