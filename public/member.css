@@ -148,6 +148,13 @@ html, body{
     gap: 40px;
 }
 
+.eventimg {
+    width: 60%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .eventdata{
     display: flex;
     flex-direction: row;

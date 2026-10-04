@@ -175,6 +175,8 @@ async function populateEvents() {
             const dateObj4 = new Date(e2eDate.replace(/-/g, '\/'));
             e2eDate = dateObj4.toLocaleDateString('en-US', options);
         }
+        const e1Img = reply.data[0]?.image || null;
+        const e2Img = reply.data[1]?.image || null;
         const today = new Date().toISOString().split('T')[0];
         switch (reply.data.length) {
             case 2:
@@ -193,6 +195,7 @@ async function populateEvents() {
                         eCard1.querySelector(".event-status").textContent = e1Status ? "Active" : "Ended";
                     }
                 }
+                eCard1.querySelector(".eventimg").src = e1Img === null ? "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg" : e1Img;
                 eCard2.querySelector(".event-title").textContent = event2;
                 eCard2.querySelector(".eventdesc").textContent = e2Desc;
                 eCard2.querySelector(".event-start-date").textContent = "Started: " + e2sDate;
@@ -208,6 +211,7 @@ async function populateEvents() {
                         eCard2.querySelector(".event-status").textContent = e2Status ? "Active" : "Ended";
                     }
                 }
+                eCard2.querySelector(".eventimg").src = e2Img === null ? "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg" : e2Img;
                 break;
             case 1:
                 eCard1.querySelector(".event-title").textContent = event1;
@@ -225,11 +229,13 @@ async function populateEvents() {
                         eCard1.querySelector(".event-status").textContent = e1Status ? "Active" : "Ended";
                     }
                 }
+                eCard1.querySelector(".eventimg").src = e1Img === null ? "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg" : e1Img;
                 eCard2.querySelector(".event-title").textContent = "No event/workshops!";
                 eCard2.querySelector(".eventdesc").textContent = "Check back later for new workshops!";
                 eCard2.querySelector(".event-start-date").textContent = "Started: N/A";
                 eCard2.querySelector(".event-end-date").textContent = "Ended: N/A";
                 eCard2.querySelector(".event-status").textContent = "N/A";
+                eCard2.querySelector(".eventimg").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
                 break;
             case 0:
                 eCard1.querySelector(".event-title").textContent = "No event/workshops!";
@@ -237,11 +243,13 @@ async function populateEvents() {
                 eCard1.querySelector(".event-start-date").textContent = "Started: N/A";
                 eCard1.querySelector(".event-end-date").textContent = "Ended: N/A";
                 eCard1.querySelector(".event-status").textContent = "N/A";
+                eCard1.querySelector(".eventimg").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
                 eCard2.querySelector(".event-title").textContent = "No event/workshops!";
                 eCard2.querySelector(".eventdesc").textContent = "Check back later for new workshops!";
                 eCard2.querySelector(".event-start-date").textContent = "Started: N/A";
                 eCard2.querySelector(".event-end-date").textContent = "Ended: N/A";
                 eCard2.querySelector(".event-status").textContent = "N/A";
+                eCard2.querySelector(".eventimg").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
                 break;
             default:
                 break;
