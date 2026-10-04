@@ -1,5 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
-const adminService = require('../services/adminService');
+const memberService = require('../services/memberService')
 require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -67,6 +67,22 @@ async function checkAuth(req, res) {
     })     
 }   
 
+async function getMeetings(req, res) {
+    const response = await memberService.findMeetings();
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.meetings
+    })
+}
+
+
 module.exports = {
-    checkAuth
+    checkAuth,
+    getMeetings
 }

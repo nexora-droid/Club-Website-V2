@@ -8,5 +8,6 @@ router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..",  "public", "member.html"));
 })
 router.get('/me', memberController.checkAuth);
+router.get('/meetings', memberController.getMeetings);
 
 module.exports = router;
