@@ -24,6 +24,7 @@
             fontFamily: 'Bricolage Grotesque, sans-serif',
             fontWeight: 600,
             fontSize: 100,
+            verticalOffset: -80,
             letterSpacing: -3,
             color: '#000000',
             accentColor: '#000000',
@@ -121,7 +122,7 @@
             const textWidth = metrics.width + tracking * (Array.from(settings.text).length-1);
             const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
             const x = (width - textWidth) / 2;
-            const baseline = (height - textHeight) / 2 + metrics.actualBoundingBoxAscent;
+            const baseline = (height - textHeight) / 2 + metrics.actualBoundingBoxAscent + settings.verticalOffset;
 
             view = {size, baseline, left: x, right: x + textWidth, top: baseline - metrics.actualBoundingBoxAscent, bottom: baseline + metrics.actualBoundingBoxDescent};
 
@@ -515,7 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // hero title animation
-    TechText('#herotitle h1', {
+    TechText('#hero', {
         text: 'Welcome to NOVA Club',
         fontSize: 100,
         color: '#000000',

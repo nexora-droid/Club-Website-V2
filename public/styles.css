@@ -87,50 +87,64 @@ html, body{
 
 /* hero */
 #hero{
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     min-height: 100vh;
     padding: 40px 20px;
+    overflow: visible;
 }
 
 #herotitle{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: contents;
 }
 
 #herotitle h1{
-    font-size: 4rem;
-    font-weight: 600;
-    margin: 0;
-    position: relative;
-    width: min(900px, 90vw);
-    height: 260px;
-    line-height: 1;
-    color: transparent;
-    overflow: visible;
-    touch-action: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
 }
 
 .tech-text-canvas{
     position: absolute;
     inset: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
     overflow: visible;
     touch-action: none;
+    pointer-events: auto;
     cursor: default;
 }
 
 #herotitle p{
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    top: calc(50% - 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
     font-size: 1.3rem;
     color: #000000;
     margin: 0;
 }
 
 #herotitle a{
+    position: absolute;
+    z-index: 3;
+    pointer-events: auto;
+    top: calc(50% + 55px);
+    left: 50%;
+    transform: translateX(-50%);
     text-decoration: none;
     background-color: black;
     color: #ffffff;
@@ -139,11 +153,12 @@ html, body{
     font-size: 1.2rem;
     border-radius: 50px;
     padding: 10px 20px;
+    pointer-events: auto;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #herotitle a:hover{
-    transform: translateY(-4px) translateX(-2px);
+    transform: translateY(-4px) translateX(-50%);
     box-shadow: 10px 10px 10px rgba(0,0,0,0.25);
 }
 
