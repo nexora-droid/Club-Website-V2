@@ -261,7 +261,7 @@ async function sendMsg(req, res) {
                 "Authorization": `Bearer ${AI_KEY}`
             },
             body: JSON.stringify({
-                model: "deepseek/deepseek-v4-flash",
+                model: "apodex/apodex-1.1-mini:free",
                 messages: [
                     {
                         role: "system",
@@ -290,10 +290,14 @@ async function sendMsg(req, res) {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("AI ERROR:", error);
+        console.error("STATUS:", error.status);
+        console.error("MESSAGE:", error.message);
+        console.error("BODY:", error.response?.data);
 
-        return res.status(500).json({
-            error: "Failed to contact AI"
+        return res.status(error.status || 500).json({
+            success: false,
+            error: error.message
         });
     }
 }

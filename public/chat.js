@@ -6,6 +6,11 @@ const messages = document.getElementById("messages");
 sendBtn.addEventListener('click', async (e)=> {
     e.preventDefault();
     const msg = msgInput.value;
+    msgInput.value = " ";
+    const userNode = userTemplate.content.cloneNode(true);
+    userNode.querySelector(".usermsg").innerHTML = msg;
+    userNode.querySelector(".username").textContent = localStorage.getItem('name');
+    messages.appendChild(userNode);
     const response = await fetch('/members/support/ai', {
         method: 'POST',
         headers: {
@@ -16,10 +21,7 @@ sendBtn.addEventListener('click', async (e)=> {
         })
     })
     const reply = await response.json();
-    const userNode = userTemplate.content.cloneNode(true);
-    userNode.querySelector(".usermsg").textContent = msg;
-    messages.appendChild(userNode);
     const aiNode = aiTemplate.content.cloneNode(true);
-    aiNode.querySelector(".aimsg").textContent = reply.answer;
+    aiNode.querySelector(".aimsg").innerHTML = marked.parse(reply.answer);
     messages.appendChild(aiNode);
 })
