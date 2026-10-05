@@ -65,9 +65,24 @@ async function getAnnouncements() {
     }
 }
 
+async function getUsers() {
+    const {data, error} = await supabase.from('members').select('*');
+    if (data && !error) {
+        return {
+            members: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
 module.exports = {
     findMeetings,
     findEvents,
     findProjects,
-    getAnnouncements
+    getAnnouncements,
+    getUsers
 }

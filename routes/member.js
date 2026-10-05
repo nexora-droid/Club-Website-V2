@@ -12,5 +12,9 @@ router.get('/meetings', memberController.getMeetings);
 router.get('/events', memberController.getEvents);
 router.get('/projects', memberController.getProjects);
 router.get('/announcements', memberController.getAnnouncements);
+router.get('/explore/data', memberController.requireAuth, memberController.getUsers);
 
+router.use((req, res, next)=> {
+    res.status(404).sendFile(path.join(__dirname, '..', 'public', '404.html'));
+})
 module.exports = router;
