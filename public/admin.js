@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loginForm.style.display = 'none';
             signUpForm.style.display = 'flex';
             clicked = true;
-            typeSwitch.textContent = 'Exsisting user? Login!'
+            typeSwitch.textContent = 'Existing user? Login!'
         }
     })
     async function checkAuth() {
@@ -118,4 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
     init();
+
+    // password view buttons
+    
 })
