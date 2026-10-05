@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const memberService = require('../services/memberService');
 require('dotenv').config();
-const {OpenRouter} = require("@openrouter/sdk");
+const {OpenRouter} = await import("@openrouter/sdk");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const AI_KEY = process.env.HCAIKEY;
