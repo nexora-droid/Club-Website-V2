@@ -13,7 +13,11 @@ router.get('/events', memberController.getEvents);
 router.get('/projects', memberController.getProjects);
 router.get('/announcements', memberController.getAnnouncements);
 router.get('/explore/data', memberController.requireAuth, memberController.getUsers);
-
+router.get('/leaderboard', memberController.leaderboard);
+router.get('/support', (req, res)=> {
+    res.sendFile(path.join(__dirname, '..', "public", "chat.html"));
+})
+router.post('/support/ai', memberController.sendMsg);
 router.use((req, res, next)=> {
     res.status(404).sendFile(path.join(__dirname, '..', 'public', '404.html'));
 })

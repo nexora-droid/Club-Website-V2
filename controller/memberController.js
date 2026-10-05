@@ -1,10 +1,14 @@
 const { createClient } = require('@supabase/supabase-js');
 const memberService = require('../services/memberService');
 require('dotenv').config();
+const {OpenRouter} = require("@openrouter/sdk");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
-
-
+const AI_KEY = process.env.HCAIKEY;
+const client = new OpenRouter({
+  apiKey: AI_KEY,
+  serverURL: "https://ai.hackclub.com/proxy/v1",
+});
 async function checkAuth(req, res) {
     console.log('checkauth reached')
     if (!req.cookies) {
@@ -211,6 +215,94 @@ async function getUsers(req, res) {
     })
 }
 
+async function leaderboard(req, res) {
+    const response = await memberService.leaderboard();
+    if (response.error) {
+        return res.json({
+            error: reply.error
+        })
+    }
+    return res.json(response.leaderboard)
+}
+
+// async function sendMsg(req, res) {
+//     const msg = req.body.message;
+//     const response = await client.chat.send({
+//     chatRequest: {
+//         model: "anthropic/claude-opus-5.5",
+//         messages: [
+//             {
+//                 role: 'system',
+//                 content: "You are an extremely friendly assistant to help users with queries about this club website. The Member dashboard can only be accessed after being signed in, and contains info about announcements, upcoming meetings, and the last 2 projects of the logged in user. If the user wants to update a project, or add a new project they should contact an admin or use the support page. Answer other queries based on logical guesses"
+//             },
+//             {
+//                 role: "user",
+//                 content: msg
+//             }
+//         ],
+//         stream: false
+//         }
+//     });
+//     if (response.choices[0].message) {
+//         console.log(response.choices[0].message);
+//         return res.json({
+//             answer: response.choices[0].message.content
+//         });
+//     } else {
+//         return res.json({
+//             error : "Failed to get a response, try again!"
+//         })
+//     }
+// }
+
+async function sendMsg(req, res) {
+    try {
+        const msg = req.body.message;
+
+        const response = await fetch("https://ai.hackclub.com/proxy/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${AI_KEY}`
+            },
+            body: JSON.stringify({
+                model: "deepseek/deepseek-v4-flash",
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are an extremely friendly assistant to help users with queries about this club website. The Member dashboard can only be accessed after being signed in, and contains info about announcements, upcoming meetings, and the last 2 projects of the logged in user. If the user wants to update a project, or add a new project they should contact an admin or use the support page. Answer other queries based on logical guesses."
+                    },
+                    {
+                        role: "user",
+                        content: msg
+                    }
+                ]
+            })
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        if (!response.ok) {
+            return res.status(response.status).json({
+                error: data
+            });
+        }
+
+        return res.json({
+            answer: data.choices[0].message.content
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            error: "Failed to contact AI"
+        });
+    }
+}
+
 module.exports = {
     checkAuth,
     getMeetings,
@@ -219,5 +311,7 @@ module.exports = {
     getProjects,
     getAnnouncements,
     getUsers,
-    requireAuth
+    requireAuth,
+    leaderboard,
+    sendMsg
 }

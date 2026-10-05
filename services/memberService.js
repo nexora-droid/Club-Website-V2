@@ -79,10 +79,27 @@ async function getUsers() {
     }
 }
 
+async function leaderboard() {
+    const {data, error} = await supabase.from('projects').select('*');
+    if (error) {
+        return {error: error};
+    }
+    const counts = {};
+    for (const project of data) {
+        if (!project.member) continue;
+        counts[project.member] = (counts[project.member] || 0) + 1
+    }
+    const leaderboard = Object.entries(counts).map(([member, projects])=> ({
+        member, projects
+    })).sort((a,b) => b.projects - a.projects);
+    return {leaderboard: leaderboard};
+}
+
 module.exports = {
     findMeetings,
     findEvents,
     findProjects,
     getAnnouncements,
-    getUsers
+    getUsers,
+    leaderboard
 }
