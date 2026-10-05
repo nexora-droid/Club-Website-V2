@@ -1,14 +1,9 @@
 const { createClient } = require('@supabase/supabase-js');
 const memberService = require('../services/memberService');
 require('dotenv').config();
-const {OpenRouter} = await import("@openrouter/sdk");
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const AI_KEY = process.env.HCAIKEY;
-const client = new OpenRouter({
-  apiKey: AI_KEY,
-  serverURL: "https://ai.hackclub.com/proxy/v1",
-});
 async function checkAuth(req, res) {
     console.log('checkauth reached')
     if (!req.cookies) {
