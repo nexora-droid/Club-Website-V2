@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Space+Grotesk:wght@300..700&display=swap');
 
+:root {
+    color-scheme: light dark;
+    --white-black: light-dark(white, black);
+    --black-white: light-dark(black, white);
+}
+
 * {
     box-sizing: border-box;
 }
@@ -30,7 +36,7 @@ html, body{
     border-radius: 50px;
     width: calc(100% - 40px);
     padding: 15px 25px;
-    box-shadow: 0 5px 10px black;
+    box-shadow: 0 5px 10px var(--black-white);
     margin: 0 auto;
 }
 
@@ -46,22 +52,62 @@ html, body{
 
 #nav-links a{
     text-decoration: none;
-    color: #000000;
+    color: var(--black-white);
 }
 
 #nav-title{
     text-decoration: none;
-    color: #000000;
+    color: var(--black-white);
     font-weight: 600;
     font-size: 1.05rem;
 }
 
+/* scrolling announcement bar */
+
+#announce-bar {
+    width: 100vw;
+    height: fit-content;
+    padding: 5px;
+    animation-play-state: running;
+    overflow: hidden;
+}
+
+#a-bar-track {
+    display: inline-block;
+    will-change: transform;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation-play-state: running;
+    animation: scroll 40s linear infinite;
+}
+
+.announce-bar-item {
+    display: inline-block;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    margin-left: 20px;
+    margin-right: 0px;
+    font-size: 20px;
+}
+
+#a-bar-track:hover {
+    animation-play-state: paused;
+}
+@keyframes scroll {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
 /* landing page */
 #hero{
-    min-height: 60vh;
+    min-height: 40vh;
     display: flex;
     align-items: center;
-    padding: 80px 5vw;
+    padding: 20px 5vw;
 }
 
 .hero-content{
@@ -75,7 +121,7 @@ html, body{
     display: flex;
     flex-direction: column;
     gap: 50px;
-    padding: 80px 5vw;
+    padding: 40px 5vw;
 }
 
 .announcement-heading{
@@ -96,14 +142,23 @@ html, body{
     gap: 20px;
 }
 
-.cardtitle, .carddesc, .carddate{
+.cardtitle, .carddesc, .carddate, .cardtime{
     margin: 0;
 }
 
-.carddate{
-    border-top: 1px solid black;
+.cardinfo {
+    border-top: 1px solid var(--black-white);
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
     padding-top: 20px;
+    justify-content: space-between;
 }
+
+/*.carddate{
+    border-top: 1px solid var(--black-white);
+    padding-top: 20px;
+}*/
 
 .announcement-heading p, .announcement-heading h2{
     margin: 0;
@@ -114,7 +169,7 @@ html, body{
     display: flex;
     flex-direction: column;
     gap: 50px;
-    padding: 80px 5vw;
+    padding: 40px 5vw;
 }
 
 .events-heading{
@@ -133,10 +188,23 @@ html, body{
     gap: 40px;
 }
 
+.eventimg {
+    width: 60%;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .eventdata{
     display: flex;
     flex-direction: row;
     gap: 50px;
+}
+
+.event-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* projects section */
@@ -183,7 +251,7 @@ html, body{
 
 .project-tags p{
     margin: 0;
-    border: 1px solid black;
+    border: 1px solid var(--black-white);
     border-radius: 20px;
     padding: 5px 10px;
 }
@@ -194,7 +262,7 @@ html, body{
 }
 
 .project-card, .announcement-card, .event-card{
-    border: 1px solid black;
+    border: 1px solid var(--black-white);
     border-radius: 20px;
     padding: 20px;
     transition: all 0.3s;
@@ -209,7 +277,7 @@ html, body{
 #footer{
     margin-top: 70px;
     padding:  25px 0 15px;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--black-white);
 }
 
 .footer-wrapper{
@@ -236,7 +304,7 @@ html, body{
 
 #footerTitle{
     text-decoration: none;
-    color: #000000;
+    color: var(--black-white);
     font-family: inherit;
     font-size: 1.6rem;
     font-weight: 700;
@@ -244,7 +312,7 @@ html, body{
 
 #homeLink{
     text-decoration: none;
-    color: black;
+    color: var(--black-white);
 }
 
 .quick-links{
@@ -268,13 +336,13 @@ html, body{
 
 #quickLinks a{
     text-decoration: none;
-    color: black;
+    color: var(--black-white);
 }
 
 .footerbottom{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid black;
+    border-top: 1px solid --black-white;
     padding: 6px 30px 0;
 }

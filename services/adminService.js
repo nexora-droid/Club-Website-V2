@@ -62,13 +62,62 @@ async function login(email, password) {
 async function getAllProjs() {
   let {data: projects, error} =  await supabaseAdmin.from('projects').select('*');
   if (error) {
-    return error
+    return {error};
   }
-  return projects
+  return {projects};
+}
+//changed settings for indent size
+async function newProject(name, tags, img, desc) {
+    const {data, error} = await supabaseAdmin.from('projects').insert({name: name, tags: tags, image: img, description: desc}).select();
+    if (!error) {
+        return {success: true, data: data}
+    } else {
+        return {success: false, error: error}
+    }
+}
+
+async function getAllEvents() {
+    let {data: events, error } = await supabaseAdmin.from('events').select('*');
+    if (error) {
+        return {error};
+    }
+    return {events};
+}
+
+async function newEvent(name, status, desc, img) {
+    const {data, error} = await supabaseAdmin.from('events').insert({name: name, active: status, description: desc, image: img}).select();
+    if (!error) {
+        return {success: true, data: data}
+    } else {
+        return {success: false, error: error}
+    }
+}
+
+async function delProject(name) {
+    const {error} = await supabaseAdmin.from('projects').delete().eq('name', name);
+    if (error) {
+        return {deleted: false, error: error}
+    } else {
+        return {deleted: true};
+    }
+}
+
+async function delEvent(name) {
+    const {error} = await supabaseAdmin.from('events').delete().eq('name', name);
+    if (error) {
+        return {deleted: false, error: error}
+    } else {
+        return {deleted: true};
+    }
 }
 
 module.exports = {
   signUp,
   login,
-  getAllProjs
+  getAllProjs,
+  newProject,
+  getAllEvents,
+  newEvent,
+  delProject,
+  delEvent
 }

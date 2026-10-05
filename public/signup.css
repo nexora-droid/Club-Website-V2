@@ -189,3 +189,10 @@ body{
 #noacc a:hover{
     text-decoration: underline;
 }
+
+#warn {
+    color: red;
+    font-weight: bolder;
+    font-size: larger;
+    margin-bottom: 0;
+}

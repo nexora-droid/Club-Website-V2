@@ -1,0 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
+:root {
+    color-scheme: light dark;
+    --white-black: light-dark(white, black);
+    --black-white: light-dark(black, white);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body{
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    padding-bottom: 50px;
+}
+
+/* nav */
+#nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    padding: 15px 25px;
+    backdrop-filter: blur(1px);
+    transition: all 0.8s ease;
+    z-index: 1000;
+}
+
+#nav.scrolled{
+    top: 10px;
+    border-radius: 50px;
+    width: calc(100% - 40px);
+    padding: 15px 25px;
+    box-shadow: 0 5px 10px var(--black-white);
+    margin: 0 auto;
+}
+
+#nav.scrolled #nav-title{
+    font-size: 1.1rem;
+}
+
+#nav-links{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#nav-links a{
+    text-decoration: none;
+    color: var(--black-white);
+}
+
+#nav-title{
+    text-decoration: none;
+    color: var(--black-white);
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+#hero{
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    padding: 20px 5vw;
+}
+
+.hero-content{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#chat {
+    align-self: center;
+}
+
+#messages {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    gap: 40px;
+    width: 50vw;
+    align-items: center;
+    margin: 0 auto;
+    height: 60vh;
+}
+
+.aimsgcard {
+    background-color: lightgray;
+    width: fit-content;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 20px;
+    align-self: flex-start;
+}
+
+.ainame {
+    color: rgb(84, 83, 83);
+}
+
+.usermsgcard {
+    background-color: rgb(108, 108, 240);
+    width: fit-content;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 0px;
+    padding: 20px;
+    color: white;
+    align-self: flex-end;
+}
+
+#sendMsg {
+    display: flex;
+    gap: 10px;
+    width: 50vw;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+#msgText {
+    width: 85%;
+    padding: 20px;
+    font-size: medium;
+    border-radius: 20px;
+    border: 2px solid var(--black-white);
+}
+
+#sendBtn {
+    background-color: rgb(108, 108, 240);
+    padding: 5px;
+    color: white;
+    font-family: 'Space Grotesk';
+    font-size: medium;
+    border-radius: 20px;
+    border: none;
+    width: 15%;
+    padding: 20px;
+}

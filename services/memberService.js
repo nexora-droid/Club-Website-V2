@@ -1,0 +1,105 @@
+const {createClient} = require('@supabase/supabase-js');
+require('dotenv').config();
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY);
+
+async function findMeetings() {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('meetings').select('*').gte('date', today).order('date', {ascending: true}).limit(3);
+    if (data && !error) {
+        return {
+            meetings: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function findEvents() {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('events').select('*').eq("active", true).lte('start_date', today).order('start_date', {ascending: false}).limit(2);
+    if (data && !error) {
+        return {
+            events: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function findProjects(name) {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('projects').select('*').ilike('member', name).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
+    if (data && !error) {
+        return {
+            projects: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function getAnnouncements() {
+    const {data, error} = await supabase.from('announcements').select('*').order('created_at', {ascending: false}).limit(5);
+    if (data && !error) {
+        return {
+            announcements: data,
+            success: true
+        }
+    } 
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function getUsers() {
+    const {data, error} = await supabase.from('members').select('*');
+    if (data && !error) {
+        return {
+            members: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function leaderboard() {
+    const {data, error} = await supabase.from('projects').select('*');
+    if (error) {
+        return {error: error};
+    }
+    const counts = {};
+    for (const project of data) {
+        if (!project.member) continue;
+        counts[project.member] = (counts[project.member] || 0) + 1
+    }
+    const leaderboard = Object.entries(counts).map(([member, projects])=> ({
+        member, projects
+    })).sort((a,b) => b.projects - a.projects);
+    return {leaderboard: leaderboard};
+}
+
+module.exports = {
+    findMeetings,
+    findEvents,
+    findProjects,
+    getAnnouncements,
+    getUsers,
+    leaderboard
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Support</title>
+    <link rel="stylesheet" href="/chat.css">
+</head>
+<body>
+    <div class="main">
+        <div id="nav">
+            <a href="#hero" id="nav-title">Explore Members</a>
+            <div id="nav-links">
+                <a href="/">Home Page</a>
+                <a href="/members">Dashboard</a>
+            </div>
+        </div>
+        <div id="hero">
+            <h1>Chat with NOVA Support</h1>
+        </div>
+        <div id="chat">
+            <div id="messages">
+                <div class="aimsgcard">
+                    <p class="ainame">Claude Opus 5.5</p>
+                    <p class="aimsg">Hi! How can I help you today?</p>
+                </div>
+                <div class="usermsgcard">
+                    <p class="username">Ashlesh</p>
+                    <p class="usermsg">Hi! What is this Website for?</p>
+                </div>
+            </div>
+            <form id="sendMsg">
+                <input type="text" placeholder="Send a new message to Claude" id="msgText">
+                <button type="submit" id="sendBtn">Send</button>
+            </form>
+        </div>
+    </div>
+    <template id="aimsgtemplate">
+        <div class="aimsgcard">
+            <p class="ainame">Claude Opus 5.5</p>
+            <p class="aimsg">Hi! How can I help you today?</p>
+        </div>
+    </template>
+    <template id="usermsgtemplate">
+        <div class="usermsgcard">
+            <p class="username">Ashlesh</p>
+            <p class="usermsg">Hi! What is this Website for?</p>
+        </div>
+    </template>
+    <script src="/chat.js"></script>
+</body>
+</html>
