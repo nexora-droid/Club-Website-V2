@@ -261,9 +261,9 @@ async function addEvents(req, res) {
     })
 }
 
-async function sendMsg(req, res) {
-    const {subject, email, message} = req.body;
-}
+// async function sendMsg(req, res) {
+//     const {subject, email, message} = req.body;
+// }
 
 module.exports = {
     login,
