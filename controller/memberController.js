@@ -261,7 +261,7 @@ async function sendMsg(req, res) {
                 "Authorization": `Bearer ${AI_KEY}`
             },
             body: JSON.stringify({
-                model: "apodex/apodex-1.1-mini:free",
+                model: "google/gemini-3.6-flash",
                 messages: [
                     {
                         role: "system",
