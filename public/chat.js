@@ -11,6 +11,10 @@ sendBtn.addEventListener('click', async (e)=> {
     userNode.querySelector(".usermsg").innerHTML = msg;
     userNode.querySelector(".username").textContent = localStorage.getItem('name');
     messages.appendChild(userNode);
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: 'smooth'
+    })
     const response = await fetch('/members/support/ai', {
         method: 'POST',
         headers: {
