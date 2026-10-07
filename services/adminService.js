@@ -8,7 +8,7 @@ const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY);
 
-async function signUp(email, password) {
+async function signUp(name, email, password) {
   const { data: alData , error: alError} = await supabaseAdmin.from('admin_allowlist').select('email').eq('email', email).maybeSingle();
   if (alError) {
     return {
@@ -26,8 +26,12 @@ async function signUp(email, password) {
     email: email,
     password: password,
     options: {
-        emailRedirectTo: 'http://localhost:4000/admin'
-    }
+        emailRedirectTo: 'http://localhost:4000/admin',
+        data : {
+            display_name: name
+        }
+    },
+    
   })
   return { 
     allowed: 'True', 

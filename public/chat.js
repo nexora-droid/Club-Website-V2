@@ -28,4 +28,8 @@ sendBtn.addEventListener('click', async (e)=> {
     const aiNode = aiTemplate.content.cloneNode(true);
     aiNode.querySelector(".aimsg").innerHTML = marked.parse(reply.answer);
     messages.appendChild(aiNode);
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: 'smooth'
+    })
 })

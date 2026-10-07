@@ -32,8 +32,8 @@ async function login(req, res) {
 };
 
 async function signup(req, res) {
-    const {email, password} = req.body;
-    const result = await adminService.signUp(email, password);
+    const {name, email, password} = req.body;
+    const result = await adminService.signUp(name, email, password);
     if (!result.allowed) {
         return res.json({
             auth: 'Error',
