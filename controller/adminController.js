@@ -3,6 +3,8 @@ const adminService = require('../services/adminService');
 require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const nodemailer = require('nodemailer');
+const crypto = require('node:crypto');
 async function login(req, res) {
     const {email, password} = req.body;
     const result = await adminService.login(email, password);
@@ -261,9 +263,38 @@ async function addEvents(req, res) {
     })
 }
 
-// async function sendMsg(req, res) {
-//     const {subject, email, message} = req.body;
-// }
+async function sendMsg(req, res) {
+    console.log(req.body);
+    const subject = req.body.subject; 
+    const email = req.body.email;
+    const message = req.body.message;
+    // use slice(15) to get only HEX part of code.
+    const ticketId = `CLUB-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.CLUB_EMAIL,
+            pass: process.env.CLUB_APP_PASS
+        }
+    });
+    const mailOptions = {
+        from: process.env.CLUB_EMAIL,
+        to: process.env.CLUB_EMAIL,
+        subject: `Ticket - ${ticketId.slice(14)}`,
+        text: `A new ticket has popped up! \nTicket ID: ${ticketId} \nSender: ${email} \nSubject: ${subject} \nTicket Content: \n${message} \n`,
+        replyTo: email
+    }
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        return res.json({
+            reply: info,
+        })
+    } catch (err) {
+        return res.json({
+            error: err
+        })
+    }
+}
 
 module.exports = {
     login,
@@ -275,5 +306,6 @@ module.exports = {
     addEvents,
     requireAuth,
     delProject,
-    delEvent
+    delEvent,
+    sendMsg
 };

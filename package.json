@@ -4,7 +4,9 @@
     "@openrouter/sdk": "^1.4.21",
     "@supabase/supabase-js": "^2.116.0",
     "cookie-parser": "^1.4.7",
+    "crypto": "^1.0.1",
     "dotenv": "^18.0.1",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "nodemailer": "^10.0.15"
   }
 }
