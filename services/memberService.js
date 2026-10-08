@@ -36,9 +36,9 @@ async function findEvents() {
     }
 }
 
-async function findProjects(name) {
+async function findProjects(email) {
     const today = new Date().toISOString().split('T')[0];
-    const {data, error} = await supabase.from('projects').select('*').ilike('member', name).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
+    const {data, error} = await supabase.from('projects').select('*').ilike('email', email).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
     if (data && !error) {
         return {
             projects: data,

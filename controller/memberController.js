@@ -168,8 +168,8 @@ async function getEvents(req, res) {
 }
 
 async function getProjects(req, res) {
-    const name = req.query.member;
-    const response = await memberService.findProjects(name);
+    const email = req.query.email;
+    const response = await memberService.findProjects(email);
     if (response.error) {
         return res.json({
             success: false,
