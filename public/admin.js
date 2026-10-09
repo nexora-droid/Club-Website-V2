@@ -119,4 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     // password view buttons
+    const pwdviewbtn = document.querySelector(".passwordViewBtn");
+    const eyeopen = document.querySelector(".eyeopen");
+    const eyeclosed = document.querySelector(".eyeclosed");
+    const inputPwd = document.getElementById('password');
+
+    pwdviewbtn.addEventListener('click', () => {
+        if(inputPwd.type === 'password'){
+            inputPwd.type = 'text';
+            eyeclosed.style.display = 'block';
+            eyeopen.style.display = 'none';
+        } else{
+            inputPwd.type = 'password';
+            eyeclosed.style.display = 'none';
+            eyeopen.style.display = 'block';
+        }
+    });
 })

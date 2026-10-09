@@ -85,7 +85,7 @@ html, body{
 #login{
     position: fixed;
     inset: 0;
-    z-index: 99;
+    z-index: 3000;
     display: grid;
     grid-template-columns: 45% 55%;
     width: 100vw;
@@ -93,7 +93,6 @@ html, body{
     background: linear-gradient(90deg, rgb(119, 119, 119), #c0c0c0);
     font-family: 'Bricolage Grotesque', sans-serif;
     overflow: hidden;
-    display: none;
 }
 
 #login-wrapper{
@@ -234,6 +233,27 @@ html, body{
 
 .formfield:has(input:focus){
     outline: 2px solid #000000;
+}
+
+.backbtn{
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    color: #000000;
+    transition: all 0.3s ease;
+}
+
+.backbtn svg{
+    width: 30px;
+    height: 30px;
+}
+
+.backbtn:hover{
+    transform: scale(1.15);
+}
+
+.backbtn:active{
+    transform: scale(0.95);
 }
 
 /* hero */
