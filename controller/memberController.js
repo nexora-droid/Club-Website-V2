@@ -66,23 +66,22 @@ async function checkAuth(req, res) {
     })     
 }
 
-async function getAuth(req, res) {
-    console.log('checkauth reached')
+async function requireAuth(req, res, next) {
     if (!req.cookies) {
-        return {
+        return res.json({
             authenticated: false,
             error: 401,
             message: "Not logged in"
-        }
+        })
     }
     const refreshToken = req.cookies.refresh_token;
     const accessToken = req.cookies.access_token;
     if (!accessToken && !refreshToken) { 
-        return {
+        return res.json({
             authenticated: false,
             error: 401,
             message: "Not logged in"
-        }
+        })
     }
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
@@ -94,19 +93,18 @@ async function getAuth(req, res) {
         const result = await supabaseClient.auth.getUser(accessToken);
         data = result.data;
         if (!result.error && data.user) {
-            return {
-                authenticated: true,
-                user: data.user
-            }
+            req.user = data.user;
+            req.accessToken = accessToken;
+            return next();
         }
     }         
     const refresh = await supabaseClient.auth.refreshSession({
         refresh_token: refreshToken
     })
     if (refresh.error || !refresh.data.session) {
-        return {
+        return res.status(401).json({
             authenticated: false
-        }
+        })
     }
     res.cookie('access_token', refresh.data.session.access_token, {
         httpOnly: true,
@@ -119,23 +117,8 @@ async function getAuth(req, res) {
         secure: false,
         sameSite: 'strict'
     }) 
-    data = {
-        user: refresh.data.user
-    }
-    return {
-        authenticated: true,
-        user: data.user
-    }
-}
-
-async function requireAuth(req, res, next) {
-    const auth = await getAuth(req, res); // your actual auth-checking logic
-
-    if (!auth.authenticated) {
-        return res.redirect('/404');
-    }
-
-    req.user = auth.user;
+    req.user = refresh.data.user;
+    req.accessToken = refresh.data.session.access_token;
     next();
 }
 
@@ -302,6 +285,54 @@ async function sendMsg(req, res) {
     }
 }
 
+async function addPhoto(req, res) {
+    console.log("BODY:", req.body);
+    console.log("IMAGE:", req.body.image?.slice(0, 30));
+    const data_url = req.body.image;
+    const uuid = req.user.id;
+    const response = await memberService.addPhoto(data_url, uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        });
+    }
+    return res.json({
+        data: response.data
+    });
+}
+
+async function getPhoto(req, res) {
+    const uuid = req.user.id;
+    const response = await memberService.getPhoto(uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            exists: response.exists,
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        exists: true,
+        data: response.data
+    })
+}
+
+async function deletePhoto(req, res) {
+    const uuid = req.user.id;
+    const response = await memberService.deletePhoto(uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        message: 'Success',
+        success: true
+    })
+}
+
 module.exports = {
     checkAuth,
     getMeetings,
@@ -312,5 +343,8 @@ module.exports = {
     getUsers,
     requireAuth,
     leaderboard,
-    sendMsg
+    sendMsg,
+    addPhoto,
+    getPhoto,
+    deletePhoto
 }

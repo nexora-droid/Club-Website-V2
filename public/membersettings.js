@@ -166,11 +166,33 @@ pfpBtn.addEventListener("click", () => {
     zoomValue.textContent = "1.00x"
 });
 
-applyCropBtn.addEventListener("click", () => {
-    const croppedImage = cropCanvas.toDataURL("image/jpeg", 0.95);
+applyCropBtn.addEventListener("click", async (e) => {
+    const croppedImage = cropCanvas.toDataURL("image/webp", 0.7);
     pfp.src = croppedImage;
     closeCrop();
+    const response = await fetch('/members/photos/upload', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            image: croppedImage,
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    console.log(reply);
 });
+
+document.addEventListener('DOMContentLoaded', async (e) => {
+    const response = await fetch('/members/photos/mine', {
+        credentials: 'include'
+    });
+    const reply = await response.json();
+    if (reply.exists) {
+        pfp.src
+    }
+})  
 
 function closeCrop(){
     cropMain.classList.remove("active");
@@ -192,9 +214,18 @@ cancelCropBtn.addEventListener("click", () => {
     closeCrop();
 });
 
-removepfpBtn.addEventListener("click", () => {
-    pfp.src = defaultpfp;
-    picInput.value = "";
+removepfpBtn.addEventListener("click", async (e) => {
+    const response = await fetch('/members/photos/delete', {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.error) {
+        alert('Error deleting photo: ' + reply.message);
+    } else {
+        pfp.src = defaultpfp;
+        picInput.value = "";
+    }
 })
 
 resetZoomBtn.addEventListener("click", () => {

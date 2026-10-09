@@ -95,11 +95,76 @@ async function leaderboard() {
     return {leaderboard: leaderboard};
 }
 
+async function addPhoto(url, uuid, accessToken) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    });
+    const base64 = url.includes(',')? url.split(',')[1]: url;
+    const buffer = Buffer.from(base64, "base64");
+    const {data, error} = await userSupabase.storage.from("avatars").upload(filename, buffer, {
+        contentType: 'image/webp'
+    });
+    if (error) {
+        return {error};
+    }
+    return {data};
+}
+
+async function getPhoto(uuid, access_token) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        }
+    })
+    const {data: exists, error} = await userSupabase.storage.from('avatars').exists(filename);
+    if (exists) {
+        const {data, error} = await userSupabase.storage.from('avatars').getPublicUrl(filename);
+        if (data && !error) {
+            return {exists: true, data: data}
+        }
+        return {error}
+    }
+    return {
+        error: error,
+        exists: false
+    }
+}
+
+async function deletePhoto(uuid, access_token) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        }
+    })
+    const {data, error} = await userSupabase.storage.from('avatars').remove([filename]);
+    console.log('Data', data);
+    console.log('Filename', filename);
+    console.log("error " + error)
+    if (data && !error) {
+        return {data}
+    }
+    return {error}
+}
+
 module.exports = {
     findMeetings,
     findEvents,
     findProjects,
     getAnnouncements,
     getUsers,
-    leaderboard
+    leaderboard,
+    addPhoto,
+    getPhoto,
+    deletePhoto
 }
