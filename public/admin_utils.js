@@ -1,13 +1,13 @@
 document.addEventListener('DOMContentLoaded', ()=> {
     const projectSubmit = document.getElementById('paf-submit');
     const projectCancel = document.getElementById('paf-cancel');
-    const projectAdd = document.getElementById('p-add');
+    const projectAdd = document.getElementById('project-add');
     const newProjectMenu = document.getElementById('pa-menu');
     const eventSubmit = document.getElementById('eaf-submit');
     const eventCancel = document.getElementById('eaf-cancel');
     const eventAdd = document.getElementById('e-add');
     const newEventMenu = document.getElementById('ea-menu');
-
+    const projectsDiv = document.querySelector('.project-grid');
     const projectDelete = document.querySelectorAll('.project-delete');
     const projectEdit = document.querySelectorAll('.project-edit');
     let authenticated = false;
@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
             cache: 'no-store'
         });
         const response = await request.json();
-        const projectsDiv = document.querySelector('.cards');
         projectsDiv.innerHTML = ' ';
         if (response.length === 0) {
             const clone = projTemplate.content.cloneNode(true);
@@ -189,7 +188,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
             }
         }
     }
-    const projectsDiv = document.querySelector('.cards');
     projectsDiv.addEventListener('click', async (e) => {
         const deleteButton = e.target.closest(".project-delete");
         if (!deleteButton) return;
