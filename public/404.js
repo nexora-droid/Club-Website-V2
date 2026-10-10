@@ -2,6 +2,12 @@
 const canvas = document.getElementById('runner');
 const ctx = canvas.getContext('2d');
 const groundY = 255;
+let astronautY = groundY - 60;
+let velocityY = 0;
+const gravity = 0.6;
+const jumpPower = -12;
+const astronautGroundY = groundY - 60;
+let isGrounded = true;
 
 // background design
 function drawStars(){
@@ -105,9 +111,34 @@ function drawScene(){
 
     drawStars();
     drawCraters();
-    drawAstronaut(100, groundY - 60);
+    drawAstronaut(100, astronautY);
     drawAlien(340, groundY - 40);
     drawAlien(590, groundY - 40);
 }
 
-drawScene();
+// movement controls
+function jump(event){
+    if(event.code === 'Space' && isGrounded){
+        event.preventDefault();
+        velocityY = jumpPower;
+        isGrounded = false;
+    }
+}
+
+document.addEventListener('keydown', jump);
+
+function gameLoop(){
+    velocityY += gravity;
+    astronautY += velocityY;
+
+    if (astronautY >= astronautGroundY){
+        astronautY = astronautGroundY;
+        velocityY = 0;
+        isGrounded = true;
+    }
+
+    drawScene();
+    requestAnimationFrame(gameLoop);
+}
+
+gameLoop();
