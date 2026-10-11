@@ -541,4 +541,32 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         })
     })
+    // support/ticket system
+    const msgSend = document.getElementById("contactSubmit");
+    msgSend.addEventListener("click", async (e)=> {
+        e.preventDefault();
+        const msgTitle = document.getElementById("subject");
+        const senderEmail = document.getElementById("email");
+        const msg = document.getElementById("message");
+        const response = await sendMsg(msgTitle.value, senderEmail.value, msg.value);
+        msgTitle.value = "";
+        senderEmail.value = "";
+        msg.value = "";
+    })
 });
+
+async function sendMsg(subject, email, body) {
+    const response = await fetch('/admin/contact', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            subject: subject,
+            email: email,
+            message: body
+        })
+    })
+    const reply = await response.json();
+    console.log(reply);
+}

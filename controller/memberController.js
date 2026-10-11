@@ -1,11 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 const memberService = require('../services/memberService');
+const { response } = require('express');
 require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const AI_KEY = process.env.HCAIKEY;
 async function checkAuth(req, res) {
-    console.log('checkauth reached')
+    //console.log('checkauth reached')
     if (!req.cookies) {
         return res.json({
             authenticated: false,
@@ -66,23 +67,22 @@ async function checkAuth(req, res) {
     })     
 }
 
-async function getAuth(req, res) {
-    console.log('checkauth reached')
+async function requireAuth(req, res, next) {
     if (!req.cookies) {
-        return {
+        return res.json({
             authenticated: false,
             error: 401,
             message: "Not logged in"
-        }
+        })
     }
     const refreshToken = req.cookies.refresh_token;
     const accessToken = req.cookies.access_token;
     if (!accessToken && !refreshToken) { 
-        return {
+        return res.json({
             authenticated: false,
             error: 401,
             message: "Not logged in"
-        }
+        })
     }
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
@@ -94,19 +94,18 @@ async function getAuth(req, res) {
         const result = await supabaseClient.auth.getUser(accessToken);
         data = result.data;
         if (!result.error && data.user) {
-            return {
-                authenticated: true,
-                user: data.user
-            }
+            req.user = data.user;
+            req.accessToken = accessToken;
+            return next();
         }
     }         
     const refresh = await supabaseClient.auth.refreshSession({
         refresh_token: refreshToken
     })
     if (refresh.error || !refresh.data.session) {
-        return {
+        return res.status(401).json({
             authenticated: false
-        }
+        })
     }
     res.cookie('access_token', refresh.data.session.access_token, {
         httpOnly: true,
@@ -119,23 +118,8 @@ async function getAuth(req, res) {
         secure: false,
         sameSite: 'strict'
     }) 
-    data = {
-        user: refresh.data.user
-    }
-    return {
-        authenticated: true,
-        user: data.user
-    }
-}
-
-async function requireAuth(req, res, next) {
-    const auth = await getAuth(req, res); // your actual auth-checking logic
-
-    if (!auth.authenticated) {
-        return res.redirect('/404');
-    }
-
-    req.user = auth.user;
+    req.user = refresh.data.user;
+    req.accessToken = refresh.data.session.access_token;
     next();
 }
 
@@ -168,8 +152,8 @@ async function getEvents(req, res) {
 }
 
 async function getProjects(req, res) {
-    const name = req.query.member;
-    const response = await memberService.findProjects(name);
+    const email = req.query.email;
+    const response = await memberService.findProjects(email);
     if (response.error) {
         return res.json({
             success: false,
@@ -265,7 +249,7 @@ async function sendMsg(req, res) {
                 messages: [
                     {
                         role: "system",
-                        content: "You are an extremely friendly assistant to help users with queries about this club website. The Member dashboard can only be accessed after being signed in, and contains info about announcements, upcoming meetings, and the last 2 projects of the logged in user. If the user wants to update a project, or add a new project they should contact an admin or use the support page. Answer other queries based on logical guesses."
+                        content: "You are an extremely friendly assistant to help users with queries about this club website. The Member dashboard can only be accessed after being signed in, and contains info about announcements, upcoming meetings, and the last 2 projects of the logged in user. If the user wants to update a project, or add a new project they should contact an admin or use the contact us feature on the home page. Answer other queries based on logical guesses. Answer in 3 lines or less. Be polite always."
                     },
                     {
                         role: "user",
@@ -277,7 +261,7 @@ async function sendMsg(req, res) {
 
         const data = await response.json();
 
-        console.log(data);
+        //console.log(data);
 
         if (!response.ok) {
             return res.status(response.status).json({
@@ -302,6 +286,122 @@ async function sendMsg(req, res) {
     }
 }
 
+async function addPhoto(req, res) {
+    //console.log("BODY:", req.body);
+    //console.log("IMAGE:", req.body.image?.slice(0, 30));
+    const data_url = req.body.image;
+    const uuid = req.user.id;
+    const response = await memberService.addPhoto(data_url, uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        });
+    }
+    return res.json({
+        data: response.data
+    });
+}
+
+async function getPhoto(req, res) {
+    const uuid = req.user.id;
+    const response = await memberService.getPhoto(uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            exists: response.exists,
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        exists: true,
+        data: response.data
+    })
+}
+
+async function deletePhoto(req, res) {
+    const uuid = req.user.id;
+    const response = await memberService.deletePhoto(uuid, req.accessToken);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        message: 'Success',
+        success: true
+    })
+}
+
+async function getProfile(req, res) {
+    const email = req.user.email;
+    const response = await memberService.getProfile(email);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.data
+    })
+}
+
+async function updateProfile(req, res) {
+    const email = req.body.email;
+    const classStr = req.body.class;
+    const role = req.body.role;
+    const name = req.body.name;
+    const accessToken = req.cookies.access_token;
+    const response = await memberService.updateProfile(email, classStr, role, name, accessToken);
+    if (response.success) {
+        return res.json({
+            data: response.data,
+            success: true
+        })
+    }
+    return res.json({
+        error: response.error || null,
+        message: response.message || response.error?.message || 'Update failed.',
+        success: false
+    });
+}   
+
+async function getSubscriptions(req, res) {
+    const email = "ashlesh.deshmukh.sg@gmail.com";
+    const response = await memberService.getSubscriptions(email);
+    if (response.success) {
+        return res.json({
+            success: true,
+            data: response.data
+        });
+    }
+    return res.json({
+        success: false,
+        error: response.error
+    });
+}
+
+async function updateSubscriptions(req, res) {
+    const eventsSubscribed = req.body.events_subscribed;
+    const announcementsSubscribed = req.body.announcements_subscribed;
+    const projectsSubscribed = req.body.projects_subscribed;
+    const email = req.user.email;
+    const response = await memberService.updateSubscriptions(eventsSubscribed, announcementsSubscribed, projectsSubscribed, email);
+    if (response.success) {
+        return res.json({
+            success: true,
+            data: response.data
+        })
+    }
+    return res.json({
+        success: false,
+        error: response.error
+    })
+}
+
 module.exports = {
     checkAuth,
     getMeetings,
@@ -312,5 +412,12 @@ module.exports = {
     getUsers,
     requireAuth,
     leaderboard,
-    sendMsg
+    sendMsg,
+    addPhoto,
+    getPhoto,
+    deletePhoto,
+    getProfile,
+    updateProfile,
+    updateSubscriptions,
+    getSubscriptions
 }

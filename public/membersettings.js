@@ -1,3 +1,7 @@
+// error Toast
+const errorToast = document.getElementById('errorToast');
+errorToast.style.visibility = 'hidden';
+
 // section switching
 const settingsLinks = document.querySelectorAll(".settings-link");
 const settingsSections = document.querySelectorAll(".settings-section");
@@ -166,11 +170,33 @@ pfpBtn.addEventListener("click", () => {
     zoomValue.textContent = "1.00x"
 });
 
-applyCropBtn.addEventListener("click", () => {
-    const croppedImage = cropCanvas.toDataURL("image/jpeg", 0.95);
+applyCropBtn.addEventListener("click", async (e) => {
+    const croppedImage = cropCanvas.toDataURL("image/webp", 0.7);
     pfp.src = croppedImage;
     closeCrop();
+    const response = await fetch('/members/photos/upload', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            image: croppedImage,
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    console.log(reply);
 });
+
+document.addEventListener('DOMContentLoaded', async (e) => {
+    const response = await fetch('/members/photos/mine', {
+        credentials: 'include'
+    });
+    const reply = await response.json();
+    if (reply.exists) {
+        pfp.src = reply.data.publicUrl;
+    }
+})  
 
 function closeCrop(){
     cropMain.classList.remove("active");
@@ -192,9 +218,18 @@ cancelCropBtn.addEventListener("click", () => {
     closeCrop();
 });
 
-removepfpBtn.addEventListener("click", () => {
-    pfp.src = defaultpfp;
-    picInput.value = "";
+removepfpBtn.addEventListener("click", async (e) => {
+    const response = await fetch('/members/photos/delete', {
+        method: 'DELETE',
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.error) {
+        alert('Error deleting photo: ' + reply.mesge);
+    } else {
+        pfp.src = defaultpfp;
+        picInput.value = "";
+    }
 })
 
 resetZoomBtn.addEventListener("click", () => {
@@ -213,3 +248,183 @@ zoomSlider.addEventListener("input", (event) => {
     zoomValue.textContent = `${zoom.toFixed(2)}x`
     drawImageOnCanvas();
 });
+
+// profile info
+const savebtn = document.querySelector(".savebtn");
+const emailInput = document.getElementById("email");
+const classInput = document.getElementById("class");
+const roleInput = document.getElementById("role");
+
+document.addEventListener("DOMContentLoaded", async (e)=> {
+    const response = await fetch('/members/profile', {
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        emailInput.value = reply.data[0].email;
+        classInput.value = reply.data[0].class;
+        roleInput.value = reply.data[0].role;
+    } else {
+        alert("Error loading profile info: " + reply.error.message);
+        console.log("Error loading profile info: " + reply.error.message);
+    }
+})
+savebtn.addEventListener('click', async (e)=> {
+    let name;
+    const nameReq = await fetch('/members/profile', {
+        credentials: 'include'
+    })
+    const nameReply = await nameReq.json();
+    name = nameReply.data[0].name;
+    const response = await fetch('/members/profile/update', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: emailInput.value,
+            class: classInput.value,
+            role: roleInput.value,
+            name: name
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json()
+    if (reply.success) {
+        emailInput.value = reply.data[0].email;
+        classInput.value = reply.data[0].class;
+        roleInput.value = reply.data[0].role;
+    } else {
+        console.log(reply);
+        console.log(reply.error);
+        alert('Error saving: ' + reply.message);
+    }
+})
+
+// change password
+const pwdUpdDiv = document.getElementById("passwordUpdate");
+const pwdUpdForm = document.getElementById("passwordUpdForm");
+const pwdUpdSubmit = document.getElementById("submitPwdUpd");
+const currentPwdInput = document.getElementById("currentpassword");
+const newPwdInput = document.getElementById("newpassword");
+const repeatPwdInput = document.getElementById("repeatpassword");
+const pwdUpdBtn = document.getElementById("changepwd");
+pwdUpdBtn.addEventListener("click", async(e)=> {
+    e.preventDefault();
+    pwdUpdDiv.style.visibility = "visible";
+})
+document.addEventListener("keydown", (e)=>{
+    if (e.key === 'Escape') {
+        if (pwdUpdDiv.style.visibility !== 'hidden') {
+            pwdUpdDiv.style.visibility = 'hidden'
+        }
+    }
+})
+pwdUpdSubmit.addEventListener("click", async (e)=> { 
+    e.preventDefault();
+    const currentPwd = currentPwdInput.value;
+    const newPwd = newPwdInput.value;
+    const repeatPwd = repeatPwdInput.value;
+    if (newPwd === repeatPwd) {
+        const response = await fetch('/auth/updatepwd', {
+            method: 'POST', 
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                current_password: currentPwd,
+                new_password: newPwd
+            }),
+            credentials: 'include'
+        })
+        const reply = await response.json();
+        console.log(reply)
+        if (reply.success) {
+            pwdUpdDiv.style.visibility = 'hidden';
+            window.location.href = "/login";
+        }
+    } else {
+        alert("Passwords don't match!");
+    }
+})
+
+document.addEventListener('DOMContentLoaded', async (e)=> {
+    pwdUpdDiv.style.visibility = 'hidden';
+    const request = await fetch('/members/me', {
+        credentials: 'include'
+    })
+    const response = await request.json();
+    if (response.authenticated) {
+        localStorage.setItem("email", response.user.user_metadata.email);
+    } else {
+        window.location.href = "/404";
+    }
+})
+
+//logout
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn.addEventListener('click', async (e)=> {
+    console.log("pressed logout")
+    const response = await fetch('/auth/logout', {
+        credentials: 'include'
+    })
+    console.log(response.status);
+    console.log("3. Response received:", response.status);
+    console.log("4. Content type:", response.headers.get("content-type"));
+    const data = await response.json();
+    console.log(data)
+    if (data.error) {
+        alert('Error logging out' + data.message);
+    }
+    const request = await fetch('/members/me', {
+        credentials: 'include'
+    })
+    const response2 = await request.json();
+    if (response2.authenticated) {
+        alert('Error logging out' + data.message);
+    } else {
+        window.location.href = "/#";
+    }
+})
+
+// notifcations 
+const eventNotif = document.getElementById("eventNotifs");
+const announcementNotif = document.getElementById("announcementsNotifs");
+const projectsNotif = document.getElementById("projectNotifs");
+const notifSave = document.querySelector(".notifSave");
+notifSave.addEventListener("click", async(e) => {
+    const eventSubscribed = eventNotif.checked;
+    const annceSubscribed = announcementNotif.checked;
+    const projectSubscribed = projectsNotif.checked;
+    const response = await fetch('/members/subscriptions/update', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            events_subscribed: eventSubscribed,
+            announcements_subscribed: annceSubscribed,
+            projects_subscribed: projectSubscribed,
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        alert('Saved prefrences!');
+    } else {
+        alert("Error: " + reply.error.message);
+    }
+})
+document.addEventListener('DOMContentLoaded', async(e)=> {
+    const response = await fetch('/members/subscriptions', {
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        eventNotif.checked = reply.data[0].events;
+        projectsNotif.checked = reply.data[0].projects;
+        announcementNotif.checked = reply.data[0].announcements;
+    } else {
+        alert('Fetching prefrences for notifications failed.');
+    }
+})

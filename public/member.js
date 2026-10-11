@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     const response = await request.json();
     if (response.authenticated) {
         memberName.textContent = response.user.user_metadata.display_name;
-        localStorage.setItem("name", response.user.user_metadata.display_name);
+        localStorage.setItem("email", response.user.user_metadata.email);
     } else {
         window.location.href = "/404";
     }
@@ -143,7 +143,7 @@ async function populateMeetings() {
                 break;
         }  
     } else {
-        alert("Loading meetings lead to an error: " + reply.error);
+        alert("Loading meetings lead to an error: " + reply.error.message);
     }
 }
 async function populateEvents() {
@@ -257,13 +257,12 @@ async function populateEvents() {
                 break;
         }
     } else {
-        alert('Error loading events: ' + reply.error);
+        alert('Error loading events: ' + reply.error.message);
     }
 }
 async function populateProjects() {
-    let memberName = localStorage.getItem('name');
-    memberName.replace(/ /g, '%20');
-    const request = await fetch(`/members/projects?member=${memberName}`);
+    let email = localStorage.getItem('email');
+    const request = await fetch(`/members/projects?email=${email}`);
     const reply = await request.json();
     if (reply.success) {
         const p1Name = reply.data[0]?.name || null;
@@ -307,7 +306,7 @@ async function populateProjects() {
                 break;
         }
     } else {
-        alert("Error loading projects: " + reply.error);
+        alert("Error loading projects: " + reply.error.message);
     }
 }
 async function populateAnnouncements() {

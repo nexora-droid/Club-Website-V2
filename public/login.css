@@ -37,7 +37,7 @@ body{
     transform: scale(1.15);
 }
 
-.backbtn:focus{
+.backbtn:active{
     transform: scale(0.98);
 }
 
