@@ -19,6 +19,32 @@ let lastFrameTime = 0;
 let highScore = Number(localStorage.getItem('moonRunnerHighScore')) || 0;
 let waitingToStart = true;
 let backgroundOffset = 0;
+const astronautImg = new Image();
+astronautImg.src = './images/astronaut-sprites-canvas.png';
+const spriteFrames = {
+    idle: [
+        [0, 0], [192, 0], [384, 0], [576, 0]
+    ],
+    walk: [
+        [0, 256], [192, 256], [384, 256], [576, 256],
+        [768, 256], [960, 256], [1152, 256]
+    ],
+    jump: [
+        [0, 512], [192, 512], [384, 512], [576, 512]
+    ],
+    fall: [
+        [0, 768]
+    ],
+    land: [
+        [0, 1024], [192, 1024], [384, 1024], [576, 1024]
+    ]
+};
+let astronautAnimation = 'walk';
+let astronautFrame = 0;
+let astronautFrameTimer = 0;
+const astronautFrameWidth = 192;
+const astronautFrameHeight = 256;
+const astronautFrameDelay = 100;
 
 // background design
 function drawStars(){
@@ -39,63 +65,70 @@ function drawStars(){
     });
 }
 
-function drawCraters(){
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, groundY);
-    ctx.lineTo(canvas.width, groundY);
-    ctx.stroke();
-    ctx.fillStyle = '#BFB29C';
+const craterSpacing = 180;
+const craters = Array.from({ length: 20 }, (_, i) => ({
+    x: i * craterSpacing + Math.random() * 100,
+    width: 7 + Math.random() * 13,
+    height: 2 + Math.random() * 4,
+    y: groundY + 18 + Math.random() * 25
+}));
 
-    [[90, 278, 6], [260, 287, 4], [480, 274, 5], [680, 286, 7]].forEach(([x,y,r]) => {
-        const movingX = ((x - backgroundOffset) % canvas.width + canvas.width) % canvas.width;
+function drawCraters(){
+    ctx.fillStyle = '#F6EFE1';
+    ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+    
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, groundY, canvas.width, 2);
+
+    const worldWidth = craters.length * craterSpacing;
+    const offset = backgroundOffset % worldWidth;
+    
+    craters.forEach(crater => {
+        let x = ((crater.x - offset) % worldWidth + worldWidth) % worldWidth;
+
+        if(x > canvas.width + crater.width){
+            x -= worldWidth;
+        }
+
+        if(x < -crater.width){
+            x += worldWidth;
+        }
+
+        ctx.fillStyle = '#ded6c8';
         ctx.beginPath();
-        ctx.arc(movingX, y, r, 0, Math.PI * 2);
+        ctx.ellipse(x, crater.y + 1, crater.width, crater.height+1, 0, 0, Math.PI * 2);
         ctx.fill();
-    })
+
+        ctx.fillStyle = '#c9c0b2';
+        ctx.beginPath();
+        ctx.ellipse(x, crater.y, crater.width * 0.8, crater.height * 0.7, 0, 0, Math.PI * 2);
+        ctx.fill();
+    });
 }
 
 function drawAstronaut(x,y){
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.strokeStyle = '#000000';
-    ctx.fillStyle = '#F6EFE1';
-    ctx.lineWidth = 2.5;
-    ctx.lineJoin = 'round';
-    
-    ctx.fillRect(9,22,24,27);
-    ctx.strokeRect(9,22,24,27);
-    ctx.beginPath();
-    ctx.arc(21, 13, 13, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = '#000000';
-    ctx.beginPath();
-    ctx.ellipse(23, 13, 7, 8, 0, 0, Math.PI * 2);
-    ctx.fill();
+    if (!astronautImg.complete || !astronautImg.naturalWidth) return;
 
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.moveTo(12, 29);
-    ctx.lineTo(3, 39);
-    ctx.moveTo(30, 29);
-    ctx.lineTo(38, 36);
-    ctx.moveTo(15, 48);
-    ctx.lineTo(12, 59);
-    ctx.moveTo(28, 48);
-    ctx.lineTo(33, 58);
-    ctx.stroke();
-    ctx.restore();
+    const frames = spriteFrames[astronautAnimation];
+    const frame = frames[Math.min(astronautFrame, frames.length - 1)];
+    
+    ctx.drawImage(
+        astronautImg,
+        frame[0],
+        frame[1],
+        astronautFrameWidth,
+        astronautFrameHeight,
+        x,
+        y - 5,
+        55,
+        65
+    );
 }
 
 function drawAlien(x,y){
     ctx.save();
     ctx.translate(x, y);
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#50c136';
     ctx.beginPath();
     ctx.ellipse(20, 20, 17, 20, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -105,7 +138,7 @@ function drawAlien(x,y){
     ctx.ellipse(14, 17, 4, 6, -0.2, 0, Math.PI * 2);
     ctx.ellipse(26, 17, 4, 6, 0.2, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = '#000000';
+    ctx.strokeStyle = '#238227';
     ctx.lineWidth = 3;
 
     ctx.beginPath();
@@ -216,6 +249,10 @@ function jump(event){
     if(gameStarted && isGrounded){
         velocityY = jumpPower;
         isGrounded = false;
+
+        astronautAnimation = 'jump';
+        astronautFrame = 0;
+        astronautFrameTimer = 0;
     }
 }
 
@@ -231,6 +268,13 @@ function gameLoop(timestamp = performance.now()){
 
     if (gameOver){
         gameStarted = false;
+
+        astronautY = astronautGroundY;
+        velocityY = 0;
+        isGrounded = true;
+        astronautAnimation = 'idle';
+        astronautFrame = 0;
+        astronautFrameTimer = 0;
 
         overlayTitle.textContent = "Game Over";
         overlayMessage.textContent = "You lose, care to try again?";
@@ -253,6 +297,28 @@ function gameLoop(timestamp = performance.now()){
     const deltaTime = Math.min((timestamp - lastFrameTime) / 16.67, 2);
     lastFrameTime = timestamp;
 
+    astronautFrameTimer += deltaTime * 16.67;
+
+    if (astronautFrameTimer >= astronautFrameDelay){
+        astronautFrameTimer = 0;
+        const frames = spriteFrames[astronautAnimation];
+
+        if (astronautAnimation === 'jump'){
+            if(astronautFrame < frames.length - 1){
+                astronautFrame++;
+            }
+        } else if(astronautAnimation === 'land'){
+            astronautFrame++;
+
+            if (astronautFrame >= frames.length){
+                astronautAnimation = 'walk';
+                astronautFrame = 0;
+            }
+        } else{
+            astronautFrame = (astronautFrame + 1) % frames.length;
+        }
+    }
+
     if (timestamp - lastScoreTime >= 50){
         score++;
         lastScoreTime = timestamp;
@@ -264,10 +330,22 @@ function gameLoop(timestamp = performance.now()){
     velocityY += gravity * deltaTime;
     astronautY += velocityY * deltaTime;
 
+    if(!isGrounded && velocityY > 0 && astronautAnimation === 'jump'){
+        astronautAnimation = 'fall';
+        astronautFrame = 0;
+        astronautFrameTimer = 0;
+    }
+
     if (astronautY >= astronautGroundY){
         astronautY = astronautGroundY;
         velocityY = 0;
-        isGrounded = true;
+
+        if(!isGrounded){
+            isGrounded = true;
+            astronautAnimation = 'land';
+            astronautFrame = 0;
+            astronautFrameTimer = 0;
+        }
     }
 
     spawnAlien(timestamp);
