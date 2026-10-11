@@ -9,13 +9,15 @@ const jumpPower = -12;
 const astronautGroundY = groundY - 60;
 let isGrounded = true;
 let alienSpeed = 5;
-let aliens = [{ x: 340, y: groundY - 40 }, { x: 590, y: groundY - 40 }];
+let aliens = [];
+let nextAlienTime = 0;
 let gameStarted = false;
 let gameOver = false;
 let score = 0;
 let lastScoreTime = 0;
 let lastFrameTime = 0;
 let highScore = Number(localStorage.getItem('moonRunnerHighScore')) || 0;
+let waitingToStart = true;
 
 // background design
 function drawStars(){
@@ -112,6 +114,19 @@ function drawAlien(x,y){
     ctx.restore();
 }
 
+function spawnAlien(timestamp){
+    if (timestamp < nextAlienTime) return;
+    const lastAlien = aliens[aliens.length - 1];
+    if (lastAlien && lastAlien.x > canvas.width - 220) return;
+
+    aliens.push({
+        x: canvas.width + 40 + Math.random() * 100,
+        y: groundY - 40
+    });
+
+    nextAlienTime = timestamp + 1200 + Math.random() * 1000;
+}
+
 function checkCollision(alien){
     return(
         105 < (alien.x + 35) &&
@@ -148,9 +163,10 @@ function startGame(){
     astronautY = astronautGroundY;
     velocityY = 0;
     isGrounded = true;
-    gameStarted = true;
+    gameStarted = false;
     gameOver = false;
     score = 0;
+    waitingToStart = true;
 
     lastScoreTime = performance.now();
     lastFrameTime = performance.now();
@@ -158,10 +174,15 @@ function startGame(){
     scoreDisplay.textContent = `Score: 0`;
     highScoreDisplay.textContent = `Best: ${highScore}`;
 
-    aliens = [{ x: 340, y: groundY - 40 }, { x: 590, y: groundY - 40 }];
+    aliens = [];
+    nextAlienTime = performance.now() + 2000 + Math.random() * 1000;
 
-    gameOverlay.style.display = 'none';
-    restartBtn.style.display = 'none';
+    overlayTitle.textContent = '';
+    overlayMessage.textContent = 'Press SPACE to start';
+    finalScore.textContent = '';
+    startBtn.style.display = 'none';
+    gameOverlay.style.display = 'flex';
+    gameOverlay.style.backdropFilter = 'blur(1px)';
 }
 
 startBtn.addEventListener('click', () => {
@@ -174,8 +195,21 @@ restartBtn.addEventListener('click', () => {
 
 // movement controls
 function jump(event){
-    if(event.code === 'Space' && isGrounded){
-        event.preventDefault();
+    if(event.code != 'Space') return;
+
+    event.preventDefault();
+
+    if(waitingToStart){
+        waitingToStart = false;
+        gameStarted = true;
+        gameOverlay.style.display = 'none';
+        startBtn.style.display = 'block';
+        lastFrameTime = performance.now();
+        lastScoreTime = performance.now();
+        return;
+    }
+
+    if(gameStarted && isGrounded){
         velocityY = jumpPower;
         isGrounded = false;
     }
@@ -207,14 +241,15 @@ function gameLoop(timestamp = performance.now()){
         startBtn.textContent = "Play Again";
 
         gameOverlay.style.display = 'flex';
-        requestAnimationFrame(gameLoop)
+        gameOverlay.style.backdropFilter = 'blur(5px)';
+        requestAnimationFrame(gameLoop);
         return;
     }
 
     const deltaTime = Math.min((timestamp - lastFrameTime) / 16.67, 2);
     lastFrameTime = timestamp;
 
-    if (timestamp - lastScoreTime >= 100){
+    if (timestamp - lastScoreTime >= 50){
         score++;
         lastScoreTime = timestamp;
         scoreDisplay.textContent = `Score: ${score}`;
@@ -231,13 +266,11 @@ function gameLoop(timestamp = performance.now()){
         isGrounded = true;
     }
 
+    spawnAlien(timestamp);
+
     aliens.forEach(alien => {
         alien.x -= alienSpeed * deltaTime;
-
-        if(alien.x < -40){
-            alien.x = canvas.width + Math.random() * 200 + 100;
-        }
-
+        
         if(checkCollision(alien)){
             gameOver = true;
         }
