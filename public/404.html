@@ -25,13 +25,22 @@
                 <p id="highscore">Best: 0</p>
             </div>
 
-            <canvas id="runner" width="600px" height="300px">
+            <div class="runner-wrapper">
+                <canvas id="runner" width="600px" height="300px">
+                    
+                </canvas>
 
-            </canvas>
+                <div id="gameOverlay">
+                    <h2 id="overlayTitle">NOVA Runner</h2>
+                    <p id="overlayMessage">Play a game while you can</p>
+                    <p id="finalScore"></p>
+                    <button id="startBtn" type="button">Start Game</button>
+                </div>
+            </div>
 
             <div id="controls">
                 <p>Press the Spacebar to Jump</p>
-                <button id="restartBtn" type="button">Restart</button>
+                <button id="restartBtn" type="button">Play Again</button>
             </div>
         </div>
     </div>

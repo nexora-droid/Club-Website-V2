@@ -51,6 +51,42 @@ body {
     width: 85vw;
     margin: 50px auto;
     border: 1px solid black;
+    position: relative;
+    overflow: hidden;
+}
+
+#gameOverlay{
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    backdrop-filter: blur(10px);
+}
+
+#overlayTitle{
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 1000;
+}
+
+#overlayMessage, #finalScore{
+    margin: 0;
+    font-size: 1;
+}
+
+#startBtn{
+    margin-top: 20px;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 8px 20px;
+    background: white;
+    outline: none;
+    border: 1px solid black;
+    font-weight: 600;
 }
 
 #gameHeader{

@@ -8,6 +8,14 @@ const gravity = 0.6;
 const jumpPower = -12;
 const astronautGroundY = groundY - 60;
 let isGrounded = true;
+let alienSpeed = 5;
+let aliens = [{ x: 340, y: groundY - 40 }, { x: 590, y: groundY - 40 }];
+let gameStarted = false;
+let gameOver = false;
+let score = 0;
+let lastScoreTime = 0;
+let lastFrameTime = 0;
+let highScore = Number(localStorage.getItem('moonRunnerHighScore')) || 0;
 
 // background design
 function drawStars(){
@@ -104,6 +112,15 @@ function drawAlien(x,y){
     ctx.restore();
 }
 
+function checkCollision(alien){
+    return(
+        105 < (alien.x + 35) &&
+        134 > alien.x &&
+        astronautY + 5 < alien.y + 42 &&
+        astronautY + 59 > alien.y
+    );
+}
+
 function drawScene(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = '#ffffff';
@@ -112,9 +129,48 @@ function drawScene(){
     drawStars();
     drawCraters();
     drawAstronaut(100, astronautY);
-    drawAlien(340, groundY - 40);
-    drawAlien(590, groundY - 40);
+    aliens.forEach(alien => {
+        drawAlien(alien.x, alien.y);
+    });
 }
+
+// start game overlay
+const gameOverlay = document.getElementById('gameOverlay');
+const overlayTitle = document.getElementById('overlayTitle');
+const overlayMessage = document.getElementById('overlayMessage');
+const finalScore = document.getElementById('finalScore');
+const startBtn = document.getElementById('startBtn');
+const restartBtn = document.getElementById('restartBtn');
+const scoreDisplay = document.getElementById('score');
+const highScoreDisplay = document.getElementById('highscore');
+
+function startGame(){
+    astronautY = astronautGroundY;
+    velocityY = 0;
+    isGrounded = true;
+    gameStarted = true;
+    gameOver = false;
+    score = 0;
+
+    lastScoreTime = performance.now();
+    lastFrameTime = performance.now();
+
+    scoreDisplay.textContent = `Score: 0`;
+    highScoreDisplay.textContent = `Best: ${highScore}`;
+
+    aliens = [{ x: 340, y: groundY - 40 }, { x: 590, y: groundY - 40 }];
+
+    gameOverlay.style.display = 'none';
+    restartBtn.style.display = 'none';
+}
+
+startBtn.addEventListener('click', () => {
+    startGame();
+});
+
+restartBtn.addEventListener('click', () => {
+    startGame();
+});
 
 // movement controls
 function jump(event){
@@ -127,15 +183,65 @@ function jump(event){
 
 document.addEventListener('keydown', jump);
 
-function gameLoop(){
-    velocityY += gravity;
-    astronautY += velocityY;
+function gameLoop(timestamp = performance.now()){
+    if(!gameStarted){
+        drawScene();
+        lastFrameTime = timestamp;
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    if (gameOver){
+        gameStarted = false;
+
+        overlayTitle.textContent = "Game Over";
+        overlayMessage.textContent = "You lose, care to try again?";
+
+        if(score > highScore){
+            highScore = score;
+            localStorage.setItem('moonRunnerHighScore', highScore);
+        }
+
+        highScoreDisplay.textContent = `Best: ${highScore}`;
+        finalScore.textContent = `Score: ${score}`;
+        startBtn.textContent = "Play Again";
+
+        gameOverlay.style.display = 'flex';
+        requestAnimationFrame(gameLoop)
+        return;
+    }
+
+    const deltaTime = Math.min((timestamp - lastFrameTime) / 16.67, 2);
+    lastFrameTime = timestamp;
+
+    if (timestamp - lastScoreTime >= 100){
+        score++;
+        lastScoreTime = timestamp;
+        scoreDisplay.textContent = `Score: ${score}`;
+    }
+
+    highScoreDisplay.textContent = `Best: ${highScore}`;
+
+    velocityY += gravity * deltaTime;
+    astronautY += velocityY * deltaTime;
 
     if (astronautY >= astronautGroundY){
         astronautY = astronautGroundY;
         velocityY = 0;
         isGrounded = true;
     }
+
+    aliens.forEach(alien => {
+        alien.x -= alienSpeed * deltaTime;
+
+        if(alien.x < -40){
+            alien.x = canvas.width + Math.random() * 200 + 100;
+        }
+
+        if(checkCollision(alien)){
+            gameOver = true;
+        }
+    });
 
     drawScene();
     requestAnimationFrame(gameLoop);
