@@ -11,6 +11,10 @@ sendBtn.addEventListener('click', async (e)=> {
     userNode.querySelector(".usermsg").innerHTML = msg;
     userNode.querySelector(".username").textContent = localStorage.getItem('name');
     messages.appendChild(userNode);
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: 'smooth'
+    })
     const response = await fetch('/members/support/ai', {
         method: 'POST',
         headers: {
@@ -24,4 +28,8 @@ sendBtn.addEventListener('click', async (e)=> {
     const aiNode = aiTemplate.content.cloneNode(true);
     aiNode.querySelector(".aimsg").innerHTML = marked.parse(reply.answer);
     messages.appendChild(aiNode);
+    messages.scrollTo({
+        top: messages.scrollHeight,
+        behavior: 'smooth'
+    })
 })

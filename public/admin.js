@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const newPassword = document.getElementById('newPassword');
                 const confirmPassword = document.getElementById('newConfirmPassword');
                 const signupSubmit = document.getElementById('signup-submit');
+                const username = document.getElementById("nameInput");
                 signupSubmit.addEventListener('click', async (e)=> {
                     e.preventDefault();
                     if (newPassword.value === confirmPassword.value) {
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({
+                                name: username.value,
                                 email: newEmail.value,
                                 password: newPassword.value
                             }),

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Settings</title>
-    <link rel="stylesheet" href="membersettings.css">
+    <link rel="stylesheet" href="/membersettings.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
@@ -12,20 +12,20 @@
 <body>
     <div class="main">
         <nav id="nav">
-            <a href="member.html">Dashboard</a>
+            <a href="/members">Dashboard</a>
             <p>NOVA Club</p>
-            <a href="index.html">Main Page</a>
+            <a href="/">Main Page</a>
         </nav>
 
         <div id="settings">
             <div id="settings-sidebar">
                 <div class="settings-heading">
                     <h1>Member Settings</h1>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus similique voluptatem ipsum beatae minima repellat voluptatum ullam reprehenderit rerum dolor! Commodi doloremque necessitatibus soluta autem aut sint iusto nisi aperiam.</p>
+                    <p>Control all of your settings here, such as your profile details, email notification preferences, and change your password if needed.</p>
                 </div>
 
                 <div class="settings-nav">
-                    <button class="settings-link" data-section="profile">Profile</button>
+                    <button class="settings-link active" data-section="profile" active>Profile</button>
                     <button class="settings-link" data-section="account">Account</button>
                     <button class="settings-link" data-section="notifications">Notifications</button>
                 </div>
@@ -83,7 +83,7 @@
                                 <p>Update your NOVA Club Account Password</p>
                             </div>
 
-                            <button>Change Password</button>
+                            <button id="changepwd">Change Password</button>
                         </div>
 
                         <div class="settings-row">
@@ -91,7 +91,7 @@
                                 <h3>Log Out</h3>
                                 <p>Sign out of your NOVA Club Account</p>
                             </div>
-                            <button>Log Out</button>
+                            <button id="logoutBtn">Log Out</button>
                         </div>
                     </div>
                 </div>
@@ -128,6 +128,9 @@
                             </div>
                             <input type="checkbox" id="projectNotifs"/>
                             <label for="projectNotifs" class="toggle"></label>
+                        </div>
+                        <div class="toggle-row">
+                            <button class="notifSave">Save Changes</button>
                         </div>
                     </div>
                 </div>
@@ -174,7 +177,29 @@
             </div>
         </div>
     </div>
-
-    <script src="membersettings.js"></script>
+    <div id="passwordUpdate">
+        <p id="pwdUpdTitle">Update your password</p>
+        <p>Enter your current password, followed by the new password you want your account to use. </p>
+        <form id="passwordUpdForm">
+            <label for="repeat">Your current password: </label>
+            <input type="password" id="currentpassword" placeholder="Current password" autocomplete="off">
+            <label for="repeat">Enter the new password: </label>
+            <input type="password" id="newpassword" placeholder="New password" autocomplete="off">
+            <label for="repeat">Repeat password: </label>
+            <input type="password" id="repeatpassword" placeholder="Repeat password" name="repeat" autocomplete="off">
+        </form>
+        <button id="submitPwdUpd">Change Password</button>
+    </div>
+    <div id="errorToast">
+        <div style="display: flex; flex-direction: row; margin-top: 0px; justify-content: space-between; align-items:center;">
+            <p id="errorTitle">Failed to update preferences, RLS issue</p>
+            <button id="errorCloseBtn">×</button>
+        </div>
+        <hr id="errorBreak">
+        <p id="errorMsg">RLS prohibits updating preferences!</p>
+        <br>
+        <p id="errorHint">Looks confusing? Contact us using the form on the main page!</p>
+    </div>
+    <script src="/membersettings.js"></script>
 </body>
 </html>

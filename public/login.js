@@ -32,7 +32,7 @@ loginSubmit.addEventListener('click', async(e)=> {
     if (response.loggedIn) {
         window.location.href = '/members'
     } else {
-        alert('Error', response.error);
+        alert('Error: ' + response.error.message);
     }
 })
 document.addEventListener('DOMContentLoaded', async (e)=> {

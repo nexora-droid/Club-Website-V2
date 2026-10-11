@@ -36,9 +36,9 @@ async function findEvents() {
     }
 }
 
-async function findProjects(name) {
+async function findProjects(email) {
     const today = new Date().toISOString().split('T')[0];
-    const {data, error} = await supabase.from('projects').select('*').ilike('member', name).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
+    const {data, error} = await supabase.from('projects').select('*').ilike('email', email).lte('created_at', today).order('created_at', {ascending: false}).limit(2);
     if (data && !error) {
         return {
             projects: data,
@@ -95,11 +95,184 @@ async function leaderboard() {
     return {leaderboard: leaderboard};
 }
 
+async function addPhoto(url, uuid, accessToken) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    });
+    const base64 = url.includes(',')? url.split(',')[1]: url;
+    const buffer = Buffer.from(base64, "base64");
+    const {data, error} = await userSupabase.storage.from("avatars").upload(filename, buffer, {
+        contentType: 'image/webp'
+    });
+    if (error) {
+        return {error};
+    }
+    return {data};
+}
+
+async function getPhoto(uuid, access_token) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        }
+    })
+    const {data: exists, error} = await userSupabase.storage.from('avatars').exists(filename);
+    if (exists) {
+        const {data, error} = await userSupabase.storage.from('avatars').getPublicUrl(filename);
+        if (data && !error) {
+            return {exists: true, data: data}
+        }
+        return {error}
+    }
+    return {
+        error: error,
+        exists: false
+    }
+}
+
+async function deletePhoto(uuid, access_token) {
+    const filename = `${uuid}.webp`;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${access_token}`
+            }
+        }
+    })
+    const {data, error} = await userSupabase.storage.from('avatars').remove([filename]);
+    //console.log('Data', data);
+    //console.log('Filename', filename);
+    //console.log("error " + error)
+    if (data && !error) {
+        return {data}
+    }
+    return {error}
+}
+
+async function getProfile(email) {
+    const {data, error} = await supabase.from("members").select('*').eq('email', email);
+    if (data && !error) {
+        return {data}
+    }
+    return {error}
+}
+
+async function updateProfile(email, classStr, role, name, accessToken) {
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    });
+    const {data: member, error: findError} = await supabase.from('members').select('*').eq('name', name).maybeSingle();
+    if (findError) {
+        return {
+            success: false,
+            error: findError
+        }
+    }
+    if (!member) {
+        return {
+            success: false,
+            error: "Couldn't find any member!"
+        }
+    }
+    const {data: otherMember, error: emailError} = await supabase.from('members').select('*').eq('email', email).neq('name', name);
+    if (emailError) {
+        return {
+            success: false,
+            error: emailError
+        }
+    }
+    if (otherMember.length > 0) {
+        return {
+            success: false,
+            error: 'Other user already has same email'
+        }
+    }
+    const {data: updMember, error: updError} = await userSupabase.from('members').update({
+        class: classStr,
+        role: role,
+        email: email
+    }).eq('name', name).select();
+    console.log("Name used", name);
+    console.log("Email used", email);
+    console.log("Class used", classStr);
+    console.log("Role used", role);
+    console.log("Row updated", updMember);
+    if (updError) {
+        return {
+            success: false,
+            error: updError
+        }
+    }
+    if (!updMember || updMember.length === 0) {
+        return {
+            success: false,
+            error: 'No user was updated!'
+        }
+    }
+    
+    return {
+        data: updMember,
+        success: true
+    }
+}
+
+async function getSubscriptions(email) {
+    const {data, error} = await supabaseAdmin.from("subscriptions").select('*').eq('email', email);
+    if (data && !error) {
+        return {
+            data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function updateSubscriptions(eventsSubscribed, announcementsSubscribed, projectsSubscribed, email) {
+    const {data, error} = await supabaseAdmin.from("subscriptions").update({
+        email: email,
+        events: eventsSubscribed,
+        announcements: announcementsSubscribed,
+        projects: projectsSubscribed
+    }).eq('email', email).select();
+    if (data && !error) {
+        return {
+            data,
+            success: true
+        }
+    }
+    return {
+        error,
+        success: false
+    }
+}
+
 module.exports = {
     findMeetings,
     findEvents,
     findProjects,
     getAnnouncements,
     getUsers,
-    leaderboard
+    leaderboard,
+    addPhoto,
+    getPhoto,
+    deletePhoto,
+    getProfile,
+    updateProfile,
+    updateSubscriptions,
+    getSubscriptions
 }
