@@ -445,3 +445,45 @@ h1, h2, h3, p{
     background: white;
     transform: translateX(23px);
 }
+
+#passwordUpdate {
+    position: absolute;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid black;
+    padding: 20px;
+    width: 500px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#passwordUpdForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#passwordUpdForm input {
+    font-size: medium;
+}
+
+#pwdUpdTitle {
+    font-size: large;
+    font-weight: bold;
+}
+
+#submitPwdUpd {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;   
+}

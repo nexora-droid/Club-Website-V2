@@ -174,7 +174,19 @@
             </div>
         </div>
     </div>
-
+    <div id="passwordUpdate">
+        <p id="pwdUpdTitle">Update your password</p>
+        <p>Enter your current password, followed by the new password you want your account to use. </p>
+        <form id="passwordUpdForm">
+            <label for="repeat">Your current password: </label>
+            <input type="password" id="currentpassword" placeholder="Current password" autocomplete="off">
+            <label for="repeat">Enter the new password: </label>
+            <input type="password" id="newpassword" placeholder="New password" autocomplete="off">
+            <label for="repeat">Repeat password: </label>
+            <input type="password" id="repeatpassword" placeholder="Repeat password" name="repeat" autocomplete="off">
+        </form>
+        <button id="submitPwdUpd">Change Password</button>
+    </div>
     <script src="/membersettings.js"></script>
 </body>
 </html>

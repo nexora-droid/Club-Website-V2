@@ -9,6 +9,8 @@ router.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "..",  "public", "member.html"));
 })
 router.get('/me', memberController.checkAuth);
+router.get('/profile', memberController.requireAuth, memberController.getProfile);
+router.post('/profile/update', memberController.updateProfile);
 router.get('/meetings', memberController.getMeetings);
 router.get('/events', memberController.getEvents);
 router.get('/projects', memberController.getProjects);

@@ -148,13 +148,84 @@ async function deletePhoto(uuid, access_token) {
         }
     })
     const {data, error} = await userSupabase.storage.from('avatars').remove([filename]);
-    console.log('Data', data);
-    console.log('Filename', filename);
-    console.log("error " + error)
+    //console.log('Data', data);
+    //console.log('Filename', filename);
+    //console.log("error " + error)
     if (data && !error) {
         return {data}
     }
     return {error}
+}
+
+async function getProfile(email) {
+    const {data, error} = await supabase.from("members").select('*').eq('email', email);
+    if (data && !error) {
+        return {data}
+    }
+    return {error}
+}
+
+async function updateProfile(email, classStr, role, name, accessToken) {
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    });
+    const {data: member, error: findError} = await supabase.from('members').select('*').eq('name', name).maybeSingle();
+    if (findError) {
+        return {
+            success: false,
+            error: findError
+        }
+    }
+    if (!member) {
+        return {
+            success: false,
+            error: "Couldn't find any member!"
+        }
+    }
+    const {data: otherMember, error: emailError} = await supabase.from('members').select('*').eq('email', email).neq('name', name);
+    if (emailError) {
+        return {
+            success: false,
+            error: emailError
+        }
+    }
+    if (otherMember.length > 0) {
+        return {
+            success: false,
+            error: 'Other user already has same email'
+        }
+    }
+    const {data: updMember, error: updError} = await userSupabase.from('members').update({
+        class: classStr,
+        role: role,
+        email: email
+    }).eq('name', name).select();
+    console.log("Name used", name);
+    console.log("Email used", email);
+    console.log("Class used", classStr);
+    console.log("Role used", role);
+    console.log("Row updated", updMember);
+    if (updError) {
+        return {
+            success: false,
+            error: updError
+        }
+    }
+    if (!updMember || updMember.length === 0) {
+        return {
+            success: false,
+            error: 'No user was updated!'
+        }
+    }
+    
+    return {
+        data: updMember,
+        success: true
+    }
 }
 
 module.exports = {
@@ -166,5 +237,7 @@ module.exports = {
     leaderboard,
     addPhoto,
     getPhoto,
-    deletePhoto
+    deletePhoto,
+    getProfile,
+    updateProfile
 }

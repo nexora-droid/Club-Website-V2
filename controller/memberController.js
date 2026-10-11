@@ -1,11 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 const memberService = require('../services/memberService');
+const { response } = require('express');
 require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const AI_KEY = process.env.HCAIKEY;
 async function checkAuth(req, res) {
-    console.log('checkauth reached')
+    //console.log('checkauth reached')
     if (!req.cookies) {
         return res.json({
             authenticated: false,
@@ -260,7 +261,7 @@ async function sendMsg(req, res) {
 
         const data = await response.json();
 
-        console.log(data);
+        //console.log(data);
 
         if (!response.ok) {
             return res.status(response.status).json({
@@ -286,8 +287,8 @@ async function sendMsg(req, res) {
 }
 
 async function addPhoto(req, res) {
-    console.log("BODY:", req.body);
-    console.log("IMAGE:", req.body.image?.slice(0, 30));
+    //console.log("BODY:", req.body);
+    //console.log("IMAGE:", req.body.image?.slice(0, 30));
     const data_url = req.body.image;
     const uuid = req.user.id;
     const response = await memberService.addPhoto(data_url, uuid, req.accessToken);
@@ -333,6 +334,41 @@ async function deletePhoto(req, res) {
     })
 }
 
+async function getProfile(req, res) {
+    const email = req.user.email;
+    const response = await memberService.getProfile(email);
+    if (response.error) {
+        return res.json({
+            error: response.error,
+            message: response.error.message
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.data
+    })
+}
+
+async function updateProfile(req, res) {
+    const email = req.body.email;
+    const classStr = req.body.class;
+    const role = req.body.role;
+    const name = req.body.name;
+    const accessToken = req.cookies.access_token;
+    const response = await memberService.updateProfile(email, classStr, role, name, accessToken);
+    if (response.success) {
+        return res.json({
+            data: response.data,
+            success: true
+        })
+    }
+    return res.json({
+        error: response.error || null,
+        message: response.message || response.error?.message || 'Update failed.',
+        success: false
+    });
+}   
+
 module.exports = {
     checkAuth,
     getMeetings,
@@ -346,5 +382,7 @@ module.exports = {
     sendMsg,
     addPhoto,
     getPhoto,
-    deletePhoto
+    deletePhoto,
+    getProfile,
+    updateProfile
 }

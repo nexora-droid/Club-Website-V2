@@ -5,5 +5,5 @@ const authController = require('../controller/authController');
 router.use(express.json());
 router.post('/signin', authController.signIn);
 router.post('/signup', authController.signUp);
-
+router.post('/updatepwd', authController.requireAuth, authController.updatePwd);
 module.exports = router;

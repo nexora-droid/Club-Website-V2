@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async (e) => {
     });
     const reply = await response.json();
     if (reply.exists) {
-        pfp.src
+        pfp.src = reply.data.publicUrl;
     }
 })  
 
@@ -221,7 +221,7 @@ removepfpBtn.addEventListener("click", async (e) => {
     })
     const reply = await response.json();
     if (reply.error) {
-        alert('Error deleting photo: ' + reply.message);
+        alert('Error deleting photo: ' + reply.mesge);
     } else {
         pfp.src = defaultpfp;
         picInput.value = "";
@@ -244,3 +244,104 @@ zoomSlider.addEventListener("input", (event) => {
     zoomValue.textContent = `${zoom.toFixed(2)}x`
     drawImageOnCanvas();
 });
+
+// profile info
+const savebtn = document.querySelector(".savebtn");
+const emailInput = document.getElementById("email");
+const classInput = document.getElementById("class");
+const roleInput = document.getElementById("role");
+
+document.addEventListener("DOMContentLoaded", async (e)=> {
+    const response = await fetch('/members/profile', {
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        emailInput.value = reply.data[0].email;
+        classInput.value = reply.data[0].class;
+        roleInput.value = reply.data[0].role;
+    } else {
+        alert("Error loading profile info: " + reply.error.message);
+        console.log("Error loading profile info: " + reply.error.message);
+    }
+})
+savebtn.addEventListener('click', async (e)=> {
+    let name;
+    const nameReq = await fetch('/members/profile', {
+        credentials: 'include'
+    })
+    const nameReply = await nameReq.json();
+    name = nameReply.data[0].name;
+    const response = await fetch('/members/profile/update', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: emailInput.value,
+            class: classInput.value,
+            role: roleInput.value,
+            name: name
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json()
+    if (reply.success) {
+        emailInput.value = reply.data[0].email;
+        classInput.value = reply.data[0].class;
+        roleInput.value = reply.data[0].role;
+    } else {
+        console.log(reply);
+        console.log(reply.error);
+        alert('Error saving: ' + reply.message);
+    }
+})
+
+// change password
+const pwdUpdDiv = document.getElementById("passswordUpdate");
+const pwdUpdForm = document.getElementById("passwordUpdForm");
+const pwdUpdSubmit = document.getElementById("submitPwdUpd");
+const currentPwdInput = document.getElementById("currentpassword");
+const newPwdInput = document.getElementById("newpassword");
+const repeatPwdInput = document.getElementById("repeatpassword");
+
+pwdUpdSubmit.addEventListener("click", async (e)=> { 
+    e.preventDefault();
+    const currentPwd = currentPwdInput.value;
+    const newPwd = newPwdInput.value;
+    const repeatPwd = repeatPwdInput.value;
+    if (newPwd === repeatPwd) {
+        const response = await fetch('/auth/updatepwd', {
+            method: 'POST', 
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                current_password: currentPwd,
+                new_password: newPwd
+            }),
+            credentials: 'include'
+        })
+        const reply = await response.json();
+        console.log(reply)
+        if (reply.success) {
+            pwdUpdDiv.style.visibility = 'none';
+            window.URL = "/auth/login";
+        }
+    } else {
+        alert("Passwords don't match!");
+    }
+})
+
+document.addEventListener('DOMContentLoaded', async (e)=> {
+    const request = await fetch('/members/me', {
+        credentials: 'include'
+    })
+    const response = await request.json();
+    if (response.authenticated) {
+        memberName.textContent = response.user.user_metadata.display_name;
+        localStorage.setItem("email", response.user.user_metadata.email);
+    } else {
+        window.location.href = "/404";
+    }
+})
