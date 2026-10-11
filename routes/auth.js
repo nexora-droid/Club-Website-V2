@@ -6,4 +6,5 @@ router.use(express.json());
 router.post('/signin', authController.signIn);
 router.post('/signup', authController.signUp);
 router.post('/updatepwd', authController.requireAuth, authController.updatePwd);
+router.get('/logout', authController.requireAuth, authController.logout);
 module.exports = router;

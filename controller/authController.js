@@ -4,6 +4,7 @@ require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const authService = require('../services/authService');
+const { subscribe } = require('../routes/member');
 
 async function requireAuth(req, res, next) {
     if (!req.cookies) {
@@ -82,10 +83,20 @@ async function signIn(req, res) {
         secure: false,
         sameSite: 'strict'
     })
+    const subsReq = await authService.subscribeDefault(email);
+    if (subsReq.success) {
+        return res.json({
+            loggedIn: true,
+            data: request.data,
+            subscriptions: subsReq.success
+        })
+    }
     return res.json({
         loggedIn: true,
-        data: request.data
+        data: request.data,
+        subscriptions: false
     })
+    
 }
 
 async function signUp(req, res) {
@@ -112,9 +123,18 @@ async function signUp(req, res) {
             secure: false,
             sameSite: 'strict'
         })
+        const subsReq = await authService.subscribeDefault(email);
+        if (subsReq.success) {
+            return res.json({
+                loggedIn: true,
+                data: request.data,
+                subscriptions: subsReq.success
+            })
+        }
         return res.json({
             loggedIn: true,
-            data: request.data
+            data: request.data,
+            subscriptions: false
         })
     } catch (err) {
         console.error("signup error", err);
@@ -143,9 +163,46 @@ async function updatePwd(req, res) {
     })
 }
 
+async function logout(req, res) {
+    const accessToken = req.access_token;
+    const userSupabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+        global: {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        }
+    })
+    const {error} = await userSupabase.auth.signOut({
+        scope: 'local'
+    });
+    res.clearCookie('access_token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict'
+    });
+
+    res.clearCookie('refresh_token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'strict'
+    });
+    if (error) {
+        return  res.json({
+            error: error,
+            message: error.message,
+            success: false
+        })
+    }
+    return res.json({
+        success: true,
+        message: 'Logged Out'
+    })
+}
+
 module.exports = {
     signIn,
     signUp,
     requireAuth,
-    updatePwd
+    updatePwd,
+    logout
 }

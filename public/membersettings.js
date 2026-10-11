@@ -298,13 +298,24 @@ savebtn.addEventListener('click', async (e)=> {
 })
 
 // change password
-const pwdUpdDiv = document.getElementById("passswordUpdate");
+const pwdUpdDiv = document.getElementById("passwordUpdate");
 const pwdUpdForm = document.getElementById("passwordUpdForm");
 const pwdUpdSubmit = document.getElementById("submitPwdUpd");
 const currentPwdInput = document.getElementById("currentpassword");
 const newPwdInput = document.getElementById("newpassword");
 const repeatPwdInput = document.getElementById("repeatpassword");
-
+const pwdUpdBtn = document.getElementById("changepwd");
+pwdUpdBtn.addEventListener("click", async(e)=> {
+    e.preventDefault();
+    pwdUpdDiv.style.visibility = "visible";
+})
+document.addEventListener("keydown", (e)=>{
+    if (e.key === 'Escape') {
+        if (pwdUpdDiv.style.visibility !== 'hidden') {
+            pwdUpdDiv.style.visibility = 'hidden'
+        }
+    }
+})
 pwdUpdSubmit.addEventListener("click", async (e)=> { 
     e.preventDefault();
     const currentPwd = currentPwdInput.value;
@@ -325,8 +336,8 @@ pwdUpdSubmit.addEventListener("click", async (e)=> {
         const reply = await response.json();
         console.log(reply)
         if (reply.success) {
-            pwdUpdDiv.style.visibility = 'none';
-            window.URL = "/auth/login";
+            pwdUpdDiv.style.visibility = 'hidden';
+            window.location.href = "/login";
         }
     } else {
         alert("Passwords don't match!");
@@ -334,14 +345,45 @@ pwdUpdSubmit.addEventListener("click", async (e)=> {
 })
 
 document.addEventListener('DOMContentLoaded', async (e)=> {
+    pwdUpdDiv.style.visibility = 'hidden';
     const request = await fetch('/members/me', {
         credentials: 'include'
     })
     const response = await request.json();
     if (response.authenticated) {
-        memberName.textContent = response.user.user_metadata.display_name;
         localStorage.setItem("email", response.user.user_metadata.email);
     } else {
         window.location.href = "/404";
     }
 })
+
+//logout
+const logoutBtn = document.getElementById("logoutBtn");
+logoutBtn.addEventListener('click', async (e)=> {
+    console.log("pressed logout")
+    const response = await fetch('/auth/logout', {
+        credentials: 'include'
+    })
+    console.log(response.status);
+    console.log("3. Response received:", response.status);
+    console.log("4. Content type:", response.headers.get("content-type"));
+    const data = await response.json();
+    console.log(data)
+    if (data.error) {
+        alert('Error logging out' + data.message);
+    }
+    const request = await fetch('/members/me', {
+        credentials: 'include'
+    })
+    const response2 = await request.json();
+    if (response2.authenticated) {
+        alert('Error logging out' + data.message);
+    } else {
+        window.location.href = "/#";
+    }
+})
+
+// notifcations - ON HOLD.
+const eventNotif = document.getElementById("eventNotifs");
+const announcementNotif = document.getElementById("announcementsNotifs");
+const projectsNotif = document.getElementById("projectNotifs");
