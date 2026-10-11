@@ -7,11 +7,44 @@
     <link rel="stylesheet" href="404.css">
 </head>
 <body>
+    <a href="index.html" class="backbtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+    </a>
+
     <div id="hero">
         <p id="error">404</p>
-        <h1 id="mainmsg">Oops! We couldn't find that URL!</h1>
-        <p id="fix">Are you logged in? <br> Have you entered the right URL?</p>
-        <a href="/">Return home</a>
+        <h1 id="mainmsg">Oops, we couldn't find that URL! <br> Want to play a game in the meantime?</h1>
+
+        <div id="game">
+            <div id="gameHeader">
+                <p id="score">Score: 0</p>
+                <p class="game-title">NOVA Runner</p>
+                <p id="highscore">Best: 0</p>
+            </div>
+
+            <div class="runner-wrapper">
+                <canvas id="runner" width="600px" height="300px">
+                    
+                </canvas>
+
+                <div id="gameOverlay">
+                    <h2 id="overlayTitle">NOVA Runner</h2>
+                    <p id="overlayMessage">Play a game while you can</p>
+                    <p id="finalScore"></p>
+                    <button id="startBtn" type="button">Start Game</button>
+                </div>
+            </div>
+
+            <div id="controls">
+                <p>Press the Spacebar to Jump</p>
+                <button id="restartBtn" type="button">Play Again</button>
+            </div>
+        </div>
     </div>
+
+    <script src="404.js"></script>
 </body>
 </html>
