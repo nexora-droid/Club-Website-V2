@@ -12,7 +12,7 @@
 
 html, body{
     scroll-behavior: smooth;
-    overscroll-behavior: none;
+    overflow: hidden;
     min-height: 100vh;
     margin: 0;
     font-family: 'Bricolage Grotesque', sans-serif;
@@ -26,48 +26,44 @@ html, body{
     align-items: center;
     position: sticky;
     top: 0;
-    padding: 15px 25px;
+    padding: 10px 25px;
     backdrop-filter: blur(1px);
     transition: all 0.8s ease;
     z-index: 1000;
-}
-
-#nav.scrolled{
-    top: 10px;
-    border-radius: 50px;
-    width: calc(100% - 40px);
-    padding: 15px 25px;
-    box-shadow: 0 5px 10px var(--black-white);
-    margin: 0 auto;
-}
-
-#nav.scrolled #nav-title{
-    font-size: 1.1rem;
+    border-bottom: 1px solid white;
 }
 
 #nav-links{
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 20px;
 }
 
 #nav-links a{
     text-decoration: none;
     color: var(--black-white);
+    transition: transform 0.3s ease;
+}
+
+#nav-links a:hover{
+    transform: scale(1.05);
 }
 
 #nav-title{
     text-decoration: none;
     color: var(--black-white);
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
 }
 
+/* hero title */
+
 #hero{
-    min-height: 40vh;
     display: flex;
     align-items: center;
-    padding: 20px 5vw;
+    justify-content: center;
+    padding: 3vh 5vw;
+    width: 100%;
 }
 
 .hero-content{
@@ -75,6 +71,8 @@ html, body{
     flex-direction: column;
     gap: 10px;
 }
+
+/* chat sectoin */
 
 #chat {
     align-self: center;
@@ -85,7 +83,7 @@ html, body{
     flex-direction: column;
     overflow-y: scroll;
     gap: 40px;
-    width: 50vw;
+    width: 80vw;
     align-items: center;
     margin: 0 auto;
     height: 60vh;
@@ -98,12 +96,21 @@ html, body{
     border-bottom-left-radius: 0px;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
-    padding: 20px;
+    padding: 15px 30px;
     align-self: flex-start;
 }
 
 .ainame {
-    color: rgb(84, 83, 83);
+    color: rgb(42, 42, 42);
+    font-size: 1.1rem;
+    font-weight: 600;
+
+}
+
+.aimsg{
+    color: black;
+    font-size: 1rem;
+    font-family: inherit;
 }
 
 .usermsgcard {
@@ -118,10 +125,23 @@ html, body{
     align-self: flex-end;
 }
 
+.username {
+    color: whitesmoke;
+    font-size: 1.1rem;
+    font-weight: 600;
+
+}
+
+.usermsg{
+    color: white;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
 #sendMsg {
     display: flex;
-    gap: 10px;
-    width: 50vw;
+    gap: 0;
+    width: 80vw;
     margin: 0 auto;
     margin-top: 20px;
 }
@@ -129,9 +149,21 @@ html, body{
 #msgText {
     width: 85%;
     padding: 20px;
-    font-size: medium;
-    border-radius: 20px;
-    border: 2px solid var(--black-white);
+    font-size: 1rem;
+    border-radius: 20px 0 0 20px;
+    border: 2px solid rgb(108, 108, 240);
+}
+
+#msgText:active{
+    border: 2px solid rgb(139, 139, 237);
+    border-right: 2px solid rgb(108, 108, 240);
+    outline: none;
+}
+
+#msgText:focus{
+    border: 2px solid rgb(139, 139, 237);
+    border-right: 2px solid rgb(108, 108, 240);
+    outline: none;
 }
 
 #sendBtn {
@@ -139,9 +171,12 @@ html, body{
     padding: 5px;
     color: white;
     font-family: 'Space Grotesk';
-    font-size: medium;
-    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: inherit;
+    border-radius: 0 20px 20px 0;
     border: none;
     width: 15%;
     padding: 20px;
+    letter-spacing: 0.5px;
 }
