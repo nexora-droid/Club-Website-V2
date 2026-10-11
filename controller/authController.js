@@ -83,7 +83,7 @@ async function signIn(req, res) {
         secure: false,
         sameSite: 'strict'
     })
-    const subsReq = await authService.subscribeDefault(email);
+    const subsReq = await authService.subscribeDefault(request.data.user.email);
     if (subsReq.success) {
         return res.json({
             loggedIn: true,

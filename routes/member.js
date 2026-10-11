@@ -20,6 +20,8 @@ router.get('/leaderboard', memberController.leaderboard);
 router.post('/photos/upload', memberController.requireAuth, memberController.addPhoto);
 router.get('/photos/mine', memberController.requireAuth, memberController.getPhoto);
 router.delete('/photos/delete', memberController.requireAuth, memberController.deletePhoto);
+router.get('/subscriptions', memberController.requireAuth, memberController.getSubscriptions);
+router.post('/subscriptions/update', memberController.requireAuth, memberController.updateSubscriptions);
 router.get('/settings', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'membersettings.html'));
 })

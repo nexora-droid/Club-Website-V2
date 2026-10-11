@@ -1,3 +1,7 @@
+// error Toast
+const errorToast = document.getElementById('errorToast');
+errorToast.style.visibility = 'hidden';
+
 // section switching
 const settingsLinks = document.querySelectorAll(".settings-link");
 const settingsSections = document.querySelectorAll(".settings-section");
@@ -383,7 +387,44 @@ logoutBtn.addEventListener('click', async (e)=> {
     }
 })
 
-// notifcations - ON HOLD.
+// notifcations 
 const eventNotif = document.getElementById("eventNotifs");
 const announcementNotif = document.getElementById("announcementsNotifs");
 const projectsNotif = document.getElementById("projectNotifs");
+const notifSave = document.querySelector(".notifSave");
+notifSave.addEventListener("click", async(e) => {
+    const eventSubscribed = eventNotif.checked;
+    const annceSubscribed = announcementNotif.checked;
+    const projectSubscribed = projectsNotif.checked;
+    const response = await fetch('/members/subscriptions/update', {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+            events_subscribed: eventSubscribed,
+            announcements_subscribed: annceSubscribed,
+            projects_subscribed: projectSubscribed,
+        }),
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        alert('Saved prefrences!');
+    } else {
+        alert("Error: " + reply.error.message);
+    }
+})
+document.addEventListener('DOMContentLoaded', async(e)=> {
+    const response = await fetch('/members/subscriptions', {
+        credentials: 'include'
+    })
+    const reply = await response.json();
+    if (reply.success) {
+        eventNotif.checked = reply.data[0].events;
+        projectsNotif.checked = reply.data[0].projects;
+        announcementNotif.checked = reply.data[0].announcements;
+    } else {
+        alert('Fetching prefrences for notifications failed.');
+    }
+})

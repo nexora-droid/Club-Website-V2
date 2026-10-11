@@ -116,28 +116,32 @@ async function updatePwd(currentPwd, newPwd, uuid, email) {
 
 async function subscribeDefault(email) {
     const {data: checkEmail, error: checkEmailErr} = await supabase.from('subscriptions').select('*').eq('email', email);
-    if (checkEmail[0]) {
+    if (checkEmailErr) {
         return {
-            data: data,
-            message: 'Already exists',
+            error: checkEmailErr,
+            success: false
+        }
+    }
+    if (checkEmail.length > 0) {
+        return {
+            data: checkEmail,
+            message: 'Subscriptions already exist',
             success: true
         }
     }
-    const {data, error} = await supabaseAdmin.from('subscriptions').insert({
-        email: email
-    }).select();
-    if (error){
+    const {data, error} = await supabaseAdmin.from('subscriptions').insert({email: email}).select();
+    if (error) {
         return {
-            error: error.message,
+            error: error,
             message: 'Error setting up default subscriptions',
             success: false
-        }
+        };
     }
     return {
         data: data,
         message: 'Set up defaults',
         success: true
-    }
+    };
 }
 
 module.exports = {

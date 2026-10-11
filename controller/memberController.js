@@ -369,6 +369,39 @@ async function updateProfile(req, res) {
     });
 }   
 
+async function getSubscriptions(req, res) {
+    const email = "ashlesh.deshmukh.sg@gmail.com";
+    const response = await memberService.getSubscriptions(email);
+    if (response.success) {
+        return res.json({
+            success: true,
+            data: response.data
+        });
+    }
+    return res.json({
+        success: false,
+        error: response.error
+    });
+}
+
+async function updateSubscriptions(req, res) {
+    const eventsSubscribed = req.body.events_subscribed;
+    const announcementsSubscribed = req.body.announcements_subscribed;
+    const projectsSubscribed = req.body.projects_subscribed;
+    const email = req.user.email;
+    const response = await memberService.updateSubscriptions(eventsSubscribed, announcementsSubscribed, projectsSubscribed, email);
+    if (response.success) {
+        return res.json({
+            success: true,
+            data: response.data
+        })
+    }
+    return res.json({
+        success: false,
+        error: response.error
+    })
+}
+
 module.exports = {
     checkAuth,
     getMeetings,
@@ -384,5 +417,7 @@ module.exports = {
     getPhoto,
     deletePhoto,
     getProfile,
-    updateProfile
+    updateProfile,
+    updateSubscriptions,
+    getSubscriptions
 }

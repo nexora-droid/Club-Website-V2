@@ -228,6 +228,39 @@ async function updateProfile(email, classStr, role, name, accessToken) {
     }
 }
 
+async function getSubscriptions(email) {
+    const {data, error} = await supabaseAdmin.from("subscriptions").select('*').eq('email', email);
+    if (data && !error) {
+        return {
+            data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function updateSubscriptions(eventsSubscribed, announcementsSubscribed, projectsSubscribed, email) {
+    const {data, error} = await supabaseAdmin.from("subscriptions").update({
+        email: email,
+        events: eventsSubscribed,
+        announcements: announcementsSubscribed,
+        projects: projectsSubscribed
+    }).eq('email', email).select();
+    if (data && !error) {
+        return {
+            data,
+            success: true
+        }
+    }
+    return {
+        error,
+        success: false
+    }
+}
+
 module.exports = {
     findMeetings,
     findEvents,
@@ -239,5 +272,7 @@ module.exports = {
     getPhoto,
     deletePhoto,
     getProfile,
-    updateProfile
+    updateProfile,
+    updateSubscriptions,
+    getSubscriptions
 }

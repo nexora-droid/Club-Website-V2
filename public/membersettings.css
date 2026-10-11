@@ -487,3 +487,53 @@ h1, h2, h3, p{
     font-size: 1rem;
     cursor: pointer;   
 }
+
+.notifSave {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: 1px solid black;
+    background: none;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+#errorToast {
+    width: 350px;
+    height: fit-content;
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: rgb(255, 112, 112);
+    border: 3px solid red;
+    border-radius: 20px;
+    position: absolute;
+    top: 2%;
+    left: 98%;
+    z-index: 1001;
+    transform: translateX(-100%);
+    color: white;
+    font-size: 1.1em;
+}
+
+#errorTitle {
+    font-size: 0.85em;
+}
+
+#errorBreak {
+    border: 1px solid rgb(255, 188, 188);
+}
+
+#errorCloseBtn {
+    border: none;
+    background: none;
+    color: white;
+    font-size: 1.8em;
+    padding: 0;
+    margin-top: -5px;
+    margin-right: 5px;
+    transition: all 0.3s ease;
+}
