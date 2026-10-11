@@ -18,6 +18,7 @@ let lastScoreTime = 0;
 let lastFrameTime = 0;
 let highScore = Number(localStorage.getItem('moonRunnerHighScore')) || 0;
 let waitingToStart = true;
+let backgroundOffset = 0;
 
 // background design
 function drawStars(){
@@ -31,8 +32,9 @@ function drawStars(){
     ctx.fillStyle = '#000000';
 
     stars.forEach(([x, y], i) => {
+        const movingX = ((x - backgroundOffset * 0.2) % canvas.width + canvas.width) % canvas.width;
         ctx.beginPath();
-        ctx.arc(x, y, i % 3 === 0 ? 2 : 1.3, 0, Math.PI * 2);
+        ctx.arc(movingX, y, i % 3 === 0 ? 2 : 1.3, 0, Math.PI * 2);
         ctx.fill();
     });
 }
@@ -49,8 +51,9 @@ function drawCraters(){
     ctx.fillStyle = '#BFB29C';
 
     [[90, 278, 6], [260, 287, 4], [480, 274, 5], [680, 286, 7]].forEach(([x,y,r]) => {
+        const movingX = ((x - backgroundOffset) % canvas.width + canvas.width) % canvas.width;
         ctx.beginPath();
-        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.arc(movingX, y, r, 0, Math.PI * 2);
         ctx.fill();
     })
 }
@@ -167,6 +170,7 @@ function startGame(){
     gameOver = false;
     score = 0;
     waitingToStart = true;
+    backgroundOffset = 0;
 
     lastScoreTime = performance.now();
     lastFrameTime = performance.now();
@@ -270,11 +274,13 @@ function gameLoop(timestamp = performance.now()){
 
     aliens.forEach(alien => {
         alien.x -= alienSpeed * deltaTime;
-        
+
         if(checkCollision(alien)){
             gameOver = true;
         }
     });
+
+    backgroundOffset += alienSpeed * deltaTime;
 
     drawScene();
     requestAnimationFrame(gameLoop);
