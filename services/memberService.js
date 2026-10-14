@@ -86,8 +86,8 @@ async function leaderboard() {
     }
     const counts = {};
     for (const project of data) {
-        if (!project.member) continue;
-        counts[project.member] = (counts[project.member] || 0) + 1
+        if (!project.email) continue;
+        counts[project.email] = (counts[project.email] || 0) + 1
     }
     const leaderboard = Object.entries(counts).map(([member, projects])=> ({
         member, projects

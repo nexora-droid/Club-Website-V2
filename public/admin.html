@@ -35,8 +35,8 @@
                         <div>
                             <p class="project-title">NYX Inc</p>
                             <div class="project-type">
-                                <div class="project-html">HTML</div>
-                                <div class="project-css">CSS</div>
+                                <div class="project-lang">HTML</div>
+                                <div class="project-category">Web Dev</div>
                             </div>
                         </div>
                         
@@ -52,8 +52,8 @@
                         <div>
                             <p class="project-title">NYX Inc</p>
                             <div class="project-type">
-                                <div class="project-html">HTML</div>
-                                <div class="project-css">CSS</div>
+                                <div class="project-lang">HTML</div>
+                                <div class="project-category">CSS</div>
                             </div>
                         </div>
                         
@@ -316,7 +316,11 @@
             </div>
             <div class="paf-group">
                 <label for="p-tags">Project Tags: </label>
-                <input type="text" name="p-tags" id="p-tags" placeholder="Input multiple values, separate by commas">
+                <input type="text" name="p-tags" id="p-tags" placeholder="Input 2 values: Language & Type, separated by commas.">
+            </div>
+            <div class="pef-group">
+                <label for="p-email">User's email: </label>
+                <input type="text" name="p-email" id="p-email" placeholder="Email of the user this project belongs to.">
             </div>
             <div class="paf-group">
                 <label for="p-image">Project Image: </label>
@@ -367,18 +371,55 @@
         </form>
     </div>
 
+    <!-- Editing projects & events -->
+    <div id="pe-menu">
+        <p id="pem-title">Edit Project</p>
+        <form id="pe-form">
+            <div class="pef-group">
+                <label for="pe-name">Project Name: </label>
+                <input type="text" name="pe-name" id="pe-name">
+            </div>
+            <div class="pef-group">
+                <label for="pe-tags">Project Tags: </label>
+                <input type="text" name="pe-tags" id="pe-tags" placeholder="Input 2 values: Language & Type, separated by commas.">
+            </div>
+            <div class="pef-group">
+                <label for="pe-email">User's email: </label>
+                <label for="pe-name" style="font-size: 13px;">Advised not to change, please use backend to change. </label>
+                <input type="text" name="pe-email" id="pe-email" placeholder="Email of the user this project belongs to." disabled>
+            </div>
+            <div class="pef-group">
+                <label for="pe-image">Project Image: </label>
+                <input type="url" name="pe-image" id="pe-image" placeholder="Enter URL of project image">
+            </div>
+            <img src="https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg"
+                id="pe-img-prev">
+            <div id="pef-special">
+                <label for="pe-desc">Project Description: </label>
+                <br>
+                <textarea name="pe-desc" id="pe-desc" placeholder="Enter details about project. Markdown supported"
+                    rows="7"></textarea>
+            </div>
+            <div id="pef-buttons">
+                <button id="pef-submit">Submit</button>
+                <button id="pef-cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+
     <!-- popup for add project n event -->
     <template id="project-template">
        <div class="projectcard">
             <div>
                 <p class="project-title">NYX Inc</p>
                 <div class="project-type">
-                    <div class="project-html">HTML</div>
-                    <div class="project-css">CSS</div>
+                    <div class="project-lang">HTML</div>
+                    <div class="project-category">CSS</div>
                 </div>
             </div>
             
             <img src="" class="project-img">
+            <p class="project-email">User: <span class="proj-email-part">john.doe@gmail.com</span></p>
             <p class="project-info">This was our first submission to the Boba Drops YSWS. Submitted by <a href="https://github.com/Oblivion396">Oblivion396.</a> <br><br> View the repository <a href="https://github.com/Oblivion396/Nyx-Inc" class="underline-anim">here</a></p>
             <div class="project-buttons">
                 <button class="project-edit">Edit</button>

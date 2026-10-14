@@ -70,9 +70,10 @@ async function getAllProjs() {
   }
   return {projects};
 }
-//changed settings for indent size
-async function newProject(name, tags, img, desc) {
-    const {data, error} = await supabaseAdmin.from('projects').insert({name: name, tags: tags, image: img, description: desc}).select();
+
+async function newProject(name, tags, img, desc, email) {
+    const {data, error} = await supabaseAdmin.from('projects').insert({name: name, tags: tags, image: img, description: desc, email: email}).select();
+    console.log(email);
     if (!error) {
         return {success: true, data: data}
     } else {
@@ -115,6 +116,29 @@ async function delEvent(name) {
     }
 }
 
+async function editProject(name, tags, image, info, uemail) {
+    const {data, error} = await supabaseAdmin.from('members').update({
+        name: name,
+        image: image,
+        tags: tags,
+        description: info
+    }).eq('email', uemail).select();
+    if (error) {
+        return {
+            error
+        }
+    }
+    if (!data || data.length === 0) {
+        return {
+            error,
+            message: "Couldn't update project"
+        }
+    }
+    return {
+        success: true
+    }
+}
+
 module.exports = {
   signUp,
   login,
@@ -123,5 +147,6 @@ module.exports = {
   getAllEvents,
   newEvent,
   delProject,
-  delEvent
+  delEvent,
+  editProject
 }

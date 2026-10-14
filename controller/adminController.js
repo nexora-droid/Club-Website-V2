@@ -180,8 +180,8 @@ async function checkAuth(req, res) {
 }   
 
 async function addProject(req, res) {
-    let {name, tags, img, desc, adding} = req.body;
-    const request = await adminService.newProject(name, tags, img, desc);
+    let {name, tags, img, desc, email} = req.body;
+    const request = await adminService.newProject(name, tags, img, desc, email);
     if (request.success) {
         return res.json({
             added: true,
@@ -296,6 +296,21 @@ async function sendMsg(req, res) {
     }
 }
 
+
+async function editProject(req, res) {
+    const {project_name, project_tags, project_img, project_info, project_uemail} = req.body;
+    const response = await adminService.editProject(project_name, project_tags, project_img, project_info, project_uemail);
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true
+    })
+}
+
 module.exports = {
     login,
     signup,
@@ -307,5 +322,6 @@ module.exports = {
     requireAuth,
     delProject,
     delEvent,
-    sendMsg
+    sendMsg,
+    editProject
 };

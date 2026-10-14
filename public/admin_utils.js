@@ -19,11 +19,13 @@ document.addEventListener('DOMContentLoaded', ()=> {
         const projectTags = document.getElementById('p-tags');
         const projectImg = document.getElementById('p-image');
         const projectDesc = document.getElementById('p-desc');
+        const projectUEmail = document.getElementById('p-email');
         const name = projectName.value;
         const tags = projectTags.value;
         const img = projectImg.value;
         const desc = projectDesc.value;
-        addProject(name, tags, desc, img);
+        const email = projectUEmail.value;
+        addProject(name, tags, desc, img, email);
     })
     eventSubmit.addEventListener('click', (e)=> {
         e.preventDefault();
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
         }
         return authenticated;
     }
-    async function addProject(name, tags, desc, img) {
+    async function addProject(name, tags, desc, img, email) {
         if (await checkAuth()) {
             tags = sliceTags(tags);
             const response = await fetch('/admin/projects/add', {
@@ -87,6 +89,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
                     tags,
                     img,
                     desc,
+                    email,
                     adding: true
                 })
             })
@@ -147,9 +150,19 @@ document.addEventListener('DOMContentLoaded', ()=> {
                 clone.querySelector(".project-title").textContent = project.name;
                 clone.querySelector(".project-img").src = project.image;
                 clone.querySelector(".project-info").innerHTML = project.description;
-                if (project.tags.includes("HTML" || project.tags.includes("html"))) {
-                    clone.querySelector(".project-type").innerHTML += "";
-                }
+                // if (project.tags.includes("HTML" || project.tags.includes("html"))) {
+                //     clone.querySelector(".project-type").innerHTML += "";
+                // }
+                const projLangTag = document.createElement("p");
+                projLangTag.classList.add("project-lang");
+                projLangTag.textContent = project.tags[0];
+                const projCategory = document.createElement("p");
+                projCategory.classList.add("project-category");
+                projCategory.textContent = project.tags[1];
+                clone.querySelector(".project-type").innerHTML = "";
+                clone.querySelector(".project-type").appendChild(projLangTag);
+                clone.querySelector(".project-type").appendChild(projCategory);
+                clone.querySelector(".proj-email-part").textContent = project.email;
                 projectsDiv.appendChild(clone);
             }
         }
@@ -189,25 +202,51 @@ document.addEventListener('DOMContentLoaded', ()=> {
         }
     }
     projectsDiv.addEventListener('click', async (e) => {
-        const deleteButton = e.target.closest(".project-delete");
-        if (!deleteButton) return;
-        if (!await checkAuth()){
-            alert("Oops! Not allowed to perfom action!");
-            return;
-        }
-        const buttonsDiv = deleteButton.parentElement;
-        const card = buttonsDiv.parentElement;
-        const projToDel = card.querySelector(".project-title").textContent;
-        console.log(`projtodelstored ${projToDel}`);
-        let confirmDelete = prompt(`You are deleting ${projToDel}. \nType sudo delete ${projToDel} to confirm`);
-        if (confirmDelete.trim() === `sudo delete ${projToDel}`) {
-            console.log(confirmDelete.trim());
-            if (await deleteProj(projToDel)) {
-                populateProjs();
-            };
-            console.log('del called');
-        } else {
-            alert('Please repeat the action, you mistyped something');
+        if (e.target.closest(".project-delete")) {
+            const deleteButton = e.target.closest(".project-delete");
+            if (!deleteButton) return;
+            if (!await checkAuth()){
+                alert("Oops! Not allowed to perfom action!");
+                return;
+            }
+            const buttonsDiv = deleteButton.parentElement;
+            const card = buttonsDiv.parentElement;
+            const projToDel = card.querySelector(".project-title").textContent;
+            console.log(`projtodelstored ${projToDel}`);
+            let confirmDelete = prompt(`You are deleting ${projToDel}. \nType sudo delete ${projToDel} to confirm`);
+            if (confirmDelete.trim() === `sudo delete ${projToDel}`) {
+                console.log(confirmDelete.trim());
+                if (await deleteProj(projToDel)) {
+                    populateProjs();
+                };
+                console.log('del called');
+            } else {
+                alert('Please repeat the action, you mistyped something');
+            }
+        } else if (e.target.closest(".project-edit")) {
+            console.log("project edit pressed");
+            const editButton = e.target.closest(".project-edit");
+            if (!editButton) return;
+            if (!await checkAuth()) {
+                alert("Not allowed to perform action!");
+            }
+            const buttonsDiv = editButton.parentElement;
+            const card = buttonsDiv.parentElement;
+            const projToEdit = card.querySelector(".project-title").textContent;
+            const projImg = card.querySelector(".project-img").src;
+            const projTagsDiv = card.querySelector(".project-type");
+            const projTags = Array.from(projTagsDiv.children).map(child => child.textContent);
+            const projDesc = card.querySelector(".project-info").innerHTML;
+            const projUEmail = card.querySelector(".proj-email-part").textContent;
+            const projectEditWindow = document.getElementById("pe-menu");
+            projectEditWindow.classList.remove("slideOut");
+            projectEditWindow.classList.add("slideIn");
+            projectEditWindow.querySelector("#pe-name").value = projToEdit;
+            projectEditWindow.querySelector("#pe-tags").value = projTags.toString();
+            projectEditWindow.querySelector('#pe-image').value = projImg;
+            projectEditWindow.querySelector("#pe-img-prev").src = projImg;
+            projectEditWindow.querySelector("#pe-desc").textContent = projDesc;
+            projectEditWindow.querySelector("#pe-email").textContent = projUEmail;
         }
     })
     const eventsDiv = document.querySelector('.e-cards');
@@ -235,7 +274,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     })
     async function deleteProj(name) {
         const request = await fetch('/admin/projects/delete', {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'content-type': 'application/json'
             },
@@ -253,7 +292,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     }
     async function eventDel(name) {
         const request = await fetch('/admin/events/delete', {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'content-type': 'application/json'
             },
@@ -271,4 +310,52 @@ document.addEventListener('DOMContentLoaded', ()=> {
     }
     populateProjs();
     populateEvents();
+    async function editProject(name, tags, desc, img, email) {
+        if (await checkAuth()) {
+            tags = sliceTags(tags);
+            const response = await fetch('/admin/projects/edit', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    project_name: name,
+                    project_tags: tags,
+                    project_image: img,
+                    project_info: desc,
+                    project_uemail: email
+                })
+            })
+            if (!response.success) {
+                console.error("Failed to edit project:", response.error);
+                return;
+            }
+            await populateProjs();
+        }
+    }
+    // project edit closing & opening
+    const projectEditWindow = document.getElementById("pe-menu");
+    const projEditSubmit = document.getElementById("pef-submit");
+    const projEditCancel = document.getElementById("pef-cancel");
+
+    projEditCancel.addEventListener('click', (e)=> {
+        e.preventDefault();
+        projectEditWindow.classList.add('slideOut');
+        projectEditWindow.classList.remove('slideIn');
+        projectEditWindow.querySelectorAll('form').forEach(form => form.reset());
+        projectEditWindow.querySelector('#pe-img-prev').src = "https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg";
+        projectEditWindow.querySelector('textarea').textContent = "";
+    })
+
+    projEditSubmit.addEventListener('click', async (e) => {
+        e.preventDefault();
+        projectEditWindow.classList.add('slideOut');
+        projectEditWindow.classList.remove('slideIn');
+        const projName = document.getElementById("pe-name").value;
+        const projImg = document.getElementById("pe-image").value;
+        const projTags = document.getElementById("pe-tags").value;
+        const projDesc = document.getElementById("pe-desc").innerHTML;
+        const projectUEmail = document.getElementById("pe-email").textContent;
+        editProject(projName, projTags, projImg, projDesc, projectUEmail);
+    } )
 })

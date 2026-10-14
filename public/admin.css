@@ -352,7 +352,7 @@ html, body{
     margin-top: 10px;
 }
 
-.project-html, .project-css{
+.project-lang, .project-category {
     padding: 5px 10px;
     border: 1px solid black;
     border-radius: 20px;
@@ -381,6 +381,10 @@ html, body{
 
 .project-info a:hover{
     text-decoration: underline;
+}
+
+.project-email {
+    margin: 0;
 }
 
 .project-buttons{
@@ -426,7 +430,7 @@ html, body{
 }
 
 /* add event and project popups */
-#pa-menu, #ea-menu{
+#pa-menu, #ea-menu, #pe-menu{
     position: fixed;
     top: 53%;
     left: 50%;
@@ -441,7 +445,7 @@ html, body{
     visibility: hidden;
 }
 
-#pam-title, #eam-title{
+#pam-title, #eam-title, #pem-title{
     margin: 0 0 20px;
     padding-bottom: 10px;
     font-size: 2rem;
@@ -449,13 +453,13 @@ html, body{
     border-bottom: 1px solid black;
 }
 
-#pa-form, #ea-form{
+#pa-form, #ea-form, #pe-form{
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.paf-group, .eaf-group{
+.paf-group, .eaf-group, .pef-group{
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -466,7 +470,7 @@ html, body{
     font-weight: 500;
 }
 
-.eaf-group input, .paf-group input{
+.eaf-group input, .paf-group input, .pef-group input{
     width: 100%;
     height: 30px;
     padding: 10px;
@@ -476,12 +480,12 @@ html, body{
     border: 1px solid black;
 }
 
-#paf-special, #eaf-special{
+#paf-special, #eaf-special, #pef-special{
     display: flex;
     flex-direction: column;
 }
 
-#p-desc, #e-desc{
+#p-desc, #e-desc, #pe-desc{
     width: 100%;
     min-height: 120px;
     padding: 10px;
@@ -491,14 +495,14 @@ html, body{
     border: 1px solid black;
 }
 
-#p-img-preview, .e-img-preview{
+#p-img-preview, .e-img-preview, .pe-img-preview{
     display: block;
     width: 100%;
     height: 200px;
     border: 1px solid black;
 }
 
-.special, #paf-special{
+.special, #paf-special, #pef-special{
     display: flex;
     align-items: left;
     justify-content: space-between;
@@ -507,13 +511,13 @@ html, body{
     border-top: 1px solid black;
 }
 
-#paf-buttons, #eaf-buttons{
+#paf-buttons, #eaf-buttons, #pef-buttons{
     display: flex;
     justify-content: flex-start;
     gap: 20px;
 }
 
-#paf-submit, #paf-cancel, #eaf-submit, #eaf-cancel{
+#paf-submit, #paf-cancel, #eaf-submit, #eaf-cancel, #pef-submit, #pef-cancel{
     padding: 10px 30px;
     outline: none;
     border: 1px solid black;
@@ -524,12 +528,12 @@ html, body{
     transition: all 0.3s ease;
 }
 
-#paf-submit:hover, #paf-cancel:hover, #eaf-submit:hover, #eaf-cancel:hover{
+#paf-submit:hover, #paf-cancel:hover, #eaf-submit:hover, #eaf-cancel:hover, #pef-submit:hover, #pef-cancel:hover{
     transform: translateY(2px);
     box-shadow: 0 5px 5px rgb(109, 109, 109);
 }
 
-#paf-submit:active, #paf-cancel:active, #eaf-submit:active, #eaf-cancel:active{
+#paf-submit:active, #paf-cancel:active, #eaf-submit:active, #eaf-cancel:active, #pef-submit:active, #pef-cancel:active{
     transform: translateY(1px);
     box-shadow: 0 2px 5px black;
 }
