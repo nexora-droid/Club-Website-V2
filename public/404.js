@@ -58,6 +58,25 @@ const alienSprite = {
     drawWidth: 48,
     drawHeight: 66
 };
+let projectiles = [];
+let nextShotTime = 0;
+const projectileSpeed = 8;
+const projectileCooldownMin = 1400;
+const projectileCooldownMax = 2200;
+let shootingAlien = null;
+let shootingUntil = 0;
+const alienNormalSprite = {
+    sourceX: 180,
+    sourceY: 155,
+    sourceWidth: 210,
+    sourceHeight: 290
+}
+const alienShootingSprite = {
+    sourceX: 760,
+    sourceY: 145,
+    sourceWidth: 300,
+    sourceHeight: 310
+}
 
 // background design
 function drawStars(){
@@ -138,17 +157,19 @@ function drawAstronaut(x,y){
     );
 }
 
-function drawAlien(x,y){
+function drawAlien(alien){
     if(!alienImg.complete || !alienImg.naturalWidth) return;
+
+    const sprite = alien.isShooting ? alienShootingSprite : alienNormalSprite;
 
     ctx.drawImage(
         alienImg,
-        alienSprite.sourceX,
-        alienSprite.sourceY,
-        alienSprite.sourceWidth,
-        alienSprite.sourceHeight,
-        x,
-        y - alienSprite.drawHeight,
+        sprite.sourceX,
+        sprite.sourceY,
+        sprite.sourceWidth,
+        sprite.sourceHeight,
+        alien.x,
+        alien.y - alienSprite.drawHeight,
         alienSprite.drawWidth,
         alienSprite.drawHeight
     );
@@ -165,7 +186,9 @@ function spawnAlien(timestamp){
 
     aliens.push({
         x: canvas.width + 40 + Math.random() * 100,
-        y: groundY
+        y: groundY,
+        isShooting: false,
+        shootUntil: 0
     });
 
     const randomDelay = minimumSpawnDelay + Math.random() * (maximumSpawnDelay - minimumSpawnDelay);
@@ -187,6 +210,69 @@ function checkCollision(alien){
     );
 }
 
+function alienShoot(timestamp){
+    if(timestamp < nextShotTime) return;
+    if(projectiles.length > 0) return;
+
+    const aliensAhead = aliens.filter(alien => alien.x > 134).sort((a,b) => a.x - b.x);
+    const closestAlien = aliensAhead[0];
+
+    if(!closestAlien) return;
+
+    closestAlien.isShooting = true;
+    closestAlien.shootUntil = timestamp + 350;
+
+    shootingAlien = closestAlien;
+    shootingUntil = timestamp + 350;
+
+    projectiles.push({
+        x: closestAlien.x - 30,
+        y: closestAlien.y - 34,
+        width: 32,
+        height: 7
+    });
+
+    nextShotTime = timestamp + projectileCooldownMin + Math.random() * (projectileCooldownMax - projectileCooldownMin);
+}
+
+function updateProjectiles(deltaTime){
+    projectiles.forEach(projectile => {
+        projectile.x -= projectileSpeed * deltaTime;
+
+        const hitsAstronaut = 
+            projectile.x < 134 &&
+            projectile.x + projectile.width > 105 &&
+            projectile.y < astronautY + 58 &&
+            projectile.y + projectile.height > astronautY + 8;
+
+        if(hitsAstronaut){
+            gameOver = true;
+        }
+    });
+
+    projectiles = projectiles.filter(
+        projectile => projectile.x + projectile.width > 0
+    );
+}
+
+function drawProjectile(projectile){
+    ctx.fillStyle = "#3cb964";
+    ctx.fillRect(
+        projectile.x,
+        projectile.y,
+        projectile.width,
+        projectile.height
+    );
+
+    ctx.fillStyle = "#56fa77";
+    ctx.fillRect(
+        projectile.x + 2,
+        projectile.y + 1,
+        projectile.width - 4,
+        2
+    );
+}
+
 function drawScene(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = '#ffffff';
@@ -196,8 +282,12 @@ function drawScene(){
     drawCraters();
     drawAstronaut(100, astronautY);
     aliens.forEach(alien => {
-        drawAlien(alien.x, alien.y);
+        drawAlien(alien);
     });
+
+    projectiles.forEach(projectile => {
+        drawProjectile(projectile);
+    })
 }
 
 // start game overlay
@@ -230,6 +320,10 @@ function startGame(){
     highScoreDisplay.textContent = `Best: ${highScore}`;
 
     aliens = [];
+    projectiles = [];
+    shootUntil = 0;
+    shootingAlien = null;
+    nextShotTime = performance.now() + 800;
     nextAlienTime = performance.now() + 2000 + Math.random() * 1000;
 
     overlayTitle.textContent = '';
@@ -371,6 +465,12 @@ function gameLoop(timestamp = performance.now()){
         }
     }
 
+    aliens.forEach(alien => {
+        if(alien.isShooting && timestamp >= alien.shootUntil){
+            alien.isShooting = false;
+        }
+    })
+
     spawnAlien(timestamp);
 
     aliens.forEach(alien => {
@@ -380,6 +480,9 @@ function gameLoop(timestamp = performance.now()){
             gameOver = true;
         }
     });
+
+    alienShoot(timestamp);
+    updateProjectiles(deltaTime);
 
     aliens = aliens.filter(alien => alien.x > -alienSprite.drawWidth);
 
