@@ -9,6 +9,9 @@ const jumpPower = -12;
 const astronautGroundY = groundY - 60;
 let isGrounded = true;
 let alienSpeed = 5;
+const minimumAlienGap = 300;
+const minimumSpawnDelay = 700;
+const maximumSpawnDelay = 2300;
 let aliens = [];
 let nextAlienTime = 0;
 let gameStarted = false;
@@ -45,6 +48,16 @@ let astronautFrameTimer = 0;
 const astronautFrameWidth = 192;
 const astronautFrameHeight = 256;
 const astronautFrameDelay = 100;
+const alienImg = new Image();
+alienImg.src = './images/alien-sprites.png';
+const alienSprite = {
+    sourceX: 180,
+    sourceY: 155,
+    sourceWidth: 210,
+    sourceHeight: 290,
+    drawWidth: 48,
+    drawHeight: 66
+};
 
 // background design
 function drawStars(){
@@ -126,49 +139,51 @@ function drawAstronaut(x,y){
 }
 
 function drawAlien(x,y){
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = '#50c136';
-    ctx.beginPath();
-    ctx.ellipse(20, 20, 17, 20, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = '#F6EFE1';
+    if(!alienImg.complete || !alienImg.naturalWidth) return;
 
-    ctx.beginPath();
-    ctx.ellipse(14, 17, 4, 6, -0.2, 0, Math.PI * 2);
-    ctx.ellipse(26, 17, 4, 6, 0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#238227';
-    ctx.lineWidth = 3;
-
-    ctx.beginPath();
-    ctx.moveTo(12, 36);
-    ctx.lineTo(8, 42);
-    ctx.moveTo(28, 36);
-    ctx.lineTo(32, 42);
-    ctx.stroke();
-    ctx.restore();
+    ctx.drawImage(
+        alienImg,
+        alienSprite.sourceX,
+        alienSprite.sourceY,
+        alienSprite.sourceWidth,
+        alienSprite.sourceHeight,
+        x,
+        y - alienSprite.drawHeight,
+        alienSprite.drawWidth,
+        alienSprite.drawHeight
+    );
 }
 
 function spawnAlien(timestamp){
     if (timestamp < nextAlienTime) return;
     const lastAlien = aliens[aliens.length - 1];
-    if (lastAlien && lastAlien.x > canvas.width - 220) return;
+
+    if (lastAlien && lastAlien.x > canvas.width - minimumAlienGap){
+        nextAlienTime = timestamp + 120;
+        return;
+    }
 
     aliens.push({
         x: canvas.width + 40 + Math.random() * 100,
-        y: groundY - 40
+        y: groundY
     });
 
-    nextAlienTime = timestamp + 1200 + Math.random() * 1000;
+    const randomDelay = minimumSpawnDelay + Math.random() * (maximumSpawnDelay - minimumSpawnDelay);
+
+    nextAlienTime = timestamp + randomDelay;
 }
 
 function checkCollision(alien){
+    const alienX = alien.x + 8;
+    const alienY = alien.y - 58;
+    const alienWidth = 32;
+    const alienHeight = 48;
+
     return(
-        105 < (alien.x + 35) &&
-        134 > alien.x &&
-        astronautY + 5 < alien.y + 42 &&
-        astronautY + 59 > alien.y
+        105 < alienX + alienWidth &&
+        134 > alienX &&
+        astronautY + 8 < alienY + alienHeight &&
+        astronautY + 58 > alienY
     );
 }
 
@@ -203,6 +218,9 @@ function startGame(){
     gameOver = false;
     score = 0;
     waitingToStart = true;
+    astronautAnimation = 'idle';
+    astronautFrame = 0;
+    astronautFrameTimer = 0;
     backgroundOffset = 0;
 
     lastScoreTime = performance.now();
@@ -239,6 +257,11 @@ function jump(event){
     if(waitingToStart){
         waitingToStart = false;
         gameStarted = true;
+
+        astronautAnimation = 'walk';
+        astronautFrame = 0;
+        astronautFrameTimer = 0;
+
         gameOverlay.style.display = 'none';
         startBtn.style.display = 'block';
         lastFrameTime = performance.now();
@@ -357,6 +380,8 @@ function gameLoop(timestamp = performance.now()){
             gameOver = true;
         }
     });
+
+    aliens = aliens.filter(alien => alien.x > -alienSprite.drawWidth);
 
     backgroundOffset += alienSpeed * deltaTime;
 
