@@ -121,20 +121,23 @@ document.addEventListener('DOMContentLoaded', () => {
     init();
 
     // password view buttons
-    const pwdviewbtn = document.querySelector(".passwordViewBtn");
-    const eyeopen = document.querySelector(".eyeopen");
-    const eyeclosed = document.querySelector(".eyeclosed");
-    const inputPwd = document.getElementById('password');
+    const pwdviewbtns = document.querySelectorAll(".passwordViewBtn");
+    
+    pwdviewbtns.forEach((button) => {
+        const targetId = button.dataset.target;
+        const inputPwd = document.getElementById(targetId);
+        const eyeOpen = button.querySelector(".eyeopen");
+        const eyeClosed = button.querySelector(".eyeclosed");
 
-    pwdviewbtn.addEventListener('click', () => {
-        if(inputPwd.type === 'password'){
-            inputPwd.type = 'text';
-            eyeclosed.style.display = 'block';
-            eyeopen.style.display = 'none';
-        } else{
-            inputPwd.type = 'password';
-            eyeclosed.style.display = 'none';
-            eyeopen.style.display = 'block';
-        }
+        eyeClosed.style.display = 'none';
+        eyeOpen.style.display = 'block';
+
+        button.addEventListener('click', () => {
+            const isPassword = inputPwd.type === 'password';
+            inputPwd.type = isPassword ? 'text' : 'password';
+
+            eyeClosed.style.display = isPassword ? 'block' : 'none';
+            eyeOpen.style.display = isPassword ? 'none' : 'block';
+        });
     });
 })
