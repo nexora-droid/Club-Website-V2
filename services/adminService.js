@@ -181,6 +181,34 @@ async function deleteAnnouncement(announcement) {
     }
 }
 
+async function getMembers() {
+    const {data, error} = await supabaseAdmin.from('members').select('*').order('id', {ascending: true});
+    if (!data && error) {
+        return {
+            error: error,
+            success: false
+        }
+    }
+    return {
+        data: data,
+        success: true
+    }
+}
+
+async function filterMembers(email) {
+    const {data, error} = await supabaseAdmin.from('members').select().eq('email', email);
+    if (!data && error) {
+        return {
+            error: error,
+            success: false
+        }
+    }
+    return {
+        data: data,
+        success: true
+    }
+}
+
 module.exports = {
   signUp,
   login,
@@ -193,5 +221,7 @@ module.exports = {
   editProject,
   getAnnouncements,
   newAnnouncement,
-  deleteAnnouncement
+  deleteAnnouncement,
+  getMembers,
+  filterMembers
 }

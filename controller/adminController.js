@@ -356,6 +356,35 @@ async function delAnnouncement(req, res) {
     })
 }
 
+async function getMembers(req, res) {
+    const response = await adminService.getMembers();
+    if (response.error || !response.success) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        data: response.data,
+        success: true
+    })
+}
+
+async function getMemByEmail(req, res) {
+    const email = req.params.email;
+    const response = await adminService.filterMembers(email);
+    if (response.error || !response.success) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        data: response.data,
+        success: true
+    })
+}
+
 module.exports = {
     login,
     signup,
@@ -371,5 +400,7 @@ module.exports = {
     editProject,
     getAnnouncements,
     newAnnouncement,
-    delAnnouncement
+    delAnnouncement,
+    getMembers,
+    getMemByEmail
 };
