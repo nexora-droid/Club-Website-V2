@@ -21,5 +21,7 @@ router.delete('/events/delete', adminController.requireAuth, adminController.del
 router.get('/announcements', adminController.getAnnouncements);
 router.post('/announcements/add', adminController.requireAuth, adminController.newAnnouncement);
 router.delete('/announcements/delete', adminController.requireAuth, adminController.delAnnouncement);
+router.get('/members', adminController.getMembers);
+router.get('/members/:email', adminController.getMemByEmail);
 router.post('/contact', adminController.sendMsg);
 module.exports = router;
