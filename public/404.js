@@ -2,18 +2,10 @@
 const canvas = document.getElementById('runner');
 const ctx = canvas.getContext('2d');
 const groundY = 255;
-let astronautY = groundY - 60;
 let velocityY = 0;
 const gravity = 0.6;
 const jumpPower = -12;
-const astronautGroundY = groundY - 60;
 let isGrounded = true;
-let alienSpeed = 5;
-const minimumAlienGap = 300;
-const minimumSpawnDelay = 700;
-const maximumSpawnDelay = 2300;
-let aliens = [];
-let nextAlienTime = 0;
 let gameStarted = false;
 let gameOver = false;
 let score = 0;
@@ -22,6 +14,10 @@ let lastFrameTime = 0;
 let highScore = Number(localStorage.getItem('moonRunnerHighScore')) || 0;
 let waitingToStart = true;
 let backgroundOffset = 0;
+
+// astronaut
+let astronautY = groundY - 60;
+const astronautGroundY = groundY - 60;
 const astronautImg = new Image();
 astronautImg.src = './images/astronaut-sprites-canvas.png';
 const spriteFrames = {
@@ -48,6 +44,14 @@ let astronautFrameTimer = 0;
 const astronautFrameWidth = 192;
 const astronautFrameHeight = 256;
 const astronautFrameDelay = 100;
+
+// alien
+let alienSpeed = 5;
+const minimumAlienGap = 300;
+const minimumSpawnDelay = 700;
+const maximumSpawnDelay = 2300;
+let aliens = [];
+let nextAlienTime = 0;
 const alienImg = new Image();
 alienImg.src = './images/alien-sprites.png';
 const alienSprite = {
@@ -77,6 +81,17 @@ const alienShootingSprite = {
     sourceWidth: 300,
     sourceHeight: 310
 }
+
+// sheild
+let isBlocking = false;
+let shieldKeyDown = false;
+let shieldFlashUntil = 0;
+const shieldX = 151;
+const shieldWidth = 28;
+const shieldHeight = 72;
+
+const shieldImage = new Image();
+shieldImage.src = './images/shield-sprite.png';
 
 // background design
 function drawStars(){
@@ -138,6 +153,7 @@ function drawCraters(){
     });
 }
 
+// astronaut sprite
 function drawAstronaut(x,y){
     if (!astronautImg.complete || !astronautImg.naturalWidth) return;
 
@@ -157,6 +173,7 @@ function drawAstronaut(x,y){
     );
 }
 
+// alien
 function drawAlien(alien){
     if(!alienImg.complete || !alienImg.naturalWidth) return;
 
@@ -196,6 +213,7 @@ function spawnAlien(timestamp){
     nextAlienTime = timestamp + randomDelay;
 }
 
+// collision death
 function checkCollision(alien){
     const alienX = alien.x + 8;
     const alienY = alien.y - 58;
@@ -210,6 +228,7 @@ function checkCollision(alien){
     );
 }
 
+// projectile shooting
 function alienShoot(timestamp){
     if(timestamp < nextShotTime) return;
     if(projectiles.length > 0) return;
@@ -236,8 +255,23 @@ function alienShoot(timestamp){
 }
 
 function updateProjectiles(deltaTime){
+    const currentShieldY = astronautGroundY - 4;
+
     projectiles.forEach(projectile => {
         projectile.x -= projectileSpeed * deltaTime;
+
+        const hitsShield =
+            isBlocking &&
+            projectile.x < shieldX + shieldWidth &&
+            projectile.x + projectile.width > shieldX &&
+            projectile.y < currentShieldY + shieldHeight &&
+            projectile.y + projectile.height > currentShieldY;
+
+        if (hitsShield){
+            projectile.blocked = true;
+            shieldFlashUntil = performance.now() + 300;
+            return;
+        }
 
         const hitsAstronaut = 
             projectile.x < 134 &&
@@ -250,8 +284,9 @@ function updateProjectiles(deltaTime){
         }
     });
 
-    projectiles = projectiles.filter(
-        projectile => projectile.x + projectile.width > 0
+    projectiles = projectiles.filter(projectile =>
+        !projectile.blocked &&
+        projectile.x + projectile.width > 0
     );
 }
 
@@ -273,6 +308,30 @@ function drawProjectile(projectile){
     );
 }
 
+// shield draw
+function drawShield(){
+    const now = performance.now();
+    const shieldIsFlashing = now < shieldFlashUntil;
+
+    if(!isBlocking) return;
+    if(!shieldImage.complete || !shieldImage.naturalWidth) return;
+
+    const frameX = shieldIsFlashing ? 256 : 0;
+
+    ctx.drawImage(
+        shieldImage,
+        frameX,
+        0,
+        256,
+        512,
+        shieldX,
+        astronautY - 4,
+        shieldWidth,
+        shieldHeight
+    );
+}
+
+// draw all
 function drawScene(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle = '#ffffff';
@@ -281,6 +340,7 @@ function drawScene(){
     drawStars();
     drawCraters();
     drawAstronaut(100, astronautY);
+    drawShield();
     aliens.forEach(alien => {
         drawAlien(alien);
     });
@@ -300,6 +360,7 @@ const restartBtn = document.getElementById('restartBtn');
 const scoreDisplay = document.getElementById('score');
 const highScoreDisplay = document.getElementById('highscore');
 
+// game starting function
 function startGame(){
     astronautY = astronautGroundY;
     velocityY = 0;
@@ -321,7 +382,10 @@ function startGame(){
 
     aliens = [];
     projectiles = [];
-    shootUntil = 0;
+    isBlocking = false;
+    shootingUntil = 0;
+    shieldKeyDown = false;
+    shieldFlashUntil = 0;
     shootingAlien = null;
     nextShotTime = performance.now() + 800;
     nextAlienTime = performance.now() + 2000 + Math.random() * 1000;
@@ -375,6 +439,26 @@ function jump(event){
 
 document.addEventListener('keydown', jump);
 
+// shield controls
+document.addEventListener('keydown', event => {
+    if(event.code === 'ShiftLeft' || event.code === 'ShiftRight'){
+        shieldKeyDown = true;
+        
+        if(gameStarted && isGrounded){
+            isBlocking = true;
+        }
+    }
+});
+
+document.addEventListener('keyup', event => {
+    if(event.code === 'ShiftLeft' || event.code === 'ShiftRight'){
+        shieldKeyDown = false;
+        isBlocking = false;
+        shieldFlashUntil = 0;
+    }
+});
+
+// main loop
 function gameLoop(timestamp = performance.now()){
     if(!gameStarted){
         drawScene();
@@ -464,6 +548,8 @@ function gameLoop(timestamp = performance.now()){
             astronautFrameTimer = 0;
         }
     }
+
+    isBlocking = shieldKeyDown && isGrounded;
 
     aliens.forEach(alien => {
         if(alien.isShooting && timestamp >= alien.shootUntil){
