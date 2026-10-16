@@ -15,6 +15,7 @@
                 <a href="#events">Events</a>
                 <a href="#members">Members</a>
                 <a href="index.html">Main Page</a>
+                <button id="new-announcement">Create Announcement</button>
             </div>
         </div>
 
@@ -407,7 +408,29 @@
         </form>
     </div>
 
-    <!-- popup for add project n event -->
+    <div id="a-menu">
+        <p id="am-title">Send a new Announcement</p>
+        <input type="text" placeholder="Announcement goes here" id="announcement">
+        <hr>
+        <p id="am-subtitle">Past Announcements</p>
+        <div id="past-anns">
+            <p id="pa-sub">All past announcements:</p>
+            <div id="pa-holder">
+                <div class="pa-card">
+                    <p class="pann-msg">Lorem ipsum dolor sit amet consectetur adipisicing elit. In voluptate numquam illo ipsam sed quaerat repellendus pariatur eum, nam impedit incidunt facere harum consequatur molestiae cum aliquam suscipit ex dignissimos!</p>
+                    <div class="pann-info-row">
+                        <p class="pann-date">Date Added: <span class="pann-date-part" style="font-weight: bold;">10/10/26</span></p>
+                        <button class="pann-delete">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="a-buttons">
+            <button class="a-cancel">Cancel</button>
+            <button class="a-submit">Submit</button>
+        </div>
+    </div>
+
     <template id="project-template">
        <div class="projectcard">
             <div>
@@ -443,6 +466,15 @@
         </div>
     </template>
 
+    <template id="announcement-template">
+        <div class="pa-card">
+            <p class="pann-msg">Lorem ipsum dolor sit amet consectetur adipisicing elit. In voluptate numquam illo ipsam sed quaerat repellendus pariatur eum, nam impedit incidunt facere harum consequatur molestiae cum aliquam suscipit ex dignissimos!</p>
+            <div class="pann-info-row">
+                <p class="pann-date">Date Added: <span class="pann-date-part" style="font-weight: bold;">10/10/26</span></p>
+                <button class="pann-delete">Delete</button>
+            </div>
+        </div>
+    </template>
 
     <script src="admin.js"></script>
     <script src="admin_utils.js"></script>

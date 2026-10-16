@@ -8,10 +8,10 @@ const cookieParser = require('cookie-parser');
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser());
 
-// app.use((req, res, next) => {
-//     console.log('COOKIES PARSER ', req.cookies);
-//     next();
-// })
+app.use((req, res, next) => {
+    console.log('Accessed: ', req.url);
+    next();
+})
 app.get('/', (req, res)=>{
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

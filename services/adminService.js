@@ -1,5 +1,6 @@
 // todo: login, signup
 const {createClient} = require('@supabase/supabase-js');
+const { response } = require('express');
 require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
@@ -139,6 +140,47 @@ async function editProject(name, tags, image, info, uemail) {
     }
 }
 
+async function getAnnouncements() {
+    const {data, error} = await supabaseAdmin.from('announcements').select('*').order('created_at', {ascending: false}).limit(5);
+    if (data && !error) {
+        return {
+            announcements: data,
+            success: true
+        }
+    } 
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function newAnnouncement(announcement) {
+    const {data, error} = await supabaseAdmin.from('announcements').insert({
+        announcement: announcement
+    }).select();
+    if (data && !error) {
+        return {
+            success: true,
+            data: response.data
+        }
+    }
+    return {
+        error: error
+    }
+}
+
+async function deleteAnnouncement(announcement) {
+    const {error} = await supabaseAdmin.from('announcements').delete().eq('announcement', announcement)
+    if (!error) {
+        return {
+            success: true
+        }
+    }
+    return {
+        error: error
+    }
+}
+
 module.exports = {
   signUp,
   login,
@@ -148,5 +190,8 @@ module.exports = {
   newEvent,
   delProject,
   delEvent,
-  editProject
+  editProject,
+  getAnnouncements,
+  newAnnouncement,
+  deleteAnnouncement
 }

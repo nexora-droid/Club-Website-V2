@@ -5,6 +5,7 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const nodemailer = require('nodemailer');
 const crypto = require('node:crypto');
+const { error } = require('node:console');
 async function login(req, res) {
     const {email, password} = req.body;
     const result = await adminService.login(email, password);
@@ -118,7 +119,6 @@ async function requireAuth(req, res, next) {
 }
 
 async function checkAuth(req, res) {
-    console.log('checkauth reached')
     if (!req.cookies) {
         return res.json({
             authenticated: false,
@@ -311,6 +311,51 @@ async function editProject(req, res) {
     })
 }
 
+async function getAnnouncements(req, res) {
+    const response = await adminService.getAnnouncements();
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.announcements
+    })
+}
+
+async function newAnnouncement(req, res) {
+    const announcement = req.body.announcement;
+    const response = await adminService.newAnnouncement(announcement);
+    if (response.error) {
+        console.log(response.error)
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.data
+    })
+}
+
+async function delAnnouncement(req, res) {
+    const announcement = req.body.announcement;
+    const response = await adminService.deleteAnnouncement(announcement);
+    if (response.error) {
+        console.log(response.error)
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true
+    })
+}
+
 module.exports = {
     login,
     signup,
@@ -323,5 +368,8 @@ module.exports = {
     delProject,
     delEvent,
     sendMsg,
-    editProject
+    editProject,
+    getAnnouncements,
+    newAnnouncement,
+    delAnnouncement
 };

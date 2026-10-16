@@ -358,4 +358,85 @@ document.addEventListener('DOMContentLoaded', ()=> {
         const projectUEmail = document.getElementById("pe-email").textContent;
         editProject(projName, projTags, projImg, projDesc, projectUEmail);
     } )
+
+    // loading announcements
+    const newAnnouncement = document.getElementById("new-announcement");
+    const announcementMenu = document.getElementById("a-menu");
+    const announcementTemplate = document.getElementById("announcement-template");
+    const pastAnnHolder = document.getElementById("pa-holder")
+    newAnnouncement.addEventListener("click", async(e) => {
+        announcementMenu.classList.remove("slideOut");
+        announcementMenu.classList.add("slideIn");
+        const request = await fetch('/members/announcements');
+        const reply = await request.json();
+        if (reply) {
+            pastAnnHolder.innerHTML = "";
+            for (let i = 0; i < reply.data.length; i++) {
+                const announcement = reply.data[i];
+                const clone = announcementTemplate.content.cloneNode(true);
+                clone.querySelector(".pann-msg").textContent = announcement.announcement;
+                const dateAdded = new Date(`${announcement.created_at}T00:00:00`);
+                const formattedDate = new Intl.DateTimeFormat('en-GB').format(dateAdded);
+                clone.querySelector(".pann-date-part").textContent = formattedDate;
+                pastAnnHolder.appendChild(clone);
+            }
+        }
+        console.log(reply);
+    })
+    const announcementCancel = document.querySelector('.a-cancel');
+    const announcementSubmit = document.querySelector('.a-submit');
+    const announcement = document.getElementById("announcement");
+    announcementCancel.addEventListener('click', (e)=> {
+        e.preventDefault();
+        announcementMenu.classList.remove('slideIn');
+        announcementMenu.classList.add('slideOut');
+    })
+    announcementSubmit.addEventListener('click', async(e)=>{
+        e.preventDefault();
+        const request = await fetch('/admin/announcements/add', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                announcement: announcement.value
+            }),
+            credentials: 'include'
+        })
+        const reply = await request.json();
+        if (reply.success) {
+            announcementMenu.classList.remove('slideIn');
+            announcementMenu.classList.add('slideOut');
+        }
+    })
+    pastAnnHolder.addEventListener('click', async (e) => {
+        if (e.target.closest(".pann-delete")) {
+            const deleteButton = e.target.closest(".pann-delete");
+            if (!deleteButton) return;
+            if (!await checkAuth()) {
+                alert('Not allowed to perform action');
+                return;
+            }
+            const buttonParent = deleteButton.parentElement;
+            const card = buttonParent.parentElement;
+            const anncToDel = card.querySelector(".pann-msg").textContent;
+            const request = await fetch('/admin/announcements/delete', {
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    announcement: anncToDel
+                }),
+                credentials: 'include'
+            })
+            const response = await request.json();
+            if (response.success) {
+                alert("yay deleted");
+            } else {
+                alert("oh no");
+                console.log(response);
+            }
+        }
+    })
 })
