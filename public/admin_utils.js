@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', ()=> {
+document.addEventListener('DOMContentLoaded', async (e)=> {
     const projectSubmit = document.getElementById('paf-submit');
     const projectCancel = document.getElementById('paf-cancel');
     const projectAdd = document.getElementById('project-add');
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     newAnnouncement.addEventListener("click", async(e) => {
         announcementMenu.classList.remove("slideOut");
         announcementMenu.classList.add("slideIn");
-        const request = await fetch('/members/announcements');
+        const request = await fetch('/admin/announcements');
         const reply = await request.json();
         if (reply) {
             pastAnnHolder.innerHTML = "";
@@ -439,4 +439,27 @@ document.addEventListener('DOMContentLoaded', ()=> {
             }
         }
     })
+
+    // member panel - the heavy work
+    const memberCardTemplate = document.getElementById("membercard-template");
+    const memberProjectTemplate = document.getElementById("memberproject-template");
+    const memberList = document.getElementById("m-list");
+    async function populateMembers() {
+        memberList.innerHTML = "";
+        const request = await fetch('/admin/members');
+        const response = await request.json();
+        for (let i = 0; i < response.data.length; i++) {
+            const user = response.data[i];
+            const clone = memberCardTemplate.content.cloneNode(true);
+            clone.querySelector(".m-name").textContent = user.name;
+            clone.querySelector(".m-email").textContent = user.email;
+            memberList.appendChild(clone);
+        }
+        const firstCard = memberList.querySelector(".membercard");
+        firstCard.classList.add("active");
+    }
+    // async function populateMainCard(email) {
+    //     const request = await fetch('/admin/member')
+    // }
+    populateMembers();
 })
