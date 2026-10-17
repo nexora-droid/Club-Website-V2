@@ -447,6 +447,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     const memberCardTemplate = document.getElementById("membercard-template");
     const memberProjectTemplate = document.getElementById("memberproject-template");
     const memberList = document.getElementById("m-list");
+    const msgStatus = document.getElementById('f-status');
     const refresh = document.getElementById("refresh");
     refresh.addEventListener('click', async (e)=> {
         e.preventDefault();
@@ -507,7 +508,30 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             element.classList.remove("active")
         })
         card.classList.add("active");
+        msgStatus.textContent = `Status of your message will show up here.`;
     })
     // send message
-    const msgToSend = document.getElementById('f-info').value;
+    const msgArea = document.getElementById('f-info');
+    msgArea.addEventListener('keydown', async (e)=>{
+        if (e.key === 'Enter' && e.shiftKey) {
+            e.preventDefault();
+            const req = await fetch('/admin/message', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: msgArea.parentElement.parentElement.parentElement.querySelector('#mi-email').textContent,
+                    message: msgArea.value,
+                })
+            })
+            msgStatus.textContent = 'Sending message.... please wait.'
+            const reply = await req.json();
+            if (reply.success) {
+                msgStatus.textContent = 'Message sent successfuly!'
+            } else {
+                msgStatus.textContent = `Message not sent! ${response.error.message}`
+            }
+        }
+    })
 })

@@ -4,8 +4,7 @@ require('dotenv').config();
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const nodemailer = require('nodemailer');
-const crypto = require('node:crypto');
-const { error } = require('node:console');
+const AI_KEY = process.env.HCAIKEY;
 async function login(req, res) {
     const {email, password} = req.body;
     const result = await adminService.login(email, password);
@@ -311,6 +310,59 @@ async function sendMsg(req, res) {
     }
 }
 
+async function msgMember(req, res) {
+    const message = req.body.message;
+    const email = req.body.email;
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.CLUB_EMAIL,
+            pass: process.env.CLUB_APP_PASS
+        }
+    })
+    const response = await fetch("https://ai.hackclub.com/proxy/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${AI_KEY}`
+            },
+            body: JSON.stringify({
+                model: "google/gemini-3.6-flash",
+                messages: [
+                    {
+                        role: "system",
+                        content: "Return short 5-7 word response that would suit to be the subject for the email's body that is being provided. Just return the suggested subject directly. Nothing else."
+                    },
+                    {
+                        role: "user",
+                        content: message
+                    }
+                ]
+            })
+        }
+    );
+    const data = await response.json();
+    const reply = data.choices[0].message.content;
+    const mailOptions = {
+        from: `Tech Club Team <${process.env.CLUB_EMAIL}>`,
+        to: email,
+        subject: reply? reply : `New message from admin team`,
+        // subject: `New message from admin team`,
+        text: message,
+        replyTo: process.env.CLUB_EMAIL
+    }
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        return res.json({
+            success: true
+        })
+    } catch (err) {
+        return res.json({
+            error: err
+        })
+    }
+}
+
 
 async function editProject(req, res) {
     console.log(req.body);
@@ -413,6 +465,7 @@ module.exports = {
     delProject,
     delEvent,
     sendMsg,
+    msgMember,
     editProject,
     getAnnouncements,
     newAnnouncement,

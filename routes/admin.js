@@ -24,5 +24,6 @@ router.post('/announcements/add', adminController.requireAuth, adminController.n
 router.delete('/announcements/delete', adminController.requireAuth, adminController.delAnnouncement);
 router.get('/members', adminController.getMembers);
 router.get('/members/:email', adminController.getMemByEmail);
+router.post('/message', adminController.msgMember);
 router.post('/contact', adminController.sendMsg);
 module.exports = router;
