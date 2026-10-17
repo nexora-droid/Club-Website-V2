@@ -238,6 +238,21 @@ async function getProjects(req, res) {
     return res.json(request.projects);
 }
 
+async function getProjByEmail(req, res) {
+    const email = req.params.email;
+    const response = await adminService.filterProjects(email);
+    if (response.error || !response.success) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        data: response.data,
+        success: true
+    })
+}
+
 async function getEvents(req, res) {
     const request = await adminService.getAllEvents();
     if (request.error) {
@@ -298,6 +313,7 @@ async function sendMsg(req, res) {
 
 
 async function editProject(req, res) {
+    console.log(req.body);
     const {project_name, project_tags, project_img, project_info, project_uemail} = req.body;
     const response = await adminService.editProject(project_name, project_tags, project_img, project_info, project_uemail);
     if (response.error) {
@@ -402,5 +418,6 @@ module.exports = {
     newAnnouncement,
     delAnnouncement,
     getMembers,
-    getMemByEmail
+    getMemByEmail,
+    getProjByEmail
 };

@@ -72,6 +72,20 @@ async function getAllProjs() {
   return {projects};
 }
 
+async function filterProjects(email) {
+    const {data, error} = await supabaseAdmin.from('projects').select().eq('email', email);
+    if (!data && error) {
+        return {
+            error: error,
+            success: false
+        }
+    }
+    return {
+        data: data,
+        success: true
+    }
+}
+
 async function newProject(name, tags, img, desc, email) {
     const {data, error} = await supabaseAdmin.from('projects').insert({name: name, tags: tags, image: img, description: desc, email: email}).select();
     console.log(email);
@@ -118,7 +132,12 @@ async function delEvent(name) {
 }
 
 async function editProject(name, tags, image, info, uemail) {
-    const {data, error} = await supabaseAdmin.from('members').update({
+    console.log(`Name: ${name}`);
+    console.log(`Tags: ${tags}`);
+    console.log(`Image: ${image}`);
+    console.log(`Info: ${info}`);
+    console.log(`UEmail: ${uemail}`);
+    const {data, error} = await supabaseAdmin.from('projects').update({
         name: name,
         image: image,
         tags: tags,
@@ -131,7 +150,7 @@ async function editProject(name, tags, image, info, uemail) {
     }
     if (!data || data.length === 0) {
         return {
-            error,
+            error: error,
             message: "Couldn't update project"
         }
     }
@@ -223,5 +242,6 @@ module.exports = {
   newAnnouncement,
   deleteAnnouncement,
   getMembers,
-  filterMembers
+  filterMembers,
+  filterProjects
 }

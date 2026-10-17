@@ -238,6 +238,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             const projTags = Array.from(projTagsDiv.children).map(child => child.textContent);
             const projDesc = card.querySelector(".project-info").innerHTML;
             const projUEmail = card.querySelector(".proj-email-part").textContent;
+            console.log(projUEmail);
             const projectEditWindow = document.getElementById("pe-menu");
             projectEditWindow.classList.remove("slideOut");
             projectEditWindow.classList.add("slideIn");
@@ -246,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             projectEditWindow.querySelector('#pe-image').value = projImg;
             projectEditWindow.querySelector("#pe-img-prev").src = projImg;
             projectEditWindow.querySelector("#pe-desc").textContent = projDesc;
-            projectEditWindow.querySelector("#pe-email").textContent = projUEmail;
+            projectEditWindow.querySelector("#pe-email").value = projUEmail;
         }
     })
     const eventsDiv = document.querySelector('.e-cards');
@@ -310,7 +311,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     }
     populateProjs();
     populateEvents();
-    async function editProject(name, tags, desc, img, email) {
+    async function editProject(name, tags, img, desc, email) {
         if (await checkAuth()) {
             tags = sliceTags(tags);
             const response = await fetch('/admin/projects/edit', {
@@ -321,13 +322,15 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
                 body: JSON.stringify({
                     project_name: name,
                     project_tags: tags,
-                    project_image: img,
+                    project_img: img,
                     project_info: desc,
                     project_uemail: email
                 })
             })
-            if (!response.success) {
+            const reply = await response.json();
+            if (!reply.success) {
                 console.error("Failed to edit project:", response.error);
+                console.log(response);
                 return;
             }
             await populateProjs();
@@ -351,11 +354,11 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         e.preventDefault();
         projectEditWindow.classList.add('slideOut');
         projectEditWindow.classList.remove('slideIn');
-        const projName = document.getElementById("pe-name").value;
-        const projImg = document.getElementById("pe-image").value;
-        const projTags = document.getElementById("pe-tags").value;
-        const projDesc = document.getElementById("pe-desc").innerHTML;
-        const projectUEmail = document.getElementById("pe-email").textContent;
+        const projName = projectEditWindow.querySelector("#pe-name").value;
+        const projImg = projectEditWindow.querySelector("#pe-image").value;
+        const projTags = projectEditWindow.querySelector("#pe-tags").value;
+        const projDesc = projectEditWindow.querySelector("#pe-desc").value;
+        const projectUEmail = projectEditWindow.querySelector("#pe-email").value;
         editProject(projName, projTags, projImg, projDesc, projectUEmail);
     } )
 
@@ -444,6 +447,11 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     const memberCardTemplate = document.getElementById("membercard-template");
     const memberProjectTemplate = document.getElementById("memberproject-template");
     const memberList = document.getElementById("m-list");
+    const refresh = document.getElementById("refresh");
+    refresh.addEventListener('click', async (e)=> {
+        e.preventDefault();
+        populateMembers();
+    })
     async function populateMembers() {
         memberList.innerHTML = "";
         const request = await fetch('/admin/members');
@@ -457,9 +465,49 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         }
         const firstCard = memberList.querySelector(".membercard");
         firstCard.classList.add("active");
+        populateMainCard(firstCard.querySelector(".m-email").textContent);
     }
-    // async function populateMainCard(email) {
-    //     const request = await fetch('/admin/member')
-    // }
+    const memberProjList = document.getElementById("mip-list");
+    const memberInfoPanel = document.getElementById("m-info");
+    async function populateMainCard(email) {
+        const request = await fetch(`/admin/members/${email}`)
+        const reply = await request.json();
+        if (reply.success) {
+            const projReq = await fetch(`/admin/projects/${email}`);
+            const projRes = await projReq.json();
+            if (projRes.data.length === 0) {
+                memberProjList.innerHTML = '';
+            } else {
+                memberProjList.innerHTML = ''
+                for (let i = 0; i < projRes.data.length; i++) {
+                    const project = projRes.data[i];
+                    const clone = memberProjectTemplate.content.cloneNode(true);
+                    clone.querySelector(".mip-name").textContent = project.name;
+                    clone.querySelector(".mip-desc").innerHTML = project.description;
+                    memberProjList.appendChild(clone);
+                }
+            }
+            memberInfoPanel.querySelector("#mi-name").textContent = reply.data[0].name;
+            memberInfoPanel.querySelector("#mi-email").textContent = reply.data[0].email;
+        }
+    }
     populateMembers();
+    memberList.addEventListener('click', async(e)=> {
+        console.log(e.target)
+        let card;
+        if (e.target.matches(".membercard")) {
+            card = e.target.closest(".membercard");
+        } else {
+            card = e.target.parentElement;
+        }
+        console.log(card)
+        const emailToDisp = card.querySelector(".m-email").textContent;
+        populateMainCard(emailToDisp);
+        Array.from(memberList.children).forEach((element) => {
+            element.classList.remove("active")
+        })
+        card.classList.add("active");
+    })
+    // send message
+    const msgToSend = document.getElementById('f-info').value;
 })

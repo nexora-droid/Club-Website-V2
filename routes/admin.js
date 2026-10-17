@@ -12,6 +12,7 @@ router.post('/login', adminController.login);
 router.post('/signup', adminController.signup);
 router.get('/me', adminController.checkAuth);
 router.get('/projects', adminController.getProjects);
+router.get('/projects/:email', adminController.getProjByEmail)
 router.post('/projects/add', adminController.addProject);
 router.post('/projects/edit', adminController.editProject);
 router.delete('/projects/delete', adminController.requireAuth, adminController.delProject);
