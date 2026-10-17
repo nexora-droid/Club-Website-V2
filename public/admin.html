@@ -365,7 +365,7 @@
                 <label for="e-name" class="labels">Event Name:</label>
                 <input type="text" name="e-name" id="e-name">
             </div>
-            <div class="special">
+            <div class="e-special">
                 <label for="e-status" id="special-label">Event Active:</label>
                 <input type="checkbox" name="e-status" id="e-status">
             </div>
@@ -375,6 +375,10 @@
             </div>
             <img src="https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg"
                 class="e-img-prev">
+            <div class="eaf-group">
+                <label for="e-id" class="labels">Custom Unique Event ID:</label>
+                <input type="text" name="e-id" id="e-id" placeholder="Enter a unique event id for this event">
+            </div>
             <div id="eaf-special">
                 <label for="e-desc" class="labels">Event Description: </label>
                 <br>
@@ -420,6 +424,41 @@
             <div id="pef-buttons">
                 <button id="pef-submit">Submit</button>
                 <button id="pef-cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="ee-menu">
+        <p id="eem-title">Edit Event</p>
+        <form id="ee-form">
+            <div class="eef-group">
+                <label for="ee-name" class="labels">Event Name:</label>
+                <input type="text" name="ee-name" id="ee-name">
+            </div>
+            <div class="e-special">
+                <label for="ee-status" id="special-label">Event Active:</label>
+                <input type="checkbox" name="ee-status" id="ee-status">
+            </div>
+            <div class="eef-group">
+                <label for="ee-image" class="labels">Image URL:</label>
+                <input type="url" name="ee-image" id="ee-image" placeholder="Enter URL of Image">
+            </div>
+            <img src="https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg"
+                class="ee-img-prev">
+            <div class="eaf-group">
+                <label for="ee-id" class="labels">Custom Unique Event ID:</label>
+                <label for="ee-id" style="font-size: 13px;">Advised not to change. Please use backend directly to change</label>
+                <input type="text" name="ee-id" id="ee-id" placeholder="Enter a unique event id for this event" disabled>
+            </div>
+            <div id="eef-special">
+                <label for="ee-desc" class="labels">Event Description: </label>
+                <br>
+                <textarea name="ee-desc" id="ee-desc" placeholder="Enter details about event. Markdown supported"
+                    rows="7"></textarea>
+            </div>
+            <div id="eef-buttons">
+                <button id="eef-submit">Submit</button>
+                <button id="eef-cancel">Cancel</button>
             </div>
         </form>
     </div>
@@ -474,6 +513,7 @@
                 <span class="status-active">Active</span>
             </div>
             <img src="" class="event-img">
+            <p class="event-id">Event ID: <span class="event-id-part">ABCEDF.hackclub</span></p>
             <p class="event-info">Lorem ipsum dolor sit amet consectetur adipisicing elit. In voluptate numquam illo ipsam sed quaerat repellendus pariatur eum, nam impedit incidunt facere harum consequatur molestiae cum aliquam suscipit ex dignissimos!</p>
             <div class="event-buttons">
                 <button class="event-edit">Edit</button>

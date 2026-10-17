@@ -18,6 +18,7 @@ router.post('/projects/edit', adminController.editProject);
 router.delete('/projects/delete', adminController.requireAuth, adminController.delProject);
 router.get('/events', adminController.getEvents);
 router.post('/events/add', adminController.addEvents);
+router.post('/events/edit', adminController.editEvent);
 router.delete('/events/delete', adminController.requireAuth, adminController.delEvent);
 router.get('/announcements', adminController.getAnnouncements);
 router.post('/announcements/add', adminController.requireAuth, adminController.newAnnouncement);

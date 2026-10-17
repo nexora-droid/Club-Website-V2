@@ -104,12 +104,29 @@ async function getAllEvents() {
     return {events};
 }
 
-async function newEvent(name, status, desc, img) {
-    const {data, error} = await supabaseAdmin.from('events').insert({name: name, active: status, description: desc, image: img}).select();
+async function newEvent(name, status, desc, img, event_id) {
+    const {data, error} = await supabaseAdmin.from('events').insert({name: name, active: status, description: desc, image: img, event_id: event_id}).select();
     if (!error) {
         return {success: true, data: data}
     } else {
         return {success: false, error: error}
+    }
+}
+
+async function editEvent(name, status, img, desc, event_id) {
+    const {error} = await supabaseAdmin.from('events').update({
+        name: name,
+        active: status,
+        image: img,
+        description: desc
+    }).eq('event_id', event_id)
+    if (error) {
+        return {
+            error
+        }
+    }
+    return {
+        success: true
     }
 }
 
@@ -238,6 +255,7 @@ module.exports = {
   delProject,
   delEvent,
   editProject,
+  editEvent,
   getAnnouncements,
   newAnnouncement,
   deleteAnnouncement,

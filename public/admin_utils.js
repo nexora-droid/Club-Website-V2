@@ -35,11 +35,13 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         const eventStatus = document.getElementById('e-status');
         const eventDesc = document.getElementById('e-desc');
         const eventImg = document.getElementById("e-image");
+        const eventID = document.getElementById("e-id");
         const eName = eventName.value;
         const eStatus = eventStatus.checked;
         const eImg = eventImg.value;
         const eDesc = eventDesc.value;
-        addEvent(eName, eStatus, eImg, eDesc);
+        const event_id = eventID.value;
+        addEvent(eName, eStatus, eImg, eDesc, event_id);
     })
     projectCancel.addEventListener('click', (e) => {
         e.preventDefault();
@@ -100,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             await populateProjs();
         }
     }
-    async function addEvent(name, status, img, desc) {
+    async function addEvent(name, status, img, desc, event_id) {
         if (await checkAuth()) {
             const response = await fetch("/admin/events/add", {
                 method: 'POST',
@@ -111,7 +113,8 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
                     name,
                     status,
                     img, 
-                    desc
+                    desc,
+                    event_id: event_id
                 })
             })
             if (!response.ok) {
@@ -192,11 +195,14 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
                 clone.querySelector(".event-info").innerHTML = event.description;
                 if (event.active) {
                     clone.querySelector("span").classList.add('status-active');
+                    clone.querySelector("span").classList.remove('status-ended');
                     clone.querySelector("span").textContent = "Active";
                 } else {
                     clone.querySelector("span").classList.add('status-ended');
+                    clone.querySelector("span").classList.remove('status-active');
                     clone.querySelector("span").textContent = "Ended";
                 }
+                clone.querySelector(".event-id-part").textContent = event.event_id;
                 eventsDiv.appendChild(clone);
             }
         }
@@ -252,25 +258,55 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     })
     const eventsDiv = document.querySelector('.e-cards');
     eventsDiv.addEventListener('click', async (e)=> {
-        const eDeleteButton = e.target.closest(".event-delete");
-        if (!eDeleteButton) return;
-        if (!await checkAuth()){
-            alert("Oops! Not allowed to perfom action!");
-            return;
-        }
-        const eButtonsDiv = eDeleteButton.parentElement;
-        const eCard = eButtonsDiv.parentElement;
-        const eventToDel = eCard.querySelector(".event-title").textContent;
-        console.log(`eventodelstored ${eventToDel}`);
-        let confirmDelete = prompt(`You are deleting ${eventToDel}. \nType sudo delete ${eventToDel} to confirm`);
-        if (confirmDelete.trim() === `sudo delete ${eventToDel}`) {
-            console.log(confirmDelete.trim());
-            if (await eventDel(eventToDel)) {
-                populateEvents();
-            };
-            console.log('del called');
-        } else {
-            alert('Please repeat the action, you mistyped something');
+        if (e.target.closest('.event-delete')) {
+            const eDeleteButton = e.target.closest(".event-delete");
+            if (!eDeleteButton) return;
+            if (!await checkAuth()){
+                alert("Oops! Not allowed to perfom action!");
+                return;
+            }
+            const eButtonsDiv = eDeleteButton.parentElement;
+            const eCard = eButtonsDiv.parentElement;
+            const eventToDel = eCard.querySelector(".event-title").textContent;
+            console.log(`eventodelstored ${eventToDel}`);
+            let confirmDelete = prompt(`You are deleting ${eventToDel}. \nType sudo delete ${eventToDel} to confirm`);
+            if (confirmDelete.trim() === `sudo delete ${eventToDel}`) {
+                console.log(confirmDelete.trim());
+                if (await eventDel(eventToDel)) {
+                    populateEvents();
+                };
+                console.log('del called');
+            } else {
+                alert('Please repeat the action, you mistyped something');
+            }
+        } else if (e.target.closest('.event-edit')) {
+            const editButton = e.target.closest('.event-edit');
+            if (!editButton) return;
+            if (!await checkAuth()) {
+                alert("Oops! Not allowed to perfom action!");
+                return;
+            }
+            const eButtonsDiv = editButton.parentElement;
+            const eCard = eButtonsDiv.parentElement;
+            const eventToEdit = eCard.querySelector(".event-title").textContent;
+            const eventEditWindow = document.getElementById("ee-menu");
+            let eventActive;
+            if (document.querySelector(".status-active")) {
+                eventActive = true;
+            } else {
+                eventActive = false;
+            }
+            const eventImg = eCard.querySelector('.event-img').src;
+            const eventDesc = eCard.querySelector('.event-info').innerHTML;
+            const eventId = eCard.querySelector('.event-id-part').textContent;
+            eventEditWindow.classList.remove('slideOut');
+            eventEditWindow.classList.add('slideIn');
+            eventEditWindow.querySelector('#ee-name').value = eventToEdit;
+            eventEditWindow.querySelector('#ee-status').checked = eventActive;
+            eventEditWindow.querySelector('#ee-image').value = eventImg;
+            eventEditWindow.querySelector('.ee-img-prev').src = eventImg;
+            eventEditWindow.querySelector('#ee-desc').value = eventDesc;
+            eventEditWindow.querySelector('#ee-id').value = eventId;
         }
     })
     async function deleteProj(name) {
@@ -336,6 +372,30 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             await populateProjs();
         }
     }
+    async function editEvent(name, status, img, desc, event_id) {
+        if (await checkAuth()) {
+            const request = await fetch('/admin/events/edit', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    event_name: name,
+                    event_status: status,
+                    event_img: img,
+                    event_description: desc,
+                    event_id: event_id
+                })
+            })
+            const reply = await request.json();
+            if (!reply.success) {
+                console.error("Failed to edit project:", response.error);
+                console.log(response);
+                return;
+            }
+            await populateEvents();
+        }
+    }
     // project edit closing & opening
     const projectEditWindow = document.getElementById("pe-menu");
     const projEditSubmit = document.getElementById("pef-submit");
@@ -361,6 +421,32 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         const projectUEmail = projectEditWindow.querySelector("#pe-email").value;
         editProject(projName, projTags, projImg, projDesc, projectUEmail);
     } )
+
+    // event edit closing & opening
+    const eventEditWindow = document.getElementById("ee-menu");
+    const eventEditSubmit = document.getElementById("eef-submit");
+    const eventEditCancel = document.getElementById("eef-cancel");
+
+    eventEditCancel.addEventListener('click', (e)=> {
+        e.preventDefault();
+        eventEditWindow.classList.add('slideOut');
+        eventEditWindow.classList.remove('slideIn');
+        eventEditWindow.querySelectorAll('form').forEach(form => form.reset());
+        eventEditWindow.querySelector('.ee-img-prev').src = "https://cdn.hackclub.com/01a07c4c-1f24-758b-9aa0-9416c522e697/pexels-balazsimon-13128922.jpg";
+        eventEditWindow.querySelector('textarea').textContent = "";
+    });
+
+    eventEditSubmit.addEventListener('click', async (e) => {
+        e.preventDefault();
+        eventEditWindow.classList.add('slideOut');
+        eventEditWindow.classList.remove('slideIn');
+        const eventName = eventEditWindow.querySelector('#ee-name').value;
+        const eventStatus = eventEditWindow.querySelector('#ee-status').checked;
+        const eventImg = eventEditWindow.querySelector('#ee-image').value;
+        const eventID = eventEditWindow.querySelector('#ee-id').value;
+        const eventDesc = eventEditWindow.querySelector('#ee-desc').value;
+        editEvent(eventName, eventStatus, eventImg, eventDesc, eventID);
+    });
 
     // loading announcements
     const newAnnouncement = document.getElementById("new-announcement");

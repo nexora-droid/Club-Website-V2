@@ -263,8 +263,8 @@ async function getEvents(req, res) {
 }
 
 async function addEvents(req, res) {
-    let {name, status, img, desc} = req.body;
-    const request = await adminService.newEvent(name, status, desc, img);
+    let {name, status, img, desc, event_id} = req.body;
+    const request = await adminService.newEvent(name, status, desc, img, event_id);
     if (request.success) {
         return res.json({
             added: true,
@@ -274,6 +274,21 @@ async function addEvents(req, res) {
     return res.json({
         added: false,
         error: request.error
+    })
+}
+
+async function editEvent(req, res) {
+    console.log(req.body);
+    const {event_name, event_status, event_img, event_description, event_id} = req.body;
+    const request = await adminService.editEvent(event_name, event_status, event_img, event_description, event_id);
+    if (request.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true
     })
 }
 
@@ -461,6 +476,7 @@ module.exports = {
     getProjects,
     getEvents,
     addEvents,
+    editEvent,
     requireAuth,
     delProject,
     delEvent,

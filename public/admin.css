@@ -379,7 +379,7 @@ html, body{
 .project-img, .event-img{
     display: block;
     width: 100%;
-    height: 250px;
+    height: auto;
     border: 0.5px solid black;
     align-self: center;
 }
@@ -440,8 +440,21 @@ html, body{
     color: white;
 }
 
+.status-ended{
+    border: 1px solid white;
+    border-radius: 20px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    background-color: rgb(255, 0, 78);
+    color: white;
+}
+
+.event-id {
+    margin: 0;
+}
+
 /* add event and project popups */
-#pa-menu, #ea-menu, #pe-menu{
+#pa-menu, #ea-menu, #pe-menu, #ee-menu{
     position: fixed;
     top: 53%;
     left: 50%;
@@ -456,7 +469,7 @@ html, body{
     visibility: hidden;
 }
 
-#pam-title, #eam-title, #pem-title{
+#pam-title, #eam-title, #pem-title, #eem-title{
     margin: 0 0 20px;
     padding-bottom: 10px;
     font-size: 2rem;
@@ -464,13 +477,13 @@ html, body{
     border-bottom: 1px solid black;
 }
 
-#pa-form, #ea-form, #pe-form{
+#pa-form, #ea-form, #pe-form, #ee-form{
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.paf-group, .eaf-group, .pef-group{
+.paf-group, .eaf-group, .pef-group, .eef-group{
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -481,7 +494,7 @@ html, body{
     font-weight: 500;
 }
 
-.eaf-group input, .paf-group input, .pef-group input{
+.eaf-group input, .paf-group input, .pef-group input, .eef-group input{
     width: 100%;
     height: 30px;
     padding: 10px;
@@ -491,12 +504,12 @@ html, body{
     border: 1px solid black;
 }
 
-#paf-special, #eaf-special, #pef-special{
+#paf-special, #eaf-special, #pef-special, #eef-special{
     display: flex;
     flex-direction: column;
 }
 
-#p-desc, #e-desc, #pe-desc{
+#p-desc, #e-desc, #pe-desc, #ee-desc{
     width: 100%;
     min-height: 120px;
     padding: 10px;
@@ -506,14 +519,14 @@ html, body{
     border: 1px solid black;
 }
 
-#p-img-preview, .e-img-preview, .pe-img-preview{
+#p-img-preview, .e-img-preview, .pe-img-preview, .ee-img-preview{
     display: block;
     width: 100%;
-    height: 200px;
+    height: auto;
     border: 1px solid black;
 }
 
-.special, #paf-special, #pef-special{
+.special, #paf-special, #pef-special, #eef-special{
     display: flex;
     align-items: left;
     justify-content: space-between;
@@ -522,13 +535,21 @@ html, body{
     border-top: 1px solid black;
 }
 
-#paf-buttons, #eaf-buttons, #pef-buttons{
+.e-special {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: safe;
+    padding: 20px 0;
+}
+
+#paf-buttons, #eaf-buttons, #pef-buttons, #eef-buttons{
     display: flex;
     justify-content: flex-start;
     gap: 20px;
 }
 
-#paf-submit, #paf-cancel, #eaf-submit, #eaf-cancel, #pef-submit, #pef-cancel{
+#paf-submit, #paf-cancel, #eaf-submit, #eaf-cancel, #pef-submit, #pef-cancel, #eef-submit, #eef-cancel{
     padding: 10px 30px;
     outline: none;
     border: 1px solid black;
@@ -539,12 +560,12 @@ html, body{
     transition: all 0.3s ease;
 }
 
-#paf-submit:hover, #paf-cancel:hover, #eaf-submit:hover, #eaf-cancel:hover, #pef-submit:hover, #pef-cancel:hover{
+#paf-submit:hover, #paf-cancel:hover, #eaf-submit:hover, #eaf-cancel:hover, #pef-submit:hover, #pef-cancel:hover, #eef-submit:hover, #eef-cancel:hover{
     transform: translateY(2px);
     box-shadow: 0 5px 5px rgb(109, 109, 109);
 }
 
-#paf-submit:active, #paf-cancel:active, #eaf-submit:active, #eaf-cancel:active, #pef-submit:active, #pef-cancel:active{
+#paf-submit:active, #paf-cancel:active, #eaf-submit:active, #eaf-cancel:active, #pef-submit:active, #pef-cancel:active, #eef-submit:active, #eef-cancel:active{
     transform: translateY(1px);
     box-shadow: 0 2px 5px black;
 }
