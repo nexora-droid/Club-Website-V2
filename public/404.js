@@ -46,10 +46,22 @@ const astronautFrameHeight = 256;
 const astronautFrameDelay = 100;
 
 // alien
-let alienSpeed = 5;
+const baseAlienSpeed = 5;
+const maximumAlienSpeed = 8;
+const alienSpeedIncrease = 0.5;
+const difficultyScoreInterval = 200;
+
+let alienSpeed = baseAlienSpeed;
+
 const minimumAlienGap = 300;
-const minimumSpawnDelay = 700;
-const maximumSpawnDelay = 2300;
+const baseMinimumSpawnDelay = 700;
+const baseMaximumSpawnDelay = 2300;
+const minimumSpawnDelayLimit = 450;
+const maximumSpawnDelayLimit = 1200;
+
+let minimumSpawnDelay = baseMinimumSpawnDelay;
+let maximumSpawnDelay = baseMaximumSpawnDelay;
+
 let aliens = [];
 let nextAlienTime = 0;
 
@@ -250,6 +262,26 @@ function spawnAlien(timestamp){
     const randomDelay = minimumSpawnDelay + Math.random() * (maximumSpawnDelay - minimumSpawnDelay);
 
     nextAlienTime = timestamp + randomDelay;
+}
+
+// difficulty
+function updateDifficulty(){
+    const difficultyLevel = Math.floor(score / difficultyScoreInterval);
+
+    alienSpeed = Math.min(
+        baseAlienSpeed + difficultyLevel * alienSpeedIncrease,
+        maximumAlienSpeed
+    );
+
+    minimumSpawnDelay = Math.max(
+        baseMinimumSpawnDelay - difficultyLevel * 50,
+        minimumSpawnDelayLimit
+    );
+
+    maximumSpawnDelay = Math.max(
+        baseMaximumSpawnDelay - difficultyLevel * 100,
+        maximumSpawnDelayLimit
+    );
 }
 
 // collision death
@@ -495,6 +527,9 @@ function startGame(){
     gameStarted = false;
     gameOver = false;
     score = 0;
+    alienSpeed = baseAlienSpeed;
+    minimumSpawnDelay = baseMinimumSpawnDelay;
+    maximumSpawnDelay = baseMaximumSpawnDelay;
     waitingToStart = true;
     astronautAnimation = 'idle';
     astronautFrame = 0;
@@ -659,6 +694,8 @@ function gameLoop(timestamp = performance.now()){
         lastScoreTime = timestamp;
         scoreDisplay.textContent = `Score: ${score}`;
     }
+
+    updateDifficulty();
 
     highScoreDisplay.textContent = `Best: ${highScore}`;
 
