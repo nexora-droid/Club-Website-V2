@@ -89,11 +89,14 @@ const alienFrameDelay = 130;
 let projectiles = [];
 let shieldImpacts = [];
 let nextShotTime = 0;
-const projectileSpeed = 8;
 const projectileCooldownMin = 1400;
 const projectileCooldownMax = 2200;
 let shootingAlien = null;
 let shootingUntil = 0;
+const baseProjectileSpeed = 8;
+const maximumProjectileSpeed = 13;
+const projectileSpeedIncrease = 0.5;
+let projectileSpeed = baseProjectileSpeed;
 
 // shield
 let isBlocking = false;
@@ -293,6 +296,11 @@ function updateDifficulty(){
     maximumSpawnDelay = Math.max(
         baseMaximumSpawnDelay - difficultyLevel * 100,
         maximumSpawnDelayLimit
+    );
+
+    projectileSpeed = Math.min(
+        baseProjectileSpeed + difficultyLevel * projectileSpeedIncrease,
+        maximumProjectileSpeed
     );
 }
 
@@ -667,6 +675,7 @@ function startGame(){
     gameOver = false;
     score = 0;
     alienSpeed = baseAlienSpeed;
+    projectileSpeed = baseProjectileSpeed;
     minimumSpawnDelay = baseMinimumSpawnDelay;
     maximumSpawnDelay = baseMaximumSpawnDelay;
     waitingToStart = true;
