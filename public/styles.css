@@ -322,7 +322,15 @@ html, body{
     position: relative;
     margin: 0;
     z-index: 1;
-    padding: 0;
+    width: fit-content;
+}
+
+.membercard.flipped .membername {
+    padding: 5px 10px;
+    color: white;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
 }
 
 .membercard.flipped .membercard-inner{
