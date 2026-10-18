@@ -375,6 +375,31 @@ function updateProjectiles(deltaTime){
             return;
         }
 
+        if(flightShieldActive){
+            const centerX = 127;
+            const centerY = astronautY + 27;
+            const radius = 40;
+
+            const closestX = Math.max(
+                projectile.x,
+                Math.min(centerX, projectile.x + projectile.width)
+            );
+
+            const closestY = Math.max(
+                projectile.y,
+                Math.min(centerY, projectile.y + projectile.height)
+            );
+
+            const distanceX = centerX - closestX;
+            const distanceY = centerY - closestY;
+
+            if(distanceX * distanceX + distanceY * distanceY <= radius * radius){
+                projectile.blocked = true;
+                createShieldImpact(closestX, closestY);
+                return;
+            }
+        }
+
         const hitsAstronaut = 
             projectile.x < 134 &&
             projectile.x + projectile.width > 105 &&
@@ -916,10 +941,33 @@ function gameLoop(timestamp = performance.now()){
         updateAlienAnimation(alien, deltaTime, timestamp);
         alien.x -= alienSpeed * deltaTime;
 
-        if(checkCollision(alien) && !flightShieldActive){
+        if(flightShieldActive){
+            const centerX = 127;
+            const centerY = astronautY + 27;
+            const radius = 40;
+
+            const alienWidth = alien.animation === 'shoot' ? 48 : alienDrawWidth;
+            const alienLeft = alien.x - (alien.animation === 'shoot' ? 8 : 2);
+            const alienRight = alienLeft + alienWidth;
+            const alienTop = alien.y - alienDrawHeight;
+            const alienBottom = alien.y;
+
+            const closestX = Math.max(alienLeft, Math.min(centerX, alienRight));
+            const closestY = Math.max(alienTop, Math.min(centerY, alienBottom));
+
+            const distanceX = centerX - closestX;
+            const distanceY = centerY - closestY;
+
+            if(distanceX * distanceX + distanceY * distanceY <= radius * radius){
+                createShieldImpact(closestX, closestY);
+                alien.dead = true;
+            }
+        } else if(checkCollision(alien)){
             gameOver = true;
         }
     });
+
+    aliens = aliens.filter(alien => !alien.dead);
 
     const shieldY = astronautY - 2;
 
