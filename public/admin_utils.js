@@ -521,9 +521,11 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             })
             const response = await request.json();
             if (response.success) {
-                alert("yay deleted");
+                alert("Deleted announcement");
+                announcementMenu.classList.remove('slideIn');
+                announcementMenu.classList.add('slideOut');
             } else {
-                alert("oh no");
+                alert("Oh no, check console for errors.");
                 console.log(response);
             }
         }
