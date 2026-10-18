@@ -182,6 +182,7 @@ async function addProject(req, res) {
     let {name, tags, img, desc, email} = req.body;
     const request = await adminService.newProject(name, tags, img, desc, email);
     if (request.success) {
+        await projNotif(name, desc, email);
         return res.json({
             added: true,
             data: request.data
@@ -269,6 +270,7 @@ async function addEvents(req, res) {
     let {name, status, img, desc, event_id} = req.body;
     const request = await adminService.newEvent(name, status, desc, img, event_id);
     if (request.success) {
+        await notifyMembers('e', 'New Event for NOVA Club - Check it out!', request.data.name)
         return res.json({
             added: true,
             data: request.data
@@ -287,7 +289,7 @@ async function editEvent(req, res) {
     if (request.error) {
         return res.json({
             success: false,
-            error: response.error
+            error: request.error
         })
     }
     return res.json({
@@ -421,6 +423,7 @@ async function newAnnouncement(req, res) {
             error: response.error
         })
     }
+    await notifyMembers('a', 'New Announcement for NOVA Club - Check it out!', announcement)
     return res.json({
         success: true,
         data: response.data
@@ -469,6 +472,112 @@ async function getMemByEmail(req, res) {
         data: response.data,
         success: true
     })
+}
+
+async function getAnnSubscribed() {
+    const supabaseClient = createClient(SUPABASE_URL, process.env.SUPABASE_SECRET_KEY)
+    const {data, error} = await supabaseClient.from('subscriptions').select('*').eq('announcements', true);
+    if (!error) {
+        return {success: true, data: data}
+    }
+    return {success: false, error: error}
+}
+
+// async function getProjSubscribed() {
+//     const supabaseClient = createClient(SUPABASE_URL, process.env.SUPABASE_SECRET_KEY)
+//     const {data, error} = await supabaseClient.from('subscriptions').select('*').eq('projects', true);
+//     if (!error) {
+//         return {success: true, data: data}
+//     }
+//     return {success: false, error: error}
+// }
+
+async function getEventSubscribed() {
+    const supabaseClient = createClient(SUPABASE_URL, process.env.SUPABASE_SECRET_KEY)
+    const {data, error} = await supabaseClient.from('subscriptions').select('*').eq('events', true);
+    if (!error) {
+        return {success: true, data: data}
+    }
+    return {success: false, error: error}
+}
+
+async function notifyMembers(category, subject, body, body2) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.CLUB_EMAIL,
+            pass: process.env.CLUB_APP_PASS
+        }
+    });
+    if (category.toLowerCase() === 'a') {
+        const response = await getAnnSubscribed();
+        if (response.success) {
+            for (let i = 0; i < response.data.length; i++) {
+                const user = response.data[i];
+                const mailOptions = {
+                    from: `Tech Club Team <${process.env.CLUB_EMAIL}>`,
+                    to: user.email,
+                    subject: subject,
+                    text: `A new announcement has been published for NOVA Club. Announcement: \n${body} ${body2 ? `\n\n${body2}\n\nRegards, Tech Club Team` : `\n\nRegards, Tech Club Team` }`,
+                }
+                try {
+                    const info = await transporter.sendMail(mailOptions);
+                    console.log(`Email sent to ${user.email}`)
+                } catch (err) {
+                    console.log(`Email failed to send to ${user.email}, error: ${err}`);
+                }
+            }
+            return {success: true};
+        } else {
+            return {error: response.error, success: false}
+        }
+    } else if (category.toLowerCase() === 'e') {
+        const response = await getEventSubscribed();
+        if (response.success) {
+            for (let i = 0; i < response.data.length; i++) {
+                const user = response.data[i];
+                const mailOptions = {
+                    from: `Tech Club Team <${process.env.CLUB_EMAIL}>`,
+                    to: user.email,
+                    subject: subject,
+                    text: `A new event will occur for NOVA Club. Event: ${body}${body2 ? `\n\n${body2}\n\nRegards, Tech Club Team` : `\n\nRegards, Tech Club Team` }`,
+                }
+                try {
+                    const info = await transporter.sendMail(mailOptions);
+                    console.log(`Email sent to ${user.email}`)
+                } catch (err) {
+                    console.log(`Email failed to send to ${user.email}, error: ${err}`);
+                }
+            }
+            return {success: true}
+        } else {
+            return {error: response.error, success: false}
+        }
+    }
+    return {error: 'Unkown category', success: false}
+}
+
+async function projNotif(project_name, project_desc, email) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.CLUB_EMAIL,
+            pass: process.env.CLUB_APP_PASS
+        }
+    });
+    const mailOptions = {
+        from:`Tech Club Team <${process.env.CLUB_EMAIL}>`,
+        to: email,
+        subject: `New Project has been added to your account`,
+        text: `A new projet has been added to your account, please go view it on the website. \nProject Name${project_name} \nBelow is your Project Description, which may look funky/werid as symbols may be included in the description. \nFor proper viewing check the website please. \n${project_desc} \nRegards - Tech Club Team`,
+        html: ''
+    }
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        return {reply: info}
+    } catch (err) {
+        return {error: err}
+    }
 }
 
 module.exports = {
