@@ -501,10 +501,10 @@ h1, h2, h3, p{
 }
 
 #errorToast {
-    width: 350px;
-    height: fit-content;
+    width: 400px;
+    height: min-content;
     padding-top: 10px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     padding-left: 20px;
     padding-right: 20px;
     background-color: rgb(255, 112, 112);
@@ -516,11 +516,7 @@ h1, h2, h3, p{
     z-index: 1001;
     transform: translateX(-100%);
     color: white;
-    font-size: 1.1em;
-}
-
-#errorTitle {
-    font-size: 0.85em;
+    font-size: 0.95em;
 }
 
 #errorBreak {
@@ -536,4 +532,28 @@ h1, h2, h3, p{
     margin-top: -5px;
     margin-right: 5px;
     transition: all 0.3s ease;
+}
+
+#errorProgress {
+    background-color: red;
+    width: 100%;
+    height: 4px;
+    margin-top: 7.6px;
+    overflow: hidden;
+}
+
+#errorProgressBar {
+    background-color: rgb(255, 112, 112);
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-origin: left;
+}
+
+@keyframes progressAnim {
+    from {
+        transform: scaleX(0);
+    } to {
+        transform: scaleX(1);
+    }
 }

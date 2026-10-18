@@ -1,6 +1,19 @@
 // error Toast
 const errorToast = document.getElementById('errorToast');
+const errorProgressBar = document.getElementById('errorProgressBar');
 errorToast.style.visibility = 'hidden';
+let toastTimeout;
+function showToast(message, hint, duration = 5000) {
+    // message = title, hint = msg
+    errorToast.querySelector('#errorTitle').textContent = message;
+    errorToast.querySelector('#errorMsg').textContent = hint;
+    errorToast.style.visibility = 'visible';
+    errorProgressBar.style.animation = `progressAnim ${duration/1000}s linear forwards`;
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(()=> {
+        errorToast.style.visibility = 'hidden'
+    }, duration+200);
+}
 
 // section switching
 const settingsLinks = document.querySelectorAll(".settings-link");
@@ -225,7 +238,7 @@ removepfpBtn.addEventListener("click", async (e) => {
     })
     const reply = await response.json();
     if (reply.error) {
-        alert('Error deleting photo: ' + reply.mesge);
+        showToast(reply.error.message, reply.error.hint, 5000);
     } else {
         pfp.src = defaultpfp;
         picInput.value = "";
@@ -412,7 +425,7 @@ notifSave.addEventListener("click", async(e) => {
     if (reply.success) {
         alert('Saved prefrences!');
     } else {
-        alert("Error: " + reply.error.message);
+        showToast(reply.error.message, reply.error.hint, 4000);
     }
 })
 document.addEventListener('DOMContentLoaded', async(e)=> {
@@ -425,6 +438,8 @@ document.addEventListener('DOMContentLoaded', async(e)=> {
         projectsNotif.checked = reply.data[0].projects;
         announcementNotif.checked = reply.data[0].announcements;
     } else {
-        alert('Fetching prefrences for notifications failed.');
+        showToast(reply.error.message, reply.error.hint, 5000);
     }
 })
+
+showToast('testing', 'testing 123');
