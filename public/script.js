@@ -570,3 +570,22 @@ async function sendMsg(subject, email, body) {
     const reply = await response.json();
     console.log(reply);
 }
+const eventCardTemplate = document.getElementById('eventcard-template');
+const eventsList = document.getElementById('event-list');
+async function populateEvents() {
+    const request = await fetch('/admin/events');
+    const response = await request.json();
+    if (response.success) {
+        eventsList.innerHTML = '';
+        for (let i = 0; i < response.data.length; i++) {
+            const clone = eventCardTemplate.content.cloneNode(true);
+            const event = response.data[i];
+            clone.querySelector('h3').textContent = event.name;
+            clone.querySelector('.eventexplanation').textContent = event.description;
+            eventsList.appendChild(clone);
+        }
+    } else {
+        console.log(response)
+    }
+}
+populateEvents();

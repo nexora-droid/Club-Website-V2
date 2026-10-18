@@ -259,7 +259,10 @@ async function getEvents(req, res) {
             error: request.error
         })
     }
-    return res.json(request.events);
+    return res.json({
+        success: true,
+        data: request.events
+    });
 }
 
 async function addEvents(req, res) {
