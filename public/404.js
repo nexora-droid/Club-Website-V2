@@ -108,6 +108,14 @@ const normalShieldHeight = 62;
 const shieldImage = new Image();
 shieldImage.src = './images/shield-sprite.png';
 
+// flying powerup
+let flightShard = null;
+let flightSpawnScore = 300 + Math.floor(Math.random() * 101);
+let flightAvailable = false;
+let isFlying = false;
+let flightEndsAtScore = 0;
+const flightDuration = 100; // powerup fly time
+
 // background design
 function drawStars(){
     // random coordinate array (i used ai to get coords)
@@ -488,6 +496,106 @@ function drawShield(){
     );
 }
 
+// flying shard
+function spawnFlightShard(){
+    if(flightShard || flightAvailable || isFlying) return;
+
+    flightShard = {
+        x: canvas.width + 30,
+        y: groundY - 18,
+        size: 18
+    };
+}
+
+function drawFlightShard(){
+    if(!flightShard) return;
+
+    const {x, y, size} = flightShard;
+
+    ctx.save();
+    ctx.translate(x, y);
+
+    ctx.fillStyle = '#168cff';
+    ctx.shadowColor = '#168cff';
+    ctx.shadowBlur = 14;
+
+    ctx.beginPath();
+    ctx.moveTo(0, -size);
+    ctx.lineTo(size * 0.65, 0);
+    ctx.lineTo(0, size);
+    ctx.lineTo(-size * 0.65, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#a9e5ff';
+
+    ctx.beginPath();ctx.moveTo(0, -size);
+    ctx.moveTo(0, -size + 5);
+    ctx.lineTo(size * 0.25, 0);
+    ctx.lineTo(0, size - 5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function updateFlightShard(deltaTime){
+    if(!flightShard){
+        if(!flightAvailable && !isFlying && score >= flightSpawnScore){
+            const spawnX = canvas.width + 30;
+            const shardWidth = 18;
+            const safeDistance = 140;
+
+            const alienNearby = aliens.some(alien => {
+                const alienWidth = alien.animation === 'shoot' ? 48 : alienDrawWidth;
+                const alienLeft = alien.x - (alien.animation === 'shoot' ? 8 : 2);
+                const alienRight = alienLeft + alienWidth;
+
+                return(
+                    spawnX - shardWidth < alienRight + safeDistance &&
+                    spawnX - shardWidth > alienLeft + safeDistance
+                );
+            });
+
+            if(!alienNearby){
+                spawnFlightShard();
+            }
+        }
+
+        return;
+    }
+
+    flightShard.x -=alienSpeed * deltaTime;
+
+    const astronautLeft = 100;
+    const astronautRight = 155;
+    const astronautTop = astronautY - 5;
+    const astronautBottom = astronautY + 60;
+
+    const shardLeft = flightShard.x - flightShard.size;
+    const shardRight = flightShard.x + flightShard.size;
+    const shardTop = flightShard.y - flightShard.size;
+    const shardBottom = flightShard.y + flightShard.size;
+
+    const collected = 
+        astronautLeft < shardRight &&
+        astronautRight > shardLeft &&
+        astronautTop < shardBottom &&
+        astronautBottom > shardTop;
+
+    if(collected){
+        flightAvailable = true;
+        flightShard = null;
+        return;
+    }
+
+    if(flightShard.x + flightShard.size < 0){
+        flightShard = null;
+        flightSpawnScore = score + 100;
+    }
+}
+
 // draw all
 function drawScene(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -497,6 +605,7 @@ function drawScene(){
     drawStars();
     drawCraters();
     drawAstronaut(100, astronautY);
+    drawFlightShard();
     drawShield();
     aliens.forEach(alien => {
         drawAlien(alien);
@@ -553,6 +662,12 @@ function startGame(){
     nextShotTime = performance.now() + 800;
     nextAlienTime = performance.now() + 2000 + Math.random() * 1000;
 
+    flightShard = null;
+    flightSpawnScore = 300 + Math.floor(Math.random() * 101);
+    flightAvailable = false;
+    isFlying = false;
+    flightEndsAtScore = 0;
+
     overlayTitle.textContent = '';
     overlayMessage.textContent = 'Press SPACE to start';
     finalScore.textContent = '';
@@ -587,6 +702,19 @@ function jump(event){
         startBtn.style.display = 'block';
         lastFrameTime = performance.now();
         lastScoreTime = performance.now();
+        return;
+    }
+
+    if(gameStarted && flightAvailable && !isFlying){
+        flightAvailable = false;
+        isFlying = true;
+        isGrounded = false;
+        velocityY = 0;
+        flightEndsAtScore = score + flightDuration;
+
+        astronautAnimation = 'jump';
+        astronautFrame = 0
+        astronautFrameTimer = 0;
         return;
     }
 
@@ -696,27 +824,63 @@ function gameLoop(timestamp = performance.now()){
     }
 
     updateDifficulty();
+    updateFlightShard(deltaTime);
 
     highScoreDisplay.textContent = `Best: ${highScore}`;
 
-    velocityY += gravity * deltaTime;
-    astronautY += velocityY * deltaTime;
+    // velocityY += gravity * deltaTime;
+    // astronautY += velocityY * deltaTime;
 
-    if(!isGrounded && velocityY > 0 && astronautAnimation === 'jump'){
+
+    // if(!isGrounded && velocityY > 0 && astronautAnimation === 'jump'){
+    //     astronautAnimation = 'fall';
+    //     astronautFrame = 0;
+    //     astronautFrameTimer = 0;
+    // }
+
+    // if (astronautY >= astronautGroundY){
+    //     astronautY = astronautGroundY;
+    //     velocityY = 0;
+
+    //     if(!isGrounded){
+    //         isGrounded = true;
+    //         astronautAnimation = 'land';
+    //         astronautFrame = 0;
+    //         astronautFrameTimer = 0;
+    //     }
+    // }
+
+    if(isFlying && score >= flightEndsAtScore){
+        isFlying = false;
+        velocityY = 0;
+        isGrounded = false;
         astronautAnimation = 'fall';
         astronautFrame = 0;
         astronautFrameTimer = 0;
     }
 
-    if (astronautY >= astronautGroundY){
-        astronautY = astronautGroundY;
-        velocityY = 0;
+    if(isFlying){
+        astronautY = Math.max(groundY - 150, astronautY - 3 * deltaTime);
+    } else{
+        velocityY += gravity * deltaTime;
+        astronautY += velocityY * deltaTime;
 
-        if(!isGrounded){
-            isGrounded = true;
-            astronautAnimation = 'land';
+        if(!isGrounded && velocityY > 0 && astronautAnimation === 'jump'){
+            astronautAnimation = 'fall';
             astronautFrame = 0;
             astronautFrameTimer = 0;
+        }
+
+        if(astronautY >= astronautGroundY){
+            astronautY = astronautGroundY;
+            velocityY = 0;
+
+            if(!isGrounded){
+                isGrounded = true;
+                astronautAnimation = 'land';
+                astronautFrame = 0;
+                astronautFrameTimer = 0;
+            }
         }
     }
 
@@ -737,7 +901,7 @@ function gameLoop(timestamp = performance.now()){
         const alienIsShooting = alien.animation === 'shoot';
         const alienWidth = alienIsShooting ? 48 : alienDrawWidth;
         const alienLeft = alien.x - (alienIsShooting ? 8 : 2);
-        const alienRight = alienLeft + alienDrawWidth;
+        const alienRight = alienLeft + alienWidth;
         const alienTop = alien.y - alienDrawHeight;
         const alienBottom = alien.y;
 
