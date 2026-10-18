@@ -110,11 +110,15 @@ shieldImage.src = './images/shield-sprite.png';
 
 // flying powerup
 let flightShard = null;
-let flightSpawnScore = 300 + Math.floor(Math.random() * 101);
+let flightSpawnScore = 300 + Math.floor(Math.random() * 500);
 let flightAvailable = false;
 let isFlying = false;
 let flightEndsAtScore = 0;
-const flightDuration = 100; // powerup fly time
+const flightDuration = 50; // powerup fly time
+
+let flightShieldActive = false;
+let flightShieldEndTime = 0;
+const flightShieldDuration = 2000;
 
 // background design
 function drawStars(){
@@ -369,7 +373,7 @@ function updateProjectiles(deltaTime){
             projectile.y < astronautY + 58 &&
             projectile.y + projectile.height > astronautY + 8;
 
-        if(hitsAstronaut){
+        if(hitsAstronaut && !flightShieldActive){
             gameOver = true;
         }
     });
@@ -505,6 +509,8 @@ function spawnFlightShard(){
         y: groundY - 18,
         size: 18
     };
+
+    flightSpawnScore = score + 500;
 }
 
 function drawFlightShard(){
@@ -592,8 +598,31 @@ function updateFlightShard(deltaTime){
 
     if(flightShard.x + flightShard.size < 0){
         flightShard = null;
-        flightSpawnScore = score + 100;
     }
+}
+
+// protection bubble after dropping from flying powerup
+function drawFlightShield(){
+    if(!flightShieldActive) return;
+
+    const centerX = 127;
+    const centerY = astronautY + 27;
+    const radius = 40;
+    const remaining = Math.max(0, (flightShieldEndTime - performance.now()) / flightShieldDuration);
+
+    ctx.save();
+    ctx.globalAlpha = 0.4 + remaining * 0.3;
+    ctx.fillStyle = 'rgba(22, 138, 255, 0.6)';
+    ctx.strokeStyle = '#168cff';
+    ctx.lineWidth = 2;
+    ctx.shadowColor = '#168cff';
+    ctx.shadowBlur = 14;
+
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
 }
 
 // draw all
@@ -607,6 +636,7 @@ function drawScene(){
     drawAstronaut(100, astronautY);
     drawFlightShard();
     drawShield();
+    drawFlightShield();
     aliens.forEach(alien => {
         drawAlien(alien);
     });
@@ -667,6 +697,8 @@ function startGame(){
     flightAvailable = false;
     isFlying = false;
     flightEndsAtScore = 0;
+    flightShieldActive = false;
+    flightShieldEndTime = 0;
 
     overlayTitle.textContent = '';
     overlayMessage.textContent = 'Press SPACE to start';
@@ -828,28 +860,6 @@ function gameLoop(timestamp = performance.now()){
 
     highScoreDisplay.textContent = `Best: ${highScore}`;
 
-    // velocityY += gravity * deltaTime;
-    // astronautY += velocityY * deltaTime;
-
-
-    // if(!isGrounded && velocityY > 0 && astronautAnimation === 'jump'){
-    //     astronautAnimation = 'fall';
-    //     astronautFrame = 0;
-    //     astronautFrameTimer = 0;
-    // }
-
-    // if (astronautY >= astronautGroundY){
-    //     astronautY = astronautGroundY;
-    //     velocityY = 0;
-
-    //     if(!isGrounded){
-    //         isGrounded = true;
-    //         astronautAnimation = 'land';
-    //         astronautFrame = 0;
-    //         astronautFrameTimer = 0;
-    //     }
-    // }
-
     if(isFlying && score >= flightEndsAtScore){
         isFlying = false;
         velocityY = 0;
@@ -857,6 +867,13 @@ function gameLoop(timestamp = performance.now()){
         astronautAnimation = 'fall';
         astronautFrame = 0;
         astronautFrameTimer = 0;
+
+        flightShieldActive = true;
+        flightShieldEndTime = performance.now() + flightShieldDuration
+    }
+
+    if(flightShieldActive && performance.now() >= flightShieldEndTime){
+        flightShieldActive = false;
     }
 
     if(isFlying){
@@ -890,7 +907,7 @@ function gameLoop(timestamp = performance.now()){
         updateAlienAnimation(alien, deltaTime, timestamp);
         alien.x -= alienSpeed * deltaTime;
 
-        if(checkCollision(alien)){
+        if(checkCollision(alien) && !flightShieldActive){
             gameOver = true;
         }
     });
