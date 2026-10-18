@@ -83,13 +83,15 @@ const projectileCooldownMax = 2200;
 let shootingAlien = null;
 let shootingUntil = 0;
 
-// sheild
+// shield
 let isBlocking = false;
 let shieldKeyDown = false;
 let shieldFlashUntil = 0;
 const shieldX = 151;
-const shieldWidth = 28;
-const shieldHeight = 72;
+const shieldWidth = 24;
+const shieldHeight = 62;
+const normalShieldWidth = 24;
+const normalShieldHeight = 62;
 
 const shieldImage = new Image();
 shieldImage.src = './images/shield-sprite.png';
@@ -252,15 +254,15 @@ function spawnAlien(timestamp){
 
 // collision death
 function checkCollision(alien){
-    const alienX = alien.x + 5;
-    const alienY = alien.y - 45;
-    const alienWidth = 28;
-    const alienHeight = 38;
+    const alienX = alien.x - 2;
+    const alienY = alien.y - 50;
+    const alienWidth = 38;
+    const alienHeight = 46;
 
-    const astronautLeft = 105;
-    const astronautRight = 134;
-    const astronautTop = astronautY + 8;
-    const astronautBottom = astronautY + 58;
+    const astronautLeft = 102;
+    const astronautRight = 148;
+    const astronautTop = astronautY + 4;
+    const astronautBottom = astronautY + 60;
 
     return(
         astronautLeft < alienX + alienWidth &&
@@ -437,16 +439,20 @@ function drawShield(){
 
     const frameX = shieldIsFlashing ? 256 : 0;
 
+    const drawWidth = shieldWidth;
+    const drawHeight = shieldHeight;
+    const drawY = astronautY - 2;
+
     ctx.drawImage(
         shieldImage,
         frameX,
         0,
         256,
         512,
-        shieldX,
-        astronautY - 4,
-        shieldWidth,
-        shieldHeight
+        shieldX - (drawWidth - shieldWidth) / 2,
+        drawY,
+        drawWidth,
+        drawHeight
     );
 }
 
@@ -580,6 +586,12 @@ document.addEventListener('keyup', event => {
     }
 });
 
+window.addEventListener('blur', () => {
+    shieldKeyDown = false;
+    isBlocking = false;
+    shieldFlashUntil = 0;
+});
+
 // main loop
 function gameLoop(timestamp = performance.now()){
     if(!gameStarted){
@@ -671,8 +683,6 @@ function gameLoop(timestamp = performance.now()){
         }
     }
 
-    isBlocking = shieldKeyDown && isGrounded;
-
     spawnAlien(timestamp);
 
     aliens.forEach(alien => {
@@ -683,6 +693,26 @@ function gameLoop(timestamp = performance.now()){
             gameOver = true;
         }
     });
+
+    const shieldY = astronautY - 2;
+
+    const alienTouchesShield = aliens.some(alien => {
+        const alienIsShooting = alien.animation === 'shoot';
+        const alienWidth = alienIsShooting ? 48 : alienDrawWidth;
+        const alienLeft = alien.x - (alienIsShooting ? 8 : 2);
+        const alienRight = alienLeft + alienDrawWidth;
+        const alienTop = alien.y - alienDrawHeight;
+        const alienBottom = alien.y;
+
+        return(
+            shieldX < alienRight &&
+            shieldX + shieldWidth > alienLeft &&
+            shieldY < alienBottom &&
+            shieldY + shieldHeight > alienTop
+        );
+    });
+    
+    isBlocking = shieldKeyDown && isGrounded && !alienTouchesShield;
 
     alienShoot(timestamp);
     updateProjectiles(deltaTime);
