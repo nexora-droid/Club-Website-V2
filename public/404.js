@@ -52,35 +52,36 @@ const minimumSpawnDelay = 700;
 const maximumSpawnDelay = 2300;
 let aliens = [];
 let nextAlienTime = 0;
+
 const alienImg = new Image();
 alienImg.src = './images/alien-sprites.png';
-const alienSprite = {
-    sourceX: 180,
-    sourceY: 155,
-    sourceWidth: 210,
-    sourceHeight: 290,
-    drawWidth: 48,
-    drawHeight: 66
+const alienFrames = {
+    walk: [
+        [190, 175, 200, 280],
+        [525, 175, 200, 280],
+        [365, 495, 200, 285]
+    ],
+    shoot: [
+        [815, 175, 230, 280],
+        [1168, 175, 235, 280],
+        [690, 495, 235, 285],
+        [1065, 495, 225, 285]
+    ]
 };
+
+const alienDrawWidth = 40;
+const alienDrawHeight = 50;
+const alienFrameDelay = 130;
+
+// projectiles
 let projectiles = [];
+let shieldImpacts = [];
 let nextShotTime = 0;
 const projectileSpeed = 8;
 const projectileCooldownMin = 1400;
 const projectileCooldownMax = 2200;
 let shootingAlien = null;
 let shootingUntil = 0;
-const alienNormalSprite = {
-    sourceX: 180,
-    sourceY: 155,
-    sourceWidth: 210,
-    sourceHeight: 290
-}
-const alienShootingSprite = {
-    sourceX: 760,
-    sourceY: 145,
-    sourceWidth: 300,
-    sourceHeight: 310
-}
 
 // sheild
 let isBlocking = false;
@@ -177,19 +178,52 @@ function drawAstronaut(x,y){
 function drawAlien(alien){
     if(!alienImg.complete || !alienImg.naturalWidth) return;
 
-    const sprite = alien.isShooting ? alienShootingSprite : alienNormalSprite;
+    const frames = alien.animation === 'shoot' ? alienFrames.shoot : alienFrames.walk;
+    const frame = frames[alien.frameIndex % frames.length];
+
+    const isShooting = alien.animation === 'shoot';
+    const drawWidth = isShooting ? 48 : alienDrawWidth;
+    const drawHeight = alienDrawHeight;
+    const drawX = alien.x - (isShooting ? 8 : 2);
 
     ctx.drawImage(
         alienImg,
-        sprite.sourceX,
-        sprite.sourceY,
-        sprite.sourceWidth,
-        sprite.sourceHeight,
-        alien.x,
-        alien.y - alienSprite.drawHeight,
-        alienSprite.drawWidth,
-        alienSprite.drawHeight
+        frame[0],
+        frame[1],
+        frame[2],
+        frame[3],
+        drawX,
+        alien.y - drawHeight,
+        drawWidth,
+        drawHeight
     );
+}
+
+function updateAlienAnimation(alien, deltaTime, timestamp){
+    if(alien.animation === 'shoot' && timestamp >= alien.shootUntil){
+        alien.animation = 'walk';
+        alien.isShooting = false;
+        alien.frameIndex = 0;
+        alien.frameTimer = 0;
+    }
+
+    const frames = alien.animation === 'shoot' ? alienFrames.shoot : alienFrames.walk;
+    const frameDelay = alien.animation === 'shoot' ? 85 : alienFrameDelay;
+
+    alien.frameTimer += deltaTime * 16.67;
+
+    if(alien.frameTimer >= frameDelay){
+        alien.frameTimer = 0;
+        alien.frameIndex++;
+
+        if(alien.animation === 'shoot'){
+            if(alien.frameIndex >= frames.length){
+                alien.frameIndex = frames.length - 1;
+            }
+        } else{
+            alien.frameIndex %= frames.length;
+        }
+    }
 }
 
 function spawnAlien(timestamp){
@@ -205,7 +239,10 @@ function spawnAlien(timestamp){
         x: canvas.width + 40 + Math.random() * 100,
         y: groundY,
         isShooting: false,
-        shootUntil: 0
+        shootUntil: 0,
+        animation: 'walk',
+        frameIndex: Math.floor(Math.random() * alienFrames.walk.length),
+        frameTimer: 0
     });
 
     const randomDelay = minimumSpawnDelay + Math.random() * (maximumSpawnDelay - minimumSpawnDelay);
@@ -215,16 +252,21 @@ function spawnAlien(timestamp){
 
 // collision death
 function checkCollision(alien){
-    const alienX = alien.x + 8;
-    const alienY = alien.y - 58;
-    const alienWidth = 32;
-    const alienHeight = 48;
+    const alienX = alien.x + 5;
+    const alienY = alien.y - 45;
+    const alienWidth = 28;
+    const alienHeight = 38;
+
+    const astronautLeft = 105;
+    const astronautRight = 134;
+    const astronautTop = astronautY + 8;
+    const astronautBottom = astronautY + 58;
 
     return(
-        105 < alienX + alienWidth &&
-        134 > alienX &&
-        astronautY + 8 < alienY + alienHeight &&
-        astronautY + 58 > alienY
+        astronautLeft < alienX + alienWidth &&
+        astronautRight > alienX &&
+        astronautTop < alienY + alienHeight &&
+        astronautBottom > alienY
     );
 }
 
@@ -239,16 +281,16 @@ function alienShoot(timestamp){
     if(!closestAlien) return;
 
     closestAlien.isShooting = true;
-    closestAlien.shootUntil = timestamp + 350;
-
-    shootingAlien = closestAlien;
-    shootingUntil = timestamp + 350;
+    closestAlien.shootUntil = timestamp + 450;
+    closestAlien.animation = 'shoot';
+    closestAlien.frameIndex = 0;
+    closestAlien.frameTimer = 0;
 
     projectiles.push({
-        x: closestAlien.x - 30,
-        y: closestAlien.y - 34,
-        width: 32,
-        height: 7
+        x: closestAlien.x - 15, // gap from alien to projectile
+        y: closestAlien.y - 24,
+        width: 24, // projectile width
+        height: 6 // projectile height
     });
 
     nextShotTime = timestamp + projectileCooldownMin + Math.random() * (projectileCooldownMax - projectileCooldownMin);
@@ -269,7 +311,13 @@ function updateProjectiles(deltaTime){
 
         if (hitsShield){
             projectile.blocked = true;
-            shieldFlashUntil = performance.now() + 300;
+            shieldFlashUntil = performance.now() + 200;
+
+            createShieldImpact(
+                shieldX + shieldWidth / 2,
+                projectile.y + projectile.height / 2
+            );
+
             return;
         }
 
@@ -308,12 +356,83 @@ function drawProjectile(projectile){
     );
 }
 
+// projectiles shield impact
+function createShieldImpact(x, y){
+    const shieldTop = astronautY - 4;
+    const shieldBottom = Math.min(groundY - 3, shieldTop + shieldHeight);
+    const impactX = shieldX + shieldWidth / 2;
+    
+    shieldImpacts.push({
+        x: impactX,
+        y,
+        velocityX: 0,
+        velocityY: 0,
+        size: 12,
+        life: 1,
+        core: true
+    });
+
+    for (let i = 0; i < 7; i++){
+        const progress = i / 10;
+        const startY = shieldBottom - progress * (shieldBottom - shieldTop) + (Math.random() - 0.5) * 4;
+
+        shieldImpacts.push({
+            x: shieldX + 2 + Math.random() * 4,
+            y: startY,
+            velocityX: -0.2 - Math.random() * 0.8,
+            velocityY: -0.5 - Math.random() * 1.2,
+            size: 3,
+            life: 1,
+            core: false
+        });
+    }
+}
+
+function updateShieldImpacts(deltaTime){
+    shieldImpacts.forEach(particle => {
+        particle.x += particle.velocityX * deltaTime;
+        particle.y += particle.velocityY * deltaTime;
+
+        particle.velocityX *= 0.96;
+        particle.velocityY *= 0.96;
+
+        particle.life -= 0.06 * deltaTime;
+
+        if (!particle.core && particle.y + particle.size >= groundY){
+            particle.y = groundY - particle.size;
+            particle.velocityY = 0;
+        }
+    });
+
+    shieldImpacts = shieldImpacts.filter(particle => particle.life > 0);
+}
+
+function drawShieldImpacts(){
+    shieldImpacts.forEach(particle => {
+        ctx.save();
+
+        ctx.globalAlpha = Math.max(0, particle.life);
+        ctx.fillStyle = particle.core ? '#ffffff' : '#19c7e8';
+
+        const size = Math.max(1, Math.ceil(particle.size));
+
+        ctx.fillRect(
+            Math.round(particle.x),
+            Math.round(particle.y),
+            size,
+            size
+        );
+
+        ctx.restore();
+    });
+}
+
 // shield draw
 function drawShield(){
     const now = performance.now();
     const shieldIsFlashing = now < shieldFlashUntil;
 
-    if(!isBlocking) return;
+    if(!isBlocking && !shieldIsFlashing) return;
     if(!shieldImage.complete || !shieldImage.naturalWidth) return;
 
     const frameX = shieldIsFlashing ? 256 : 0;
@@ -347,7 +466,9 @@ function drawScene(){
 
     projectiles.forEach(projectile => {
         drawProjectile(projectile);
-    })
+    });
+
+    drawShieldImpacts();
 }
 
 // start game overlay
@@ -382,6 +503,7 @@ function startGame(){
 
     aliens = [];
     projectiles = [];
+    shieldImpacts = [];
     isBlocking = false;
     shootingUntil = 0;
     shieldKeyDown = false;
@@ -551,15 +673,10 @@ function gameLoop(timestamp = performance.now()){
 
     isBlocking = shieldKeyDown && isGrounded;
 
-    aliens.forEach(alien => {
-        if(alien.isShooting && timestamp >= alien.shootUntil){
-            alien.isShooting = false;
-        }
-    })
-
     spawnAlien(timestamp);
 
     aliens.forEach(alien => {
+        updateAlienAnimation(alien, deltaTime, timestamp);
         alien.x -= alienSpeed * deltaTime;
 
         if(checkCollision(alien)){
@@ -569,8 +686,9 @@ function gameLoop(timestamp = performance.now()){
 
     alienShoot(timestamp);
     updateProjectiles(deltaTime);
+    updateShieldImpacts(deltaTime);
 
-    aliens = aliens.filter(alien => alien.x > -alienSprite.drawWidth);
+    aliens = aliens.filter(alien => alien.x > -alienDrawWidth);
 
     backgroundOffset += alienSpeed * deltaTime;
 
