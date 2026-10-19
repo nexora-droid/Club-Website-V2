@@ -567,6 +567,8 @@ async function sendMsg(subject, email, body) {
             message: body
         })
     })
+    console.log('Status: ', response.status);
+    console.log('Text: ', response.text);
     const reply = await response.json();
     console.log(reply);
 }
