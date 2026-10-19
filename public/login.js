@@ -27,8 +27,8 @@ function hasLowerCase(str) {
     return /[a-z]/.test(str);
 }
 loginSubmit.addEventListener('click', async(e)=> {
+    e.preventDefault();
     if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) {
-        e.preventDefault();
         const request = await fetch('/auth/signin', {
             method: 'POST',
             headers: {

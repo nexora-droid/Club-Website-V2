@@ -44,8 +44,8 @@ function hasLowerCase(str) {
     return /[a-z]/.test(str);
 }
 submit.addEventListener('click', async (e)=> {
-    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) {
-        e.preventDefault();
+    e.preventDefault();
+    if (pwdInput.value.length >= 6 && hasUpperCase(pwdInput.value) && hasLowerCase(pwdInput.value) && hasSymbols(pwdInput.value)) {
         if (pwdInput.value === pwdRepeatInput.value) {
             const name = nameInput.value;
             const email = emailInput.value;

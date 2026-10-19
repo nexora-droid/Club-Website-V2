@@ -73,8 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     function hasLowerCase(str) {
                         return /[a-z]/.test(str);
                     }
-                    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) { 
-                        e.preventDefault();
+                    e.preventDefault();
+                    if (newPassword.value.length >= 6 && hasUpperCase(newPassword.value) && hasLowerCase(newPassword.value) && hasSymbols(newPassword.value)) { 
                         if (newPassword.value === confirmPassword.value) {
                             const response = await fetch('/admin/signup', {
                                 method: 'POST',
@@ -112,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     function hasLowerCase(str) {
                         return /[a-z]/.test(str);
                     }
-                    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) { 
-                        e.preventDefault();
+                    e.preventDefault();
+                    if (password.value.length >= 6 && hasUpperCase(password.value) && hasLowerCase(password.value) && hasSymbols(password.value)) { 
                         const request = await fetch('/admin/login', {
                             method: 'POST',
                             headers: {
