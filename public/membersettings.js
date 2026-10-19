@@ -441,5 +441,3 @@ document.addEventListener('DOMContentLoaded', async(e)=> {
         showToast(reply.error.message, reply.error.hint, 5000);
     }
 })
-
-showToast('testing', 'testing 123');
