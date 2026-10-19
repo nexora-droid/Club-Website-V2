@@ -1002,3 +1002,16 @@ function gameLoop(timestamp = performance.now()){
 }
 
 gameLoop();
+
+// how to play popup
+const infoBtn = document.getElementById('infoBtn');
+const infoPopup = document.getElementById('infoPopup');
+const closePopup = document.getElementById('closeInfo');
+
+infoBtn.addEventListener('click', () => {
+    infoPopup.classList.add('active');
+});
+
+closePopup.addEventListener('click', () => {
+    infoPopup.classList.remove('active');  
+})
