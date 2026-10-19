@@ -32,15 +32,30 @@ pwdRepeatInput.addEventListener('input', (e)=> {
         pwdWarn.hidden = false;
     }
 })
+function hasSymbols(str) {
+  const regex = /[^a-zA-Z0-9 ]/;
+  return regex.test(str);
+}
+function hasUpperCase(str) {
+    return /[A-Z]/.test(str);
+}
+
+function hasLowerCase(str) {
+    return /[a-z]/.test(str);
+}
 submit.addEventListener('click', async (e)=> {
-    e.preventDefault();
-    if (pwdInput.value === pwdRepeatInput.value) {
-        const name = nameInput.value;
-        const email = emailInput.value;
-        const pwd = pwdRepeatInput.value;
-        signUp(name, email, pwd);
+    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) {
+        e.preventDefault();
+        if (pwdInput.value === pwdRepeatInput.value) {
+            const name = nameInput.value;
+            const email = emailInput.value;
+            const pwd = pwdRepeatInput.value;
+            signUp(name, email, pwd);
+        } else {
+            alert('Error occured. Passwords still dont match.')
+        }
     } else {
-        alert('Error occured. Passwords still dont match.')
+        alert('Password too weak, include 1 uppercase letter, 1 lowercase, 1 symbol and minimum 6 letters');
     }
 
 

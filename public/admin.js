@@ -63,52 +63,80 @@ document.addEventListener('DOMContentLoaded', () => {
                 const signupSubmit = document.getElementById('signup-submit');
                 const username = document.getElementById("nameInput");
                 signupSubmit.addEventListener('click', async (e)=> {
-                    e.preventDefault();
-                    if (newPassword.value === confirmPassword.value) {
-                        const response = await fetch('/admin/signup', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                name: username.value,
-                                email: newEmail.value,
-                                password: newPassword.value
-                            }),
-                            credentials: 'include'
-                        })
-                        const result = await response.json();
-                        if (result.auth === 'Success') {
-                            loginWindow.remove();
+                    function hasSymbols(str) {
+                        const regex = /[^a-zA-Z0-9 ]/;
+                        return regex.test(str);
+                    }
+                    function hasUpperCase(str) {
+                        return /[A-Z]/.test(str);
+                    }
+                    function hasLowerCase(str) {
+                        return /[a-z]/.test(str);
+                    }
+                    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) { 
+                        e.preventDefault();
+                        if (newPassword.value === confirmPassword.value) {
+                            const response = await fetch('/admin/signup', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    name: username.value,
+                                    email: newEmail.value,
+                                    password: newPassword.value
+                                }),
+                                credentials: 'include'
+                            })
+                            const result = await response.json();
+                            if (result.auth === 'Success') {
+                                loginWindow.remove();
+                            } else {
+                                alert('Error ' + result.result)
+                            }
                         } else {
-                            alert('Error ' + result.result)
+                            alert('Passwords do not match, try again!')
                         }
                     } else {
-                        alert('Passwords do not match, try again!')
+                        alert('Password too weak, include 1 uppercase letter, 1 lowercase, 1 symbol and minimum 6 letters')
                     }
                 })
                 submit.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    const request = await fetch('/admin/login', {
-                        method: 'POST',
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: email.value,
-                            password: password.value
-                        }),
-                        credentials: 'include'
-                    })
-                    console.log(request.status);
-                    const response = await request.json();
-                    console.log('Server response', response);
-                    if (response.login === 'S') {
-                        loginWindow.remove();
+                    function hasSymbols(str) {
+                        const regex = /[^a-zA-Z0-9 ]/;
+                        return regex.test(str);
+                    }
+                    function hasUpperCase(str) {
+                        return /[A-Z]/.test(str);
+                    }
+                    function hasLowerCase(str) {
+                        return /[a-z]/.test(str);
+                    }
+                    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) { 
+                        e.preventDefault();
+                        const request = await fetch('/admin/login', {
+                            method: 'POST',
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                email: email.value,
+                                password: password.value
+                            }),
+                            credentials: 'include'
+                        })
+                        console.log(request.status);
+                        const response = await request.json();
+                        console.log('Server response', response);
+                        if (response.login === 'S') {
+                            loginWindow.remove();
+                        } else {
+                            console.log(response.status);
+                            console.log(response);
+                            alert('Login failed, wrong password/email');
+                        }
                     } else {
-                        console.log(response.status);
-                        console.log(response);
-                        alert('Login failed, wrong password/email');
+                        alert('Password too weak, include 1 uppercase letter, 1 lowercase, 1 symbol and minimum 6 letters')
                     }
                 })
             }

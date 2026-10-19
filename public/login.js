@@ -15,24 +15,39 @@ pwdviewbtn.addEventListener('click', () => {
         eyeclosed.style.display = 'none';
     }
 })
+function hasSymbols(str) {
+  const regex = /[^a-zA-Z0-9 ]/;
+  return regex.test(str);
+}
+function hasUpperCase(str) {
+    return /[A-Z]/.test(str);
+}
+
+function hasLowerCase(str) {
+    return /[a-z]/.test(str);
+}
 loginSubmit.addEventListener('click', async(e)=> {
-    e.preventDefault();
-    const request = await fetch('/auth/signin', {
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: emailInput.value,
-            password: inputPwd.value
-        }),
-        credentials: 'include'
-    })
-    const response = await request.json();
-    if (response.loggedIn) {
-        window.location.href = '/members'
+    if (inputPwd.value.length >= 6 && hasUpperCase(inputPwd.value) && hasLowerCase(inputPwd.value) && hasSymbols(inputPwd.value)) {
+        e.preventDefault();
+        const request = await fetch('/auth/signin', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: emailInput.value,
+                password: inputPwd.value
+            }),
+            credentials: 'include'
+        })
+        const response = await request.json();
+        if (response.loggedIn) {
+            window.location.href = '/members'
+        } else {
+            alert('Error: ' + response.error.message);
+        }
     } else {
-        alert('Error: ' + response.error.message);
+        alert('Password too weak, include 1 uppercase letter, 1 lowercase, 1 symbol and minimum 6 letters');
     }
 })
 document.addEventListener('DOMContentLoaded', async (e)=> {
