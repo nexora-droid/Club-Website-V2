@@ -569,7 +569,7 @@ async function projNotif(project_name, project_desc, email) {
         from:`Tech Club Team <${process.env.CLUB_EMAIL}>`,
         to: email,
         subject: `New Project has been added to your account`,
-        text: `A new projet has been added to your account, please go view it on the website. \nProject Name${project_name} \nBelow is your Project Description, which may look funky/werid as symbols may be included in the description. \nFor proper viewing check the website please. \n${project_desc} \nRegards - Tech Club Team`,
+        text: `A new project has been added to your account, please go view it on the website. \nProject Name${project_name} \nBelow is your Project Description, which may look funky/werid as symbols may be included in the description. \nFor proper viewing check the website please. \n${project_desc} \nRegards - Tech Club Team`,
         html: ''
     }
     try {
@@ -578,6 +578,81 @@ async function projNotif(project_name, project_desc, email) {
     } catch (err) {
         return {error: err}
     }
+}
+
+async function meetingNotif() {
+    const supabaseClient = createClient(SUPABASE_URL, process.env.SUPABASE_SECRET_KEY)
+    const {data, error} = await supabaseClient.from('members').select('*');
+    if (!error) {
+        for (let i = 0; i < data.data.length; i++) {
+            const user = data.data[i];
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.CLUB_EMAIL,
+                    pass: process.env.CLUB_APP_PASS
+                }
+            });
+            const mailOptions = {
+                from:`Tech Club Team <${process.env.CLUB_EMAIL}>`,
+                to: user.email,
+                subject: `New Meeting has been created`,
+                text: `A new meeting has been created. \nPlease check the club website for details, and when it will happen. \nRegards, Tech Club Team`,
+                html: ''
+            }
+            try {
+                const info = await transporter.sendMail(mailOptions);
+                return {reply: info}
+            } catch (err) {
+                return {error: err}
+            }
+        }
+    }
+}
+
+async function getMeetings(req, res) {
+    const response = await adminService.findMeetings();
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true,
+        data: response.meetings
+    })
+}
+
+async function newMeeting(req, res) {
+    const {name, date, description} = req.body;
+    const response = await adminService.addMeeting(name, date, description);
+    if (response.error) {
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    meetingNotif();
+    return res.json({
+        success: true,
+        data: response.meetings
+    })
+}
+
+async function delMeeting(req, res) {
+    const meeting = req.body.meeting;
+    const response = await adminService.deleteMeeting(meeting);
+    if (response.error) {
+        console.log(response.error)
+        return res.json({
+            success: false,
+            error: response.error
+        })
+    }
+    return res.json({
+        success: true
+    })
 }
 
 module.exports = {
@@ -600,5 +675,8 @@ module.exports = {
     delAnnouncement,
     getMembers,
     getMemByEmail,
-    getProjByEmail
+    getProjByEmail,
+    getMeetings,
+    newMeeting,
+    delMeeting
 };

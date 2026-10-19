@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         const response = await request.json();
         const eventsDiv = document.querySelector('.e-cards');
         eventsDiv.innerHTML = ' ';
-        if (response.length === 0) {
+        if (response.data.length === 0) {
             const clone = eventTemplate.content.cloneNode(true);
             clone.querySelector(".event-title").textContent = "No events yet";
             clone.querySelector(".event-img").src = "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg";
@@ -187,8 +187,8 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
             clone.querySelector("span").textContent = "N/A";
             eventsDiv.appendChild(clone);
         } else {
-            for (let i = 0; i < response.length; i++ ) {
-                const event = response[i];
+            for (let i = 0; i < response.data.length; i++ ) {
+                const event = response.data[i];
                 const clone = eventTemplate.content.cloneNode(true);
                 clone.querySelector(".event-title").textContent = event.name;
                 clone.querySelector(".event-img").src = event.image || "https://images.pexels.com/photos/2882552/pexels-photo-2882552.jpeg" ;
@@ -425,8 +425,7 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
     // event edit closing & opening
     const eventEditWindow = document.getElementById("ee-menu");
     const eventEditSubmit = document.getElementById("eef-submit");
-    const eventEditCancel = document.getElementById("eef-cancel");
-
+    const eventEditCancel = document.getElementById("eef-cancel")
     eventEditCancel.addEventListener('click', (e)=> {
         e.preventDefault();
         eventEditWindow.classList.add('slideOut');
@@ -447,7 +446,96 @@ document.addEventListener('DOMContentLoaded', async (e)=> {
         const eventDesc = eventEditWindow.querySelector('#ee-desc').value;
         editEvent(eventName, eventStatus, eventImg, eventDesc, eventID);
     });
-
+    // loading meetings
+    const newMeeting = document.getElementById("new-meeting");
+    const meetingMenu = document.getElementById("me-menu");
+    const meetingTemplate = document.getElementById("meeting-template");
+    const pastMeetingHolder = document.getElementById("me-holder");
+    newMeeting.addEventListener("click", async(e)=> {
+        meetingMenu.classList.remove('slideOut');
+        meetingMenu.classList.add('slideIn');
+        const request = await fetch('/admin/meetings');
+        const reply = await request.json();
+        if (reply) {
+            pastMeetingHolder.innerHTML = "";
+            for (let i = 0; i < reply.data.length; i++) {
+                const meeting = reply.data[i];
+                const clone = meetingTemplate.content.cloneNode(true);
+                clone.querySelector(".me-name").textContent = meeting.name;
+                clone.querySelector(".me-msg").textContent = meeting.description;
+                const dateAdded = new Date(`${meeting.date}T00:00:00`);
+                const formattedDate = new Intl.DateTimeFormat('en-GB').format(dateAdded);
+                clone.querySelector(".me-date-part").textContent = formattedDate;
+                pastMeetingHolder.appendChild(clone);
+            }
+        }
+    })
+    const meetingCancel = document.querySelector(".me-cancel");
+    const meetingSubmit = document.querySelector(".me-submit");
+    meetingCancel.addEventListener("click", async(e)=> {
+        e.preventDefault();
+        meetingMenu.classList.remove('slideIn');
+        meetingMenu.classList.add('slideOut');
+    });
+    // meeting name, date, desc here
+    meetingSubmit.addEventListener('click', async (e)=> {
+        e.preventDefault();
+        const meetingName = document.getElementById('me-name');
+        const meetingDate = document.getElementById('me-date');
+        const meetingDesc = document.getElementById('me-desc');
+        const meeting_name = meetingName.value;
+        const meeting_date = meetingDate.value;
+        const meeting_desc = meetingDesc.value;
+        const request = await fetch('/admin/meetings/add', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: meeting_name,
+                date: meeting_date,
+                description: meeting_desc
+            }),
+            credentials: 'include'
+        })
+        const reply = await request.json();
+        if (reply.success) {
+            meetingMenu.classList.remove('slideIn');
+            meetingMenu.classList.add('slideOut');
+        }
+    })
+    pastMeetingHolder.addEventListener('click', async (e) => {
+        if (e.target.closest(".me-delete")) {
+            const deleteButton = e.target.closest(".me-delete");
+            if (!deleteButton) return;
+            if (!await checkAuth()) {
+                alert('Not allowed to perform action');
+                return;
+            }
+            const buttonParent = deleteButton.parentElement;
+            const card = buttonParent.parentElement;
+            const meetingToDel = card.querySelector(".me-name").textContent;
+            const request = await fetch('/admin/meetings/delete', {
+                method: 'DELETE',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    meeting: meetingToDel
+                }),
+                credentials: 'include'
+            })
+            const response = await request.json();
+            if (response.success) {
+                alert("Deleted meeting");
+                meetingMenu.classList.remove('slideIn');
+                meetingMenu.classList.add('slideOut');
+            } else {
+                alert("Oh no, check console for errors.");
+                console.log(response);
+            }
+        }
+    })
     // loading announcements
     const newAnnouncement = document.getElementById("new-announcement");
     const announcementMenu = document.getElementById("a-menu");

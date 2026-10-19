@@ -74,7 +74,7 @@ html, body{
     text-decoration: none;
 }
 
-#new-announcement {
+#new-announcement, #new-meeting {
     background-color: black;
     border: none;
     color: white;
@@ -814,7 +814,7 @@ html, body{
 }
 
 /* Add announcement */
-#a-menu {
+#a-menu, #me-menu {
     position: fixed;
     top: 53%;
     left: 50%;
@@ -829,7 +829,7 @@ html, body{
     visibility: hidden;
 }
 
-#am-title {
+#am-title, #mem-title {
     margin: 0px;
     margin-bottom: 20px;
     padding-bottom: 10px;
@@ -838,7 +838,7 @@ html, body{
     border-bottom: 1px solid black;
 }
 
-#am-subtitle {
+#am-subtitle, #mem-subtitle {
     margin: 0 0 0px;
     padding: 20px 0px;
     font-size: 1.2rem;
@@ -846,36 +846,36 @@ html, body{
     border-bottom: 1px solid black;
 }
 
-#a-menu input {
+#a-menu input, #me-menu input {
     width: 100%;
     font-family: 'Space Grotesk';
     padding: 10px;
     margin: 0px 0 20px;
 }
 
-#a-menu hr {
+#a-menu hr, #me-menu hr {
     border: none;
     margin: 0;
     border-bottom: 1px solid black;
 }
 
-#past-anns {
+#past-anns, #past-meetings {
     margin: 0px;
 }
 
-#pa-sub {
+#pa-sub, #me-sub {
     border: none;
     border-bottom: 1px solid black;
     padding: 0 0 16px;
     margin-bottom: 0px;
 }
 
-.pa-card {
+.pa-card, .me-card {
     border: none;
     border-bottom: 1px solid black;
 }
 
-#pa-holder {
+#pa-holder, #me-holder {
     max-height: 40vh;
     overflow-y: scroll;
     display: flex;
@@ -883,14 +883,15 @@ html, body{
     gap: 0px;
 }
 
-.a-buttons {
+.a-buttons, .me-buttons {
     margin-top: 20px;
     display: flex;
     gap: 10px;
     justify-content: flex-end;
+    align-items: center;
 }
 
-.a-submit, .a-cancel {
+.a-submit, .a-cancel, .me-submit, .me-cancel {
     padding: 10px 30px;
     outline: none;
     border: 1px solid black;
@@ -901,24 +902,24 @@ html, body{
     transition: all 0.3s ease;
 }
 
-.a-submit:hover, .a-cancel:hover {
+.a-submit:hover, .a-cancel:hover, .me-submit:hover, .me-cancel:hover {
     transform: translateY(2px);
     box-shadow: 0 5px 5px rgb(109, 109, 109);
 }
 
-.a-submit:active, .a-cancel:active {
+.a-submit:active, .a-cancel:active, .me-submit:active, .me-cancel:active  {
     transform: translateY(1px);
     box-shadow: 0 2px 5px black;
 }
 
-.pann-info-row {
+.pann-info-row, .me-info-row {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
 }
 
-.pann-delete {
+.pann-delete, .me-delete {
     height: fit-content;
     padding: 10px 10px;
     width: fit-content;
@@ -935,4 +936,65 @@ code {
     background-color: rgb(221, 220, 220);
     padding: 5px;
     border-radius: 2px;
+}
+
+#me-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mef-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mef-group input {
+    width: 100%;
+    min-height: 40px;
+    padding: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    border: 1px solid black;
+    outline: none;
+    background: white;
+}
+
+.mef-group input:focus,
+#me-desc:focus {
+    outline: 2px solid black;
+    outline-offset: 2px;
+}
+
+#mef-special {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#me-desc {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px;
+    resize: vertical;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    border: 1px solid black;
+    outline: none;
+}
+
+#me-menu #me-holder {
+    max-height: 30vh;
+}
+
+.me-card {
+    padding: 12px 0;
+}
+
+.me-msg {
+    overflow-wrap: anywhere;
 }

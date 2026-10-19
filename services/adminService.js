@@ -1,4 +1,3 @@
-// todo: login, signup
 const {createClient} = require('@supabase/supabase-js');
 const { response } = require('express');
 require('dotenv').config();
@@ -245,6 +244,51 @@ async function filterMembers(email) {
     }
 }
 
+async function findMeetings() {
+    const today = new Date().toISOString().split('T')[0];
+    const {data, error} = await supabase.from('meetings').select('*').gte('date', today).order('date', {ascending: true}).limit(3);
+    if (data && !error) {
+        return {
+            meetings: data,
+            success: true
+        }
+    }
+    return {
+        error: error,
+        success: false
+    }
+}
+
+async function addMeeting(name, date, desc) {
+    const {data, error} = await supabaseAdmin.from('meetings').insert({
+        name: name,
+        date: date,
+        description: desc
+    }).select();
+    if (!error && data) {
+        return {
+            success: true,
+            meetings: data
+        }
+    }
+    return {
+        success: false,
+        error: error
+    }
+}
+
+async function deleteMeeting(meeting) {
+    const {error} = await supabaseAdmin.from('meetings').delete().eq('name', meeting)
+    if (!error) {
+        return {
+            success: true
+        }
+    }
+    return {
+        error: error
+    }
+}
+
 module.exports = {
   signUp,
   login,
@@ -261,5 +305,8 @@ module.exports = {
   deleteAnnouncement,
   getMembers,
   filterMembers,
-  filterProjects
+  filterProjects,
+  findMeetings,
+  addMeeting,
+  deleteMeeting
 }
