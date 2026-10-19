@@ -21,12 +21,15 @@
         <div id="game">
             <div id="gameHeader">
                 <p id="score">Score: 0</p>
-                <p class="game-title">NOVA Runner</p>
+                <div class="title-wrapper">
+                    <p class="game-title">NOVA Runner</p>
+                    <button id="infoBtn" type="button">ⓘ</button>
+                </div>
                 <p id="highscore">Best: 0</p>
             </div>
 
             <div class="runner-wrapper">
-                <canvas id="runner" width="600px" height="300px">
+                <canvas id="runner" width="600" height="300">
                     
                 </canvas>
 
@@ -42,6 +45,29 @@
                 <p>Press the Spacebar to Jump</p>
                 <button id="restartBtn" type="button">Play Again</button>
             </div>
+        </div>
+    </div>
+
+    <div id="infoPopup">
+        <button id="closeInfo" type="button">×</button>
+
+        <div class="infoheader">
+            <h2>How to Play</h2>
+            <p>Survive for as long as you can and keep trying to beat your high score</p>
+        </div>
+
+        <div class="infosection">
+            <h3>Controls</h3>
+            <div class="kbdcontrols">
+                <p><kbd>Space</kbd> Jump</p>
+                <p><kbd>Shift</kbd> Activate Shield</p>
+            </div>
+        </div>
+
+        <div class="infosection">
+            <h3>Guide</h3>
+            <p>Avoid aliens and incoming projectiles</p>
+            <p>Use the power up to jump and fly to avoid aliens</p>
         </div>
     </div>
 
