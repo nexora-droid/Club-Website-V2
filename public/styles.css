@@ -226,6 +226,104 @@ html, body{
     margin: 0;
 }
 
+/* timeline */
+.timeline-section{
+    padding: 200px 5vw 80px;
+}
+
+.timeline-heading{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 70px;
+}
+
+.timeline-heading h2{
+    font-size: 2rem;
+    margin: 0;
+    text-align: center;
+}
+
+.timeline{
+    position: relative;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.timeline::before{
+    content: '';
+    position: absolute;
+    width: 2px;
+    background: black;
+    opacity: 0.7;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.timeline-item{
+    position: relative;
+    width: 50%;
+    padding: 20px 50px;
+    opacity: 0;
+    transform: translateY(35px);
+    transition: all 0.6s ease;
+}
+
+.timeline-item.visible{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.timeline-item:nth-child(odd){
+    left: 0;
+    text-align: right;
+}
+
+.timeline-item:nth-child(even){
+    left: 50%;
+    text-align: left;
+}
+
+.timeline-dot{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: black;
+    border: 2px solid white;
+    border-radius: 50%;
+    top: 60px;
+    z-index: 2;
+}
+
+.timeline-item:nth-child(odd) .timeline-dot{
+    right: -10px;
+}
+
+.timeline-item:nth-child(even) .timeline-dot{
+    left: -10px;
+}
+
+.timeline-content{
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.timeline-content:hover{
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.8);
+}
+
+.timeline-content p, .timeline-content h3{
+    margin: 0;
+}
+
 /* our team */
 #team{
     margin: 100px 0;

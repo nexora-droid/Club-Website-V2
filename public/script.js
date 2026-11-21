@@ -506,6 +506,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // timeline
+    const timelineItems = document.querySelectorAll(".timeline-item");
+
+    const timelineObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if(entry.isIntersecting){
+                entry.target.classList.add("visible");
+                timelineObserver.unobserve(entry.target)
+            }
+        });
+    }, {threshold: 0.4});
+
+    timelineItems.forEach((item) => {
+        timelineObserver.observe(item);
+    });
+
     // member card flipping
     const memberCards = document.querySelectorAll(".membercard");
     
