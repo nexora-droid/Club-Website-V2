@@ -19,6 +19,11 @@ html, body{
     font-family: 'Bricolage Grotesque', sans-serif;
 }
 
+.events-heading h2, .announcement-heading h2, .projects-heading h2{
+    margin: 0;
+    font-size: 1.7rem;
+}
+
 /* nav */
 #header{
     position: sticky;
@@ -112,7 +117,7 @@ html, body{
 
 /* landing page */
 #hero{
-    min-height: 40vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     padding: 20px 5vw;
@@ -122,6 +127,15 @@ html, body{
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.hero-content h1{
+    font-size: 4rem;
+    margin: 0;
+}
+
+.hero-label, .hero-content p{
+    margin: 0;
 }
 
 /* announcement section */
