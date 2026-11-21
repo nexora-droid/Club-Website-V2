@@ -318,6 +318,10 @@ html, body{
     object-fit: cover;
 }
 
+.membername{
+    transition: color 0.5s ease;
+}
+
 .membercard .membername{
     position: relative;
     margin: 0;
@@ -325,12 +329,16 @@ html, body{
     width: fit-content;
 }
 
-.membercard.flipped .membername {
+.memberback .membername {
     padding: 5px 10px;
     color: white;
     border-radius: 20px;
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
+    background-color: rgba(186, 186, 186, 0.4);
+    backdrop-filter: blur(20px);
+}
+
+.membercard.flipped .memberfront .membername{
+    color: transparent;
 }
 
 .membercard.flipped .membercard-inner{
