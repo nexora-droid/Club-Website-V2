@@ -188,7 +188,7 @@ html, body{
 
 #about-header p{
     margin: 0;
-    text-align: justify;
+    text-align: center;
 }
 
 #factCards{
@@ -705,7 +705,7 @@ html, body{
     width: min(900px, 80vw);
     max-height: 80vh;
     overflow-y: auto;
-    padding: 40px;
+    padding: 50px;
     border: 1px solid black;
     transform: scale(0.9) translateY(20px);
     opacity: 0;
