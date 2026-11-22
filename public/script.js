@@ -543,6 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.transform = `translate(-50%, -50%) translateX(${offset * 320}px) translateZ(${distance * -100}px) scale(${1 - distance * 0.12}) rotateY(${offset * -12}deg)`;
             card.style.opacity = distance > 2 ? "0" : String(1 - distance * 0.05);
             card.style.zIndex = String(total - distance);
+            card.style.transition = `transform 0.8s ease, opacity 0.8s ease`;
         });
     }
 
@@ -575,6 +576,24 @@ document.addEventListener('DOMContentLoaded', () => {
         isDragging = false;
         gallery.classList.remove("dragging");
     });
+
+    let scrollDelta = 0;
+    let scrollTimeout;
+
+    gallery.addEventListener('wheel', (e) => {
+        e.preventDefault();
+
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        scrollDelta += delta;
+
+        clearTimeout(scrollTimeout);
+
+        scrollTimeout = setTimeout(() => {
+            if(Math.abs(scrollDelta) > 25){
+                moveGallery(scrollDelta > 0 ? 1 : -1);
+            }
+        }, 50);
+    }, {passive: false});
 
     updateGallery();
 
