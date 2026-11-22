@@ -15,8 +15,10 @@
                 <a href="#events">Events</a>
                 <a href="#members">Members</a>
                 <a href="/">Main Page</a>
-                <button id="new-announcement">Create Announcement</button>
-                <button id="new-meeting">Create Meeting</button>
+                <div class="createbtns">
+                    <button id="new-announcement">Create Announcement</button>
+                    <button id="new-meeting">Create Meeting</button>
+                </div>
             </div>
         </div>
 
@@ -34,7 +36,7 @@
                 </div>
                 <div class="project-grid">
                     <div class="projectcard">
-                        <div>
+                        <div class="project-header">
                             <p class="project-title">NYX Inc</p>
                             <div class="project-type">
                                 <div class="project-lang">HTML</div>
@@ -51,7 +53,7 @@
                     </div>
 
                     <div class="projectcard">
-                        <div>
+                        <div class="project-header">
                             <p class="project-title">NYX Inc</p>
                             <div class="project-type">
                                 <div class="project-lang">HTML</div>
@@ -516,7 +518,7 @@
 
     <template id="project-template">
        <div class="projectcard">
-            <div>
+            <div class="project-header">
                 <p class="project-title">NYX Inc</p>
                 <div class="project-type">
                     <div class="project-lang">HTML</div>

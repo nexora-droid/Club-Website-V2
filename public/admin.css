@@ -74,21 +74,25 @@ html, body{
     text-decoration: none;
 }
 
+.createbtns{
+    display: flex;
+    gap: 10px;
+}
+
 #new-announcement, #new-meeting {
-    background-color: black;
+    background-color: rgb(38, 38, 38);
     border: none;
     color: white;
     padding: 10px 10px;
-    border-radius: 10px;
-    font-family: 'Space Grotesk';
+    border-radius: 14px;
     font-weight: 500;
 }
 
 #nav-title {
     text-decoration: none;
     color: #000000;
-    font-family: 'Space Grotesk';
-    font-weight: 800;
+    font-size: 1.3rem;
+    font-weight: 600;
     transition: 0.4s ease;
 }
 
@@ -298,8 +302,8 @@ html, body{
 
 .section-title{
     margin: 0;
-    font-size: 1.3rem;
-    font-weight: 500;
+    font-size: 1.9rem;
+    font-weight: 600;
 }
 
 .add{
@@ -343,24 +347,29 @@ html, body{
     gap: 30px;
 }
 
+.project-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .projectcard, .e-card{
     display: flex;
     flex-direction: column;
     gap: 20px;
     border: 1px solid black;
-    padding: 10px;
+    padding: 20px;
 }
 
 .project-title{
     margin: 0;
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 600;
 }
 
 .project-type{
     display: flex;
     gap: 8px;
-    margin-top: 10px;
 }
 
 .project-lang, .project-category {

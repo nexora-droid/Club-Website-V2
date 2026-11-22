@@ -1,17 +1,26 @@
-const nav = document.getElementById('nav');
 const memberName = document.getElementById('memberName');
 
-    function checkScroll () {
-        if(window.scrollY>40){
-            nav.classList.add("scrolled");
-        } else{
-            nav.classList.remove("scrolled");
-        }
-    }
+// loading styles
+const loadingStart = Date.now();
 
-    window.addEventListener('scroll', checkScroll);
-    checkScroll();
+const loadingSections = {
+    announcements: document.getElementById("announcements"),
+    events: document.getElementById("events"),
+    projects: document.getElementById("projects")
+};
 
+Object.values(loadingSections).forEach((section) => {
+    section.classList.add("loading-section", "loading");
+});
+
+function finishLoading(section){
+    const elapsed = Date.now() - loadingStart;
+    const remaining = Math.max(0, 1000 - elapsed);
+
+    setTimeout(() => {
+        section.classList.remove("loading", "loading-section");
+    }, remaining);
+}
 
 document.addEventListener('DOMContentLoaded', async (e)=> {
     const request = await fetch('/members/me', {
@@ -145,6 +154,8 @@ async function populateMeetings() {
     } else {
         alert("Loading meetings lead to an error: " + reply.error.message);
     }
+
+    finishLoading(loadingSections.announcements);
 }
 async function populateEvents() {
     const request = await fetch('/members/events');
@@ -259,6 +270,8 @@ async function populateEvents() {
     } else {
         alert('Error loading events: ' + reply.error.message);
     }
+
+    finishLoading(loadingSections.events);
 }
 async function populateProjects() {
     let email = localStorage.getItem('email');
@@ -308,6 +321,8 @@ async function populateProjects() {
     } else {
         alert("Error loading projects: " + reply.error.message);
     }
+
+    finishLoading(loadingSections.projects);
 }
 async function populateAnnouncements() {
     const request = await fetch('/members/announcements');
@@ -323,4 +338,6 @@ async function populateAnnouncements() {
     } else {
         alert('Error loading announcements: ' + response.error)
     }
+
+    finishLoading(document.getElementById("announce-bar"));
 }

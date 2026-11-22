@@ -4,6 +4,7 @@
     color-scheme: light dark;
     --white-black: light-dark(white, black);
     --black-white: light-dark(black, white);
+    --a-bar: light-dark(black, rgb(189, 189, 189));
 }
 
 * {
@@ -18,20 +19,30 @@ html, body{
     font-family: 'Bricolage Grotesque', sans-serif;
 }
 
+.events-heading h2, .announcement-heading h2, .projects-heading h2{
+    margin: 0;
+    font-size: 1.7rem;
+}
+
 /* nav */
+#header{
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(15px);
+}
+
 #nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
     padding: 15px 25px;
-    backdrop-filter: blur(1px);
-    transition: all 0.8s ease;
-    z-index: 1000;
+    background: transparent;
+    height: fit-content;
 }
 
-#nav.scrolled{
+/* #nav.scrolled{
     top: 10px;
     border-radius: 50px;
     width: calc(100% - 40px);
@@ -42,7 +53,7 @@ html, body{
 
 #nav.scrolled #nav-title{
     font-size: 1.1rem;
-}
+} */
 
 #nav-links{
     display: flex;
@@ -59,17 +70,19 @@ html, body{
     text-decoration: none;
     color: var(--black-white);
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 1.5rem;
 }
 
 /* scrolling announcement bar */
 
 #announce-bar {
-    width: 100vw;
+    width: 100%;
     height: fit-content;
     padding: 5px;
     animation-play-state: running;
     overflow: hidden;
+    background-color: var(--a-bar);
+    color: var(--white-black);
 }
 
 #a-bar-track {
@@ -104,7 +117,7 @@ html, body{
 
 /* landing page */
 #hero{
-    min-height: 40vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     padding: 20px 5vw;
@@ -114,6 +127,15 @@ html, body{
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.hero-content h1{
+    font-size: 4rem;
+    margin: 0;
+}
+
+.hero-label, .hero-content p{
+    margin: 0;
 }
 
 /* announcement section */
@@ -345,4 +367,31 @@ html, body{
     align-items: center;
     border-top: 1px solid --black-white;
     padding: 6px 30px 0;
+}
+
+/* loading styles */
+.loading-section{
+    position: relative;
+}
+
+.loading-section.loading > * {
+    filter: blur(5px);
+    opacity: 0.5;
+}
+
+.loading-section.loading::after{
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, light-dark(rgba(0, 0, 0, 0.08), rgba(255, 255, 255, 0.08)) 50%, transparent 70%);
+    background-size: 200% 100%;
+    animation: loadingshine 1.5s infinite;
+}
+
+@keyframes loadingshine {
+    to{
+        background-position: -200% 0;
+    }
 }
