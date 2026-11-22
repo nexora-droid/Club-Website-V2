@@ -527,7 +527,6 @@ html, body{
 
 /* projects section */
 #projects{
-    overflow: hidden;
     padding: 80px 5vw;
     margin: 0 auto;
 }
@@ -553,77 +552,63 @@ html, body{
     width: 100%;
     height: 520px;
     overflow: hidden;
-    touch-action: pan-y;
-    user-select: none;
-}
-
-.projects-gallery-wrapper.dragging{
-    cursor: grabbing;
+    perspective: 1200px;
 }
 
 .projects-gallery{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
+    position: relative;
     width: 100%;
     height: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow: hidden;
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+    transform-style: preserve-3d;
+}
+
+.projects-gallery.dragging{
+    cursor: grabbing;
 }
 
 .gallery-card{
-    position: relative;
-    flex: 0 0 280px;
-    width: 280px;
-    height: 370px;
+    position: absolute;
+    width: min(46vw, 580px);
+    height: 350px;
+    left: 50%;
+    top: 50%;
     overflow: hidden;
     border: 1px solid black;
     border-radius: 15px;
+    background: #676767;
     color: white;
-    transform-style: preserve-3d;
-    transition: opacity 0.3s ease;
-    will-change: transform;
-}
-
-.gallery-card::after{
-    content: '';
-    position: absolute;
-    inset: 0;
+    transform-origin: center center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    will-change: transform, opacity;
     z-index: 1;
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.95) 0%,
-        rgba(0,0,0,0.65) 25%,
-        rgba(0,0,0,0.15) 55%,
-        transparent 75%
-    );
 }
 
 .gallery-card img{
-    position: absolute;
-    inset: 0;
     display: block;
     height: 100%;
     width: 100%;
     object-fit: cover;
+    pointer-events: none;
 }
 
 .project-info{
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 100%;
-    min-height: 25%;
-    padding: 15px;
+    right: 0;
+    padding: 25px;
     color: white;
-    z-index: 2;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
 }
 
 .project-card-header{
     display: flex;
-    flex-direction: column;
-    gap: 5px;
+    align-items: center;
+    justify-content: center;
 }
 
 .project-title{
@@ -633,9 +618,7 @@ html, body{
 }
 
 .project-category{
-    margin: 0;
-    font-size: 0.9rem;
-    color: white;
+    display: none;
 }
 
 /* contact */
